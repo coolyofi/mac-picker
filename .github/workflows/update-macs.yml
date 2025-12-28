@@ -4,7 +4,7 @@ on:
   schedule:
     # 每天北京时间 10:00（UTC 02:00）
     - cron: '0 2 * * *'
-  workflow_dispatch:
+  workflow_dispatch: # 允许手动点 Run
 
 jobs:
   update-data:
@@ -13,11 +13,16 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Run RSS sync
         run: node scripts/sync-macs.js
@@ -27,7 +32,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          if git status --porcelain | grep data/macs.json; then
+          if git status --porcelain | grep macs.json; then
             git add data/macs.json
             git commit -m "chore: update macs.json from RSS"
             git push
