@@ -1,55 +1,72 @@
-import React, { useState, useMemo } from 'react';
 import Head from 'next/head';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
+import macData from '../data/macs.json';
 import GeekSlider from '../components/GeekSlider';
 import ProductCard from '../components/ProductCard';
-import macData from '../data/macs.json';
+
+const isIOS =
+  typeof navigator !== 'undefined' &&
+  /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 export default function Home() {
   const [filters, setFilters] = useState({
     ram: 8,
     ssd: 256,
-    cpu: 8,
-    has10GbE: false
+    has10GbE: false,
   });
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const products = Array.isArray(macData?.items)
+    ? macData.items
+    : Array.isArray(macData)
+    ? macData
+    : [];
 
   const filteredProducts = useMemo(() => {
-    return macData.items
-      ? macData.items.filter(item => {
-          if (item.specs?.ram < filters.ram) return false;
-          if (item.specs?.ssd_gb < filters.ssd) return false;
-          if (filters.cpu && item.specs?.cpu < filters.cpu) return false;
-          if (filters.has10GbE && !item.specs?.has10GbE) return false;
-          return true;
-        })
-      : [];
-  }, [filters]);
+    return products
+      .filter(item => {
+        const s = item.specs || {};
+        return (
+          s.ram >= filters.ram &&
+          s.ssd_gb >= filters.ssd &&
+          (!filters.has10GbE || s.has10GbE)
+        );
+      })
+      .sort((a, b) => (a.priceNum || 0) - (b.priceNum || 0));
+  }, [products, filters]);
 
   const FilterPanel = () => (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <GeekSlider
         type="ram"
-        label="统一内存"
+        label="统一内存要求"
         value={filters.ram}
-        onChange={v => setFilters({ ...filters, ram: v })}
-      />
-      <GeekSlider
-        type="ssd"
-        label="固态硬盘"
-        value={filters.ssd}
-        onChange={v => setFilters({ ...filters, ssd: v })}
+        onChange={v =>
+          setFilters(f => (f.ram === v ? f : { ...f, ram: v }))
+        }
       />
 
-      <div className="pt-4 border-t border-white/5">
-        <label className="flex items-center justify-between cursor-pointer">
-          <span className="text-sm text-gray-400">10Gb 以太网端口</span>
+      <GeekSlider
+        type="ssd"
+        label="固态硬盘要求"
+        value={filters.ssd}
+        onChange={v =>
+          setFilters(f => (f.ssd === v ? f : { ...f, ssd: v }))
+        }
+      />
+
+      <div className="pt-6 border-t border-white/5">
+        <label className="flex items-center justify-between cursor-pointer p-3 rounded-xl bg-white/[0.03]">
+          <span className="text-xs font-bold text-gray-400 uppercase">
+            10Gb 万兆网口
+          </span>
           <input
             type="checkbox"
             checked={filters.has10GbE}
             onChange={e =>
-              setFilters({ ...filters, has10GbE: e.target.checked })
+              setFilters(f => ({ ...f, has10GbE: e.target.checked }))
             }
+            className="w-5 h-5 accent-blue-600"
           />
         </label>
       </div>
@@ -62,7 +79,12 @@ export default function Home() {
         <title>MacPicker - 极客选购指南</title>
       </Head>
 
-      <nav className="fixed top-0 w-full h-16 border-b border-white/5 bg-[#050505]/80 backdrop-blur-xl z-40 flex items-center px-6">
+      {/* 顶部导航 */}
+      <nav
+        className={`fixed top-0 w-full h-16 border-b border-white/5 z-50 flex items-center px-6 ${
+          isIOS ? 'bg-[#050505]' : 'bg-[#050505]/80 backdrop-blur-xl'
+        }`}
+      >
         <div className="flex items-center gap-2 font-black text-xl">
           <div className="w-3 h-3 bg-blue-500 rounded-full" />
           MACPICKER
@@ -70,10 +92,19 @@ export default function Home() {
       </nav>
 
       <div className="flex pt-16 max-w-[1600px] mx-auto">
+        {/* 左侧筛选 */}
         <aside className="hidden md:block w-80 fixed h-screen border-r border-white/5 p-8 overflow-y-auto">
+          <p className="text-xs text-gray-500 mb-6">
+            数据更新时间：
+            {macData?.lastUpdated
+              ? new Date(macData.lastUpdated).toLocaleString()
+              : '未知'}
+          </p>
+
           <h2 className="text-xl font-bold mb-10">配置筛选</h2>
           <FilterPanel />
-          <div className="mt-20 p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10">
+
+          <div className="mt-16 p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10">
             <p className="text-[10px] text-blue-400 font-bold uppercase mb-1">
               匹配结果
             </p>
@@ -84,13 +115,20 @@ export default function Home() {
           </div>
         </aside>
 
+        {/* 主内容 */}
         <main className="flex-1 md:ml-80 p-6 md:p-10">
-          <motion.div layout className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            <AnimatePresence>
-              {filteredProducts.map(mac => (
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+          >
+            {filteredProducts.length === 0 ? (
+              <p className="col-span-full text-center text-gray-400 mt-20">
+                没有找到符合条件的设备
+              </p>
+            ) : (
+              filteredProducts.map(mac => (
                 <ProductCard key={mac.id} data={mac} />
-              ))}
-            </AnimatePresence>
+              ))
+            )}
           </motion.div>
         </main>
       </div>
