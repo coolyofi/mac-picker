@@ -1,13 +1,17 @@
 {
-  "name": "mac-picker-sync",
+  "name": "mac-picker",
   "private": true,
-  "version": "1.0.0",
-  "description": "Hourly RSS sync for mac picker",
-  "type": "commonjs",
   "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "sync": "node scripts/sync-macs.js"
   },
   "dependencies": {
+    "framer-motion": "^11.0.0",
+    "next": "^14.2.35",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "rss-parser": "^3.13.0"
   }
 }
