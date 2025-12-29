@@ -1,69 +1,54 @@
 import React, { useState, useMemo } from 'react';
 import Head from 'next/head';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import GeekSlider from '../components/GeekSlider';
 import ProductCard from '../components/ProductCard';
 import macData from '../data/macs.json';
-
-const isIOS =
-  typeof navigator !== 'undefined' &&
-  /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 export default function Home() {
   const [filters, setFilters] = useState({
     ram: 8,
     ssd: 256,
+    cpu: 8,
     has10GbE: false
   });
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const filtered = useMemo(() => {
-    return [...macData]
-      .filter(item => {
-        const s = item.specs || {};
-        return (
-          s.ram >= filters.ram &&
-          s.ssd_gb >= filters.ssd &&
-          (!filters.has10GbE || s.has10GbE)
-        );
-      })
-      .sort((a, b) => (a.priceNum || 0) - (b.priceNum || 0));
+  const filteredProducts = useMemo(() => {
+    return macData.items
+      ? macData.items.filter(item => {
+          if (item.specs?.ram < filters.ram) return false;
+          if (item.specs?.ssd_gb < filters.ssd) return false;
+          if (filters.cpu && item.specs?.cpu < filters.cpu) return false;
+          if (filters.has10GbE && !item.specs?.has10GbE) return false;
+          return true;
+        })
+      : [];
   }, [filters]);
 
-  const FilterUI = () => (
-    <div className="space-y-12">
+  const FilterPanel = () => (
+    <div className="space-y-8">
       <GeekSlider
         type="ram"
-        label="统一内存要求"
+        label="统一内存"
         value={filters.ram}
-        onChange={v =>
-          setFilters(f => (f.ram === v ? f : { ...f, ram: v }))
-        }
+        onChange={v => setFilters({ ...filters, ram: v })}
       />
-
       <GeekSlider
         type="ssd"
-        label="固态硬盘要求"
+        label="固态硬盘"
         value={filters.ssd}
-        onChange={v =>
-          setFilters(f => (f.ssd === v ? f : { ...f, ssd: v }))
-        }
+        onChange={v => setFilters({ ...filters, ssd: v })}
       />
 
-      <div className="pt-8 border-t border-white/5">
-        <label className="flex items-center justify-between cursor-pointer p-3 bg-white/[0.02] rounded-xl border border-white/5">
-          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-            10Gb 万兆网口
-          </span>
+      <div className="pt-4 border-t border-white/5">
+        <label className="flex items-center justify-between cursor-pointer">
+          <span className="text-sm text-gray-400">10Gb 以太网端口</span>
           <input
             type="checkbox"
-            className="w-5 h-5 accent-blue-600"
             checked={filters.has10GbE}
             onChange={e =>
-              setFilters(f =>
-                f.has10GbE === e.target.checked
-                  ? f
-                  : { ...f, has10GbE: e.target.checked }
-              )
+              setFilters({ ...filters, has10GbE: e.target.checked })
             }
           />
         </label>
@@ -74,51 +59,38 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#050505] text-white">
       <Head>
-        <title>MAC PICKER | 极客翻新机选购</title>
+        <title>MacPicker - 极客选购指南</title>
       </Head>
 
-      {/* 顶部 Nav：iOS 降级 backdrop */}
-      <nav
-        className={`fixed top-0 w-full h-16 border-b border-white/5 z-50 flex items-center px-8 justify-between ${
-          isIOS
-            ? 'bg-[#050505]'
-            : 'bg-[#050505]/80 backdrop-blur-2xl'
-        }`}
-      >
-        <div className="flex items-center gap-3 font-black text-xl italic tracking-tighter">
-          <div className="w-3 h-3 bg-blue-500 rounded-full shadow-[0_0_12px_#3b82f6]" />
+      <nav className="fixed top-0 w-full h-16 border-b border-white/5 bg-[#050505]/80 backdrop-blur-xl z-40 flex items-center px-6">
+        <div className="flex items-center gap-2 font-black text-xl">
+          <div className="w-3 h-3 bg-blue-500 rounded-full" />
           MACPICKER
-        </div>
-        <div className="text-[10px] font-mono text-gray-500 uppercase">
-          Total Units: {macData.length}
         </div>
       </nav>
 
-      <div className="flex pt-16 max-w-[1800px] mx-auto">
-        <aside className="hidden lg:block w-80 fixed h-screen p-10 border-r border-white/5 overflow-y-auto">
-          <FilterUI />
-
-          <div className="mt-12 p-6 rounded-2xl bg-blue-600/10 border border-blue-600/20">
-            <p className="text-[10px] font-black text-blue-500 uppercase mb-1">
+      <div className="flex pt-16 max-w-[1600px] mx-auto">
+        <aside className="hidden md:block w-80 fixed h-screen border-r border-white/5 p-8 overflow-y-auto">
+          <h2 className="text-xl font-bold mb-10">配置筛选</h2>
+          <FilterPanel />
+          <div className="mt-20 p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10">
+            <p className="text-[10px] text-blue-400 font-bold uppercase mb-1">
               匹配结果
             </p>
             <p className="text-3xl font-black">
-              {filtered.length}{' '}
-              <span className="text-sm font-normal text-gray-600 italic">
-                Units
-              </span>
+              {filteredProducts.length}{' '}
+              <span className="text-sm font-normal text-gray-500">台</span>
             </p>
           </div>
         </aside>
 
-        <main className="flex-1 lg:ml-80 p-6 lg:p-12 min-h-screen">
-          <motion.div
-            {...(!isIOS && { layout: true })}
-            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-          >
-            {filtered.map(item => (
-              <ProductCard key={item.id} data={item} />
-            ))}
+        <main className="flex-1 md:ml-80 p-6 md:p-10">
+          <motion.div layout className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <AnimatePresence>
+              {filteredProducts.map(mac => (
+                <ProductCard key={mac.id} data={mac} />
+              ))}
+            </AnimatePresence>
           </motion.div>
         </main>
       </div>
