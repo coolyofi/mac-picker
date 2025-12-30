@@ -28,7 +28,6 @@ export default function GeekSlider({ type, value, onChange }) {
   return (
     <div className="slider">
       <div className="slider__top">
-        <div className="slider__label">{type === "ram" ? "Threshold" : "Threshold"}</div>
         <motion.div
           key={value}
           className={`slider__value slider__value--${type}`}

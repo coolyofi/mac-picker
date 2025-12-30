@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 function fmtPrice(n) {
   const v = Number(n || 0);
   if (!Number.isFinite(v) || v <= 0) return "—";
@@ -19,6 +21,8 @@ function has10GE(specs) {
 }
 
 export default function ProductCard({ data }) {
+  const [flipped, setFlipped] = useState(false);
+
   const s = data?.specs || {};
   const title = data?.displayTitle || "Unknown Mac";
   const modelId = data?.modelId || "";
@@ -38,72 +42,84 @@ export default function ProductCard({ data }) {
 
   const buy = data?.buyLink || data?.purchase || data?.link || "";
 
+  const handleFlip = () => setFlipped(!flipped);
+
   return (
-    <article className="pc">
-      <div className="pc-top">
-        <div className="pc-titleWrap">
-          <div className="pc-title">{title}</div>
-          {modelId ? <div className="pc-model">{modelId}</div> : null}
+    <article className="pc" onClick={handleFlip}>
+      <div className={`pc-flip ${flipped ? 'pc-flipped' : ''}`}>
+        {/* Front */}
+        <div className="pc-face pc-front">
+          <div className="pc-top">
+            <div className="pc-titleWrap">
+              <div className="pc-title">{title}</div>
+              {modelId ? <div className="pc-model">{modelId}</div> : null}
+            </div>
+
+            <div className="pc-price">{fmtPrice(data?.priceNum)}</div>
+          </div>
+
+          <div className="pc-sep" />
+
+          {/* tags：按你要求换行布局 */}
+          <div className="pc-tags">
+            <div className="pc-tagRow">
+              {cpu !== null ? <span className="pc-tag pc-tag--cpu">CPU {cpu}</span> : null}
+              {gpu !== null ? <span className="pc-tag pc-tag--gpu">GPU {gpu}</span> : null}
+            </div>
+
+            <div className="pc-tagRow">
+              {ram !== null ? <span className="pc-tag pc-tag--ram">RAM {ram}GB</span> : null}
+              {ssd !== null ? <span className="pc-tag pc-tag--ssd">SSD {ssd}GB</span> : null}
+            </div>
+
+            <div className="pc-tagRow pc-tagRow--minor">
+              {xdr ? <span className="pc-chip pc-chip--xdr">XDR 显示屏</span> : null}
+              {tenge ? <span className="pc-chip pc-chip--10ge">10GE</span> : null}
+              {color ? <span className="pc-chip pc-chip--color">{color}</span> : null}
+            </div>
+          </div>
+
+          <div className="pc-sep" />
+
+          {/* image */}
+          <div className="pc-img">
+            {img ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={img} alt={modelId || title} loading="lazy" />
+            ) : (
+              <div className="pc-imgPh">No Image</div>
+            )}
+          </div>
+
+          <div className="pc-flipHint">点击查看详情</div>
         </div>
 
-        <div className="pc-price">{fmtPrice(data?.priceNum)}</div>
+        {/* Back */}
+        <div className="pc-face pc-back">
+          <div className="pc-backContent">
+            <h3 className="pc-backTitle">{title}</h3>
+            {modelId ? <div className="pc-backModel">{modelId}</div> : null}
+
+            <div className="pc-sep" />
+
+            {details.length ? (
+              <ul className="pc-list">
+                {details.map((line, idx) => (
+                  <li key={`${modelId || title}-${idx}`}>{line}</li>
+                ))}
+              </ul>
+            ) : (
+              <div className="pc-muted">暂无详细数据</div>
+            )}
+
+            {buy ? (
+              <a className="pc-buyTag" href={buy} target="_blank" rel="noreferrer">
+                购买
+              </a>
+            ) : null}
+          </div>
+        </div>
       </div>
-
-      <div className="pc-sep" />
-
-      {/* tags：按你要求换行布局 */}
-      <div className="pc-tags">
-        <div className="pc-tagRow">
-          {cpu !== null ? <span className="pc-tag pc-tag--cpu">CPU {cpu}</span> : null}
-          {gpu !== null ? <span className="pc-tag pc-tag--gpu">GPU {gpu}</span> : null}
-        </div>
-
-        <div className="pc-tagRow">
-          {ram !== null ? <span className="pc-tag pc-tag--ram">RAM {ram}GB</span> : null}
-          {ssd !== null ? <span className="pc-tag pc-tag--ssd">SSD {ssd}GB</span> : null}
-        </div>
-
-        <div className="pc-tagRow pc-tagRow--minor">
-          {xdr ? <span className="pc-chip pc-chip--xdr">XDR 显示屏</span> : null}
-          {tenge ? <span className="pc-chip pc-chip--10ge">10GE</span> : null}
-          {color ? <span className="pc-chip pc-chip--color">{color}</span> : null}
-        </div>
-      </div>
-
-      <div className="pc-sep" />
-
-      {/* image */}
-      <div className="pc-img">
-        {img ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={img} alt={modelId || title} loading="lazy" />
-        ) : (
-          <div className="pc-imgPh">No Image</div>
-        )}
-      </div>
-
-      {/* details */}
-      <details className="pc-details">
-        <summary className="pc-summary">查看详细数据</summary>
-
-        <div className="pc-detailsBody">
-          {details.length ? (
-            <ul className="pc-list">
-              {details.map((line, idx) => (
-                <li key={`${modelId || title}-${idx}`}>{line}</li>
-              ))}
-            </ul>
-          ) : (
-            <div className="pc-muted">暂无详细数据</div>
-          )}
-
-          {buy ? (
-            <a className="pc-buyTag" href={buy} target="_blank" rel="noreferrer">
-              购买
-            </a>
-          ) : null}
-        </div>
-      </details>
     </article>
   );
 }

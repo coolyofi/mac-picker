@@ -141,7 +141,7 @@ export default function FilterPanel({ filters, setFilters, priceBounds }) {
       </section>
 
       <button className="fp-reset" type="button" onClick={reset}>
-        重置筛选（不清空搜索）
+        重置筛选
       </button>
     </div>
   );
