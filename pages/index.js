@@ -1,222 +1,221 @@
-import Head from 'next/head';
-import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import macData from '../data/macs.json';
-import GeekSlider from '../components/GeekSlider';
-import ProductCard from '../components/ProductCard';
-import AnimatedCount from '../components/AnimatedCount';
-import ClientOnlyTime from '../components/ClientOnlyTime';
+import Head from "next/head";
+import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+import macData from "../data/macs.json";
+import FilterPanel from "../components/FilterPanel";
+import ProductCard from "../components/ProductCard";
+import AnimatedCount from "../components/AnimatedCount";
+import ClientOnlyTime from "../components/ClientOnlyTime";
 
 const isIOS =
-  typeof navigator !== 'undefined' &&
-  /iPad|iPhone|iPod/.test(navigator.userAgent);
+  typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+function normalizeItems(data) {
+  const items = Array.isArray(data?.items) ? data.items : Array.isArray(data) ? data : [];
+  return items.filter(Boolean);
+}
+
+function fmtScreen(screenIn) {
+  if (!screenIn) return "ALL";
+  const n = Number(screenIn);
+  return Number.isFinite(n) ? `${n}"` : "ALL";
+}
 
 export default function Home() {
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+
   const [filters, setFilters] = useState({
     ram: 8,
     ssd: 256,
     has10GbE: false,
-    chipSeries: 'all',
-    screenIn: 'all'
+    chipSeries: "all",
+    screenIn: "all",
   });
 
-  const products = Array.isArray(macData?.items)
-    ? macData.items
-    : Array.isArray(macData)
-    ? macData
-    : [];
-
-  const filteredProducts = useMemo(() => {
-    return products
-      .filter(item => {
-        const s = item.specs || {};
-        return (
-          s.ram >= filters.ram &&
-          s.ssd_gb >= filters.ssd &&
-          (!filters.has10GbE || s.has10GbE) &&
-          (filters.chipSeries === 'all' ||
-            s.chip_series === filters.chipSeries) &&
-          (filters.screenIn === 'all' ||
-            s.screen_in === Number(filters.screenIn))
-        );
-      })
-      .sort((a, b) => (a.priceNum || 0) - (b.priceNum || 0));
-  }, [products, filters]);
+  const products = useMemo(() => normalizeItems(macData), []);
 
   const screenSizes = useMemo(() => {
     const sizes = new Set();
-    products.forEach(item => {
+    products.forEach((item) => {
       const size = item?.specs?.screen_in;
       if (size) sizes.add(size);
     });
     return Array.from(sizes).sort((a, b) => a - b);
   }, [products]);
 
-  const FilterPanel = () => (
-    <div className="space-y-10">
-      <GeekSlider
-        type="ram"
-        label="统一内存要求"
-        value={filters.ram}
-        onChange={v =>
-          setFilters(f => (f.ram === v ? f : { ...f, ram: v }))
-        }
-      />
+  const filteredProducts = useMemo(() => {
+    const list = products
+      .filter((item) => {
+        const s = item?.specs || {};
+        const ramOK = Number(s?.ram || 0) >= Number(filters.ram);
+        const ssdOK = Number(s?.ssd_gb || 0) >= Number(filters.ssd);
 
-      <GeekSlider
-        type="ssd"
-        label="固态硬盘要求"
-        value={filters.ssd}
-        onChange={v =>
-          setFilters(f => (f.ssd === v ? f : { ...f, ssd: v }))
-        }
-      />
+        const tenGOK = !filters.has10GbE || Boolean(s?.has10GbE);
 
-      <div>
-        <p className="filter-label">芯片系列</p>
-        <div className="filter-row">
-          {['all', 'M1', 'M2', 'M3', 'M4'].map(series => (
-            <button
-              key={series}
-              type="button"
-              onClick={() =>
-                setFilters(f =>
-                  f.chipSeries === series ? f : { ...f, chipSeries: series }
-                )
-              }
-              className={`filter-chip ${
-                filters.chipSeries === series ? 'is-active' : ''
-              }`}
-            >
-              {series === 'all' ? '全部' : series}
-            </button>
-          ))}
-        </div>
-      </div>
+        const chipOK =
+          filters.chipSeries === "all" || String(s?.chip_series || "") === String(filters.chipSeries);
 
-      <div>
-        <p className="filter-label">屏幕尺寸</p>
-        <div className="filter-row">
-          <button
-            type="button"
-            onClick={() =>
-              setFilters(f =>
-                f.screenIn === 'all' ? f : { ...f, screenIn: 'all' }
-              )
-            }
-            className={`filter-chip ${
-              filters.screenIn === 'all' ? 'is-active' : ''
-            }`}
-          >
-            全部
-          </button>
-          {screenSizes.map(size => (
-            <button
-              key={size}
-              type="button"
-              onClick={() =>
-                setFilters(f =>
-                  f.screenIn === size ? f : { ...f, screenIn: size }
-                )
-              }
-              className={`filter-chip ${
-                Number(filters.screenIn) === size ? 'is-active' : ''
-              }`}
-            >
-              {size}&quot;
-            </button>
-          ))}
-        </div>
-      </div>
+        const screenOK =
+          filters.screenIn === "all" ||
+          Number(s?.screen_in || 0) === Number(filters.screenIn);
 
-      <div className="pt-6 border-t border-white/5">
-        <label className="flex items-center justify-between cursor-pointer p-3 rounded-xl bg-white/[0.03]">
-          <span className="text-xs font-bold text-gray-400 uppercase">
-            10Gb 万兆网口
-          </span>
-          <input
-            type="checkbox"
-            checked={filters.has10GbE}
-            onChange={e =>
-              setFilters(f => ({ ...f, has10GbE: e.target.checked }))
-            }
-            className="w-5 h-5 accent-blue-600"
-          />
-        </label>
-      </div>
-    </div>
-  );
+        return ramOK && ssdOK && tenGOK && chipOK && screenOK;
+      })
+      .sort((a, b) => (a?.priceNum || 0) - (b?.priceNum || 0));
+
+    return list;
+  }, [products, filters]);
+
+  const summaryChips = useMemo(() => {
+    const chips = [
+      { k: "ram", label: `RAM ≥ ${filters.ram}GB`, tone: "ram" },
+      { k: "ssd", label: `SSD ≥ ${filters.ssd}GB`, tone: "ssd" },
+    ];
+
+    if (filters.chipSeries !== "all") chips.push({ k: "chip", label: `CHIP ${filters.chipSeries}`, tone: "muted" });
+    if (filters.screenIn !== "all") chips.push({ k: "screen", label: `DISPLAY ${fmtScreen(filters.screenIn)}`, tone: "muted" });
+    if (filters.has10GbE) chips.push({ k: "10gbe", label: "10GbE ON", tone: "blue" });
+
+    return chips;
+  }, [filters]);
+
+  const isLoading = !hydrated; // 这里我们用“首次 hydration 前”当 Loading 状态（避免任何 SSR/CSR 文本不一致）
+  const isEmpty = !isLoading && filteredProducts.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#000000] text-white">
+    <div className={`app ${isIOS ? "is-ios" : ""}`}>
       <Head>
-        <title>MacPicker - 极客选购指南</title>
+        <title>MacPicker Pro | Apple Internal Tool</title>
+        <meta name="description" content="MacPicker Pro - price-first internal picker" />
       </Head>
 
-      {/* 顶部导航 */}
-      <nav
-        className={`fixed top-0 w-full h-16 border-b border-white/5 z-50 flex items-center px-6 ${
-          isIOS ? 'bg-[#000000]' : 'bg-[#000000]'
-        }`}
-      >
-        <div className="flex items-center gap-2 font-black text-xl">
-          <div className="w-2.5 h-2.5 bg-blue-500 rounded-full" />
-          MACPICKER
+      {/* Top Nav */}
+      <header className="topnav">
+        <div className="topnav__inner">
+          <div className="brand">
+            <span className="brand__dot" aria-hidden="true" />
+            <span className="brand__text">MACPICKER</span>
+            <span className="brand__sub">INTERNAL</span>
+          </div>
+
+          <div className="topnav__center">
+            <div className="summary">
+              <div className="summary__title">Filter Summary</div>
+              <div className="summary__chips">
+                {summaryChips.map((c) => (
+                  <span key={c.k} className={`chip chip--${c.tone}`}>
+                    {c.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="topnav__right">
+            <div className="meta">
+              <div className="meta__row">
+                <span className="meta__k">Updated</span>
+                <span className="meta__v">
+                  <ClientOnlyTime lastUpdated={macData?.lastUpdated} />
+                </span>
+              </div>
+              <div className="meta__row">
+                <span className="meta__k">Units</span>
+                <span className="meta__v">
+                  <AnimatedCount value={isLoading ? 0 : filteredProducts.length} />
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="nav-metrics">
-          TOTAL UNITS:
-          <span>
-            <AnimatedCount value={filteredProducts.length} />
-          </span>
-        </div>
-      </nav>
+      </header>
 
-      <div className="flex pt-16 max-w-[1600px] mx-auto">
-        {/* 左侧筛选 */}
-        <aside className="hidden md:block w-80 fixed h-screen border-r border-white/5 p-8 overflow-y-auto">
-          <p className="text-xs text-gray-500 mb-6">
-            数据更新时间：
-            <ClientOnlyTime lastUpdated={macData?.lastUpdated} />
-          </p>
+      <div className="shell">
+        {/* Left Panel */}
+        <aside className="panel">
+          <div className="panel__header">
+            <div className="panel__title">Config Filters</div>
+            <div className="panel__hint">Price-first sorting, Apple-style density.</div>
+          </div>
 
-          <h2 className="text-xl font-bold mb-10">配置筛选</h2>
-          <FilterPanel />
+          <FilterPanel
+            filters={filters}
+            setFilters={setFilters}
+            screenSizes={screenSizes}
+          />
 
-          <div className="mt-12 result-card">
-            <p className="result-label">匹配结果</p>
-            <p className="result-value">
-              <AnimatedCount value={filteredProducts.length} />{' '}
-              <span>Units</span>
-            </p>
+          <div className="panel__footer">
+            <div className="resultCard">
+              <div className="resultCard__k">Matched</div>
+              <div className="resultCard__v">
+                <AnimatedCount value={isLoading ? 0 : filteredProducts.length} />
+                <span className="resultCard__unit">units</span>
+              </div>
+            </div>
           </div>
         </aside>
 
-        {/* 主内容 */}
-        <main className="flex-1 md:ml-80 p-6 md:p-10">
-          <motion.div
-            className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
-          >
-            {filteredProducts.length === 0 ? (
+        {/* Main */}
+        <main className="main">
+          <div className="main__header">
+            <div className="main__title">All Configurations</div>
+            <div className="main__sub">Sorted by lowest price first. Click a card to expand specs.</div>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {isLoading ? (
               <motion.div
-                className="col-span-full empty-state"
-                initial={{ opacity: 0, y: 10 }}
+                key="loading"
+                className="state state--loading"
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.18 }}
               >
-                <div className="empty-state__art">
-                  <span className="empty-state__ring" />
-                  <span className="empty-state__ring empty-state__ring--alt" />
+                <div className="state__art">
+                  <span className="ring" />
+                  <span className="ring ring--alt" />
                 </div>
-                <div className="empty-state__text">
-                  未找到匹配硬件
-                  <span>尝试放宽筛选条件或切换芯片系列</span>
+                <div className="state__text">
+                  Loading inventory…
+                  <span>Rendering optimized for Safari / iOS stability.</span>
+                </div>
+              </motion.div>
+            ) : isEmpty ? (
+              <motion.div
+                key="empty"
+                className="state state--empty"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.18 }}
+              >
+                <div className="state__art">
+                  <span className="ring" />
+                  <span className="ring ring--alt" />
+                </div>
+                <div className="state__text">
+                  No matches found
+                  <span>Try lowering RAM / SSD thresholds or switching chip series.</span>
                 </div>
               </motion.div>
             ) : (
-              filteredProducts.map(mac => (
-                <ProductCard key={mac.id} data={mac} />
-              ))
+              <motion.div
+                key="grid"
+                className="grid"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.18 }}
+              >
+                {filteredProducts.map((mac) => (
+                  <ProductCard key={mac?.id || mac?.model || mac?.title} data={mac} />
+                ))}
+              </motion.div>
             )}
-          </motion.div>
+          </AnimatePresence>
         </main>
       </div>
     </div>
