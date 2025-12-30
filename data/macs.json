@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-12-30T08:37:52.972Z",
+  "lastUpdated": "2025-12-30T08:48:10.360Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -47,7 +47,7 @@
       "priceNum": 4699,
       "link": "https://refurb-tracker.com/url/868147",
       "modelId": "FGND3CH/A",
-      "color": null,
+      "color": "金色",
       "details": [],
       "specs": {
         "ram": 8,
@@ -287,7 +287,7 @@
       "priceNum": 5999,
       "link": "https://refurb-tracker.com/url/868149",
       "modelId": "FGNE3CH/A",
-      "color": null,
+      "color": "金色",
       "details": [],
       "specs": {
         "ram": 8,
@@ -2087,7 +2087,7 @@
       "priceNum": 9799,
       "link": "https://refurb-tracker.com/url/901475",
       "modelId": "G12B1CH/A",
-      "color": null,
+      "color": "金色",
       "details": [],
       "specs": {
         "ram": 8,
@@ -2467,7 +2467,7 @@
       "priceNum": 10399,
       "link": "https://refurb-tracker.com/url/868202",
       "modelId": "G12B4CH/A",
-      "color": null,
+      "color": "金色",
       "details": [],
       "specs": {
         "ram": 16,
