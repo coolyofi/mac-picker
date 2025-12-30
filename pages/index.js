@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import macData from "../data/macs.json";
 import FilterPanel from "../components/FilterPanel";
 import ProductCard from "../components/ProductCard";
+import ClientOnlyTime from "../components/ClientOnlyTime";
 
 const safeItems = (data) => {
   if (Array.isArray(data?.items)) return data.items;
@@ -151,7 +152,7 @@ export default function Home() {
             <div className="mp-metaRow">
               <span className="mp-metaKey">数据更新时间</span>
               <span className="mp-metaVal">
-                {macData?.lastUpdated ? new Date(macData.lastUpdated).toLocaleString("zh-CN") : "未知"}
+                <ClientOnlyTime lastUpdated={macData?.lastUpdated} />
               </span>
             </div>
             <div className="mp-metaRow">

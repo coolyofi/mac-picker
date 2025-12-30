@@ -395,7 +395,7 @@ body{
 .pc-summary{
   cursor: pointer;
   font-weight: 850;
-  font-size: 13px;
+  font-size: 10px;
   color: rgba(255,255,255,.92);
   list-style: none;
 }
@@ -404,8 +404,8 @@ body{
 .pc-detailsBody{
   margin-top: 10px;
   color: rgba(255,255,255,.74);
-  font-size: 13px;
-  line-height: 1.55;
+  font-size: 10px;
+  line-height: 1.2;
 }
 .pc-list{
   margin: 0;
@@ -416,6 +416,7 @@ body{
 .pc-list li{ 
   margin: 6px 0; 
   line-height: 1.4;
+  font-size: 9px;
 }
 .pc-muted{ color: rgba(255,255,255,.45); }
 
@@ -424,7 +425,7 @@ body{
   align-items:center;
   justify-content:center;
   margin-top: 12px;
-  padding: 7px 12px;
+  padding: 5px 10px;
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,.14);
   background: rgba(0,0,0,.35);
@@ -475,7 +476,7 @@ body{
 .pc-flipHint{
   margin-top: 12px;
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   color: rgba(255,255,255,.5);
   font-weight: 600;
 }
@@ -499,7 +500,7 @@ body{
 .pc-backModel{
   font-size: 14px;
   color: rgba(255,255,255,.7);
-  margin-bottom: 12px;
+  margin-bottom: 1px;
 }
 
 /* Responsive */
