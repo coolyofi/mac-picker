@@ -1,29 +1,12 @@
 /**
- * MacPicker RSS → JSON 同步脚本
- * - 无数量限制
- * - 数据强清洗
- * - 支持更多机型
- * - 支持更多规格提取
- * - 支持中文和英文描述
- * - 更稳定的价格提取
- * - 更稳定的 RSS 解析
- * - 更友好的错误日志
- * - 输出格式优化
- * - 可扩展性更强
- * - 使用 Node.js 原生模块，减少依赖
- * - 更好的代码结构和注释
- * - 支持多种价格货币符号
- * - 支持更多规格提取（如10GbE、XDR等）
- * - 支持更多颜色提取
- * - 支持更多型号提取
- * - 支持更多芯片型号提取
- * - 支持更多屏幕尺寸提取
- * - 支持更多内存和存储提取
- * - 支持更多处理器核心数提取
- * - 支持更多细节提取
- * - 支持更多输出字段
- * - 支持更多错误处理
- * - 支持更多日志信息
+ * MacPicker RSS → JSON 同步脚本（最终版）
+ *
+ * 设计原则：
+ * - 不限制数量（支持 300+ / 1000+）
+ * - 彻底保留 RSS 中的「规格明细」
+ * - details = 官方规格完整列表（顺序不乱）
+ * - specs = 从 details / title 派生的结构化字段
+ * - 绝不提前 strip HTML 破坏结构
  */
 
 const Parser = require('rss-parser');
@@ -42,7 +25,9 @@ const RSS_URL =
 
 const OUTPUT_PATH = path.join(__dirname, '..', 'data', 'macs.json');
 
-/* ===== Canonical Model Names ===== */
+/* =========================
+   Canonical Model Names
+========================= */
 const MODEL_NAMES = [
   'MacBook Pro',
   'MacBook Air',
@@ -52,43 +37,44 @@ const MODEL_NAMES = [
   'iMac'
 ];
 
-/* ===== Utils ===== */
-const stripHtml = input =>
-  (input || '')
-    .replace(/<!\[CDATA\[|\]\]>/g, ' ')
-    .replace(/<[^>]*>/gm, ' ')
+/* =========================
+   Utils
+========================= */
+const normalize = s => (s || '').replace(/\s+/g, ' ').trim();
+
+const stripInlineHtml = s =>
+  (s || '')
+    .replace(/<!\[CDATA\[|\]\]>/g, '')
+    .replace(/<[^>]*>/g, '')
     .replace(/&nbsp;|&ndash;|&mdash;/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 
-const normalize = input => (input || '').replace(/\s+/g, ' ').trim();
-
-/* ===== Extractors ===== */
+/* =========================
+   Extractors (High-level)
+========================= */
 const extractModelName = text =>
-  MODEL_NAMES.find(name => new RegExp(name, 'i').test(text)) || '';
+  MODEL_NAMES.find(name => new RegExp(name, 'i').test(text)) || null;
 
 const extractChipModel = text => {
-  const match = text.match(/M[1-4](?:\s?(?:Pro|Max|Ultra))?/i);
-  if (!match) return '';
-  const raw = match[0].replace(/\s+/g, ' ').trim();
-  const series = raw.match(/M[1-4]/i)?.[0]?.toUpperCase() || '';
+  const m = text.match(/M[1-4](?:\s?(?:Pro|Max|Ultra))?/i);
+  if (!m) return null;
+  const raw = m[0].replace(/\s+/g, ' ').trim();
+  const series = raw.match(/M[1-4]/i)[0].toUpperCase();
   const suffix = raw.replace(/M[1-4]/i, '').trim();
   if (!suffix) return series;
-  const map = { pro: 'Pro', max: 'Max', ultra: 'Ultra' };
-  return `${series} ${map[suffix.toLowerCase()] || suffix}`;
+  return `${series} ${suffix.charAt(0).toUpperCase()}${suffix.slice(1)}`;
 };
 
 const extractChipSeries = text =>
   text.match(/M[1-4]/i)?.[0]?.toUpperCase() || null;
 
 const extractModelId = text =>
-  text.match(/[A-Z0-9]{4,}\/[A-Z]/)?.[0]?.toUpperCase() || '';
+  text.match(/[A-Z0-9]{4,}\/[A-Z]/)?.[0]?.toUpperCase() || null;
 
-const extractScreenInches = text => {
-  const m = text.match(/(\d{1,2}(?:\.\d)?)\s?(?:英寸|inch|")/i);
-  return m ? parseFloat(m[1]) : null;
-};
-
+/* =========================
+   Specs Extractors
+========================= */
 const extractRam = text =>
   parseInt(text.match(/(\d+)\s?GB\s?(?:统一内存|内存)/i)?.[1], 10) ||
   parseInt(text.match(/(\d+)\s?GB/i)?.[1], 10) ||
@@ -109,41 +95,62 @@ const extractCores = (text, type) => {
   return parseInt(text.match(reg)?.[1], 10) || null;
 };
 
-const extractColor = text => {
-  const match = text.match(
-    /(深空黑色|银色|星光色|午夜色|深空灰色|蓝色|绿色|粉色|紫色|黄色)/i
-  );
-  return match ? match[1] : null;
+const extractScreenInches = text => {
+  const m = text.match(/(\d{1,2}(?:\.\d)?)\s?(?:英寸|inch|")/i);
+  return m ? parseFloat(m[1]) : null;
 };
 
-const extractDetails = html => {
-  const raw = stripHtml(
-    html
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(/<li>/gi, '\n')
-      .replace(/<\/li>/gi, '\n')
+const extractColor = text => {
+  const m = text.match(
+    /(深空黑色|银色|星光色|午夜色|深空灰色|蓝色|绿色|粉色|紫色|黄色)/i
   );
+  return m ? m[1] : null;
+};
+
+/* =========================
+   Details Extraction (CORE)
+========================= */
+/**
+ * 核心规则：
+ * - 先把 <br> / <li> 转成「行」
+ * - 再 strip HTML
+ * - 不删除规格语句
+ * - 只剔除价格 / 广告跳转
+ */
+const extractDetails = html => {
+  if (!html) return [];
+
+  const withLines = html
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<li>/gi, '\n')
+    .replace(/<\/li>/gi, '\n');
+
+  const raw = stripInlineHtml(withLines);
 
   return raw
     .split('\n')
     .map(l => normalize(l))
     .filter(Boolean)
     .filter(
-      line =>
-        !/(¥|￥|RMB|Product page|产品页面|型号|Model|价格|Price)/i.test(line)
+      l =>
+        !/(¥|￥|RMB|Product page|产品页面|Apple Store)/i.test(l)
     );
 };
 
-/* ===== Main Sync ===== */
+/* =========================
+   Main Sync
+========================= */
 async function syncMacData() {
   try {
     const feed = await parser.parseURL(RSS_URL);
 
     const items = feed.items
       .map(item => {
-        const title = normalize(stripHtml(item.title || ''));
-        const content = item.content || item.description || '';
-        const fullText = normalize(`${title} ${stripHtml(content)}`);
+        const titleText = normalize(stripInlineHtml(item.title || ''));
+        const contentHtml = item.content || item.description || '';
+        const fullText = normalize(
+          `${titleText} ${stripInlineHtml(contentHtml)}`
+        );
 
         const priceMatch =
           fullText.match(/[¥￥]\s?([\d,]+\.\d{2})/) ||
@@ -161,12 +168,12 @@ async function syncMacData() {
           displayTitle:
             modelName && chipModel
               ? `${modelName} - ${chipModel}`
-              : title,
+              : titleText,
           priceNum,
           link: item.link,
           modelId: extractModelId(fullText),
           color: extractColor(fullText),
-          details: extractDetails(content),
+          details: extractDetails(contentHtml),
           specs: {
             ram: extractRam(fullText),
             ssd_gb: extractSsd(fullText),
@@ -180,7 +187,7 @@ async function syncMacData() {
           }
         };
       })
-      .filter(item => item.priceNum !== null)
+      .filter(i => i.priceNum !== null)
       .sort((a, b) => a.priceNum - b.priceNum);
 
     fs.writeFileSync(

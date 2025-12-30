@@ -1,98 +1,148 @@
 import GeekSlider from "./GeekSlider";
 
-export default function FilterPanel({ filters, setFilters, screenSizes }) {
+function clampNum(n, min, max) {
+  const v = Number(n);
+  if (!Number.isFinite(v)) return min;
+  return Math.min(max, Math.max(min, v));
+}
+
+function fmtPrice(n) {
+  const v = Number(n || 0);
+  if (!Number.isFinite(v)) return "—";
+  // 不带 .00；千分位
+  return `¥${Math.round(v).toLocaleString("zh-CN")}`;
+}
+
+export default function FilterPanel({ filters, setFilters, priceBounds }) {
+  const minB = Number(priceBounds?.min || 0);
+  const maxB = Number(priceBounds?.max || 0);
+
+  const priceMin = Number(filters.priceMin || 0);
+  const priceMax = Number(filters.priceMax || 0);
+
+  const setMin = (v) => {
+    const nextMin = clampNum(v, minB, maxB);
+    setFilters((f) => {
+      const next = { ...f, priceMin: nextMin };
+      // 保证 min <= max
+      if (next.priceMax && nextMin > next.priceMax) next.priceMax = nextMin;
+      return next;
+    });
+  };
+
+  const setMax = (v) => {
+    const nextMax = clampNum(v, minB, maxB);
+    setFilters((f) => {
+      const next = { ...f, priceMax: nextMax };
+      if (next.priceMin && next.priceMin > nextMax) next.priceMin = nextMax;
+      return next;
+    });
+  };
+
+  const reset = () => {
+    setFilters((f) => ({
+      ...f,
+      q: f.q, // 搜索不动
+      priceMin: minB || 0,
+      priceMax: maxB || 0,
+      ram: 8,
+      ssd: 256,
+    }));
+  };
+
   return (
     <div className="fp">
-      {/* RAM */}
-      <section className="fp__section">
-        <div className="fp__k">Unified Memory</div>
-        <GeekSlider
-          type="ram"
-          value={filters.ram}
-          onChange={(v) =>
-            setFilters((f) => (f.ram === v ? f : { ...f, ram: v }))
-          }
-        />
-        <div className="fp__hint fp__hint--ram">≥ {filters.ram} GB</div>
-      </section>
+      {/* Price */}
+      <section className="fp-sec">
+        <div className="fp-head">
+          <div className="fp-label">价格范围</div>
+          <div className="fp-badge">
+            {fmtPrice(priceMin)} <span className="fp-badgeSep">–</span> {fmtPrice(priceMax)}
+          </div>
+        </div>
 
-      {/* SSD */}
-      <section className="fp__section">
-        <div className="fp__k">Storage</div>
-        <GeekSlider
-          type="ssd"
-          value={filters.ssd}
-          onChange={(v) =>
-            setFilters((f) => (f.ssd === v ? f : { ...f, ssd: v }))
-          }
-        />
-        <div className="fp__hint fp__hint--ssd">≥ {filters.ssd} GB</div>
-      </section>
+        <div className="fp-priceGrid">
+          <div className="fp-field">
+            <div className="fp-fieldLabel">最低</div>
+            <input
+              className="fp-input"
+              value={priceMin || ""}
+              onChange={(e) => setMin(e.target.value)}
+              inputMode="numeric"
+              placeholder={`${Math.round(minB)}`}
+            />
+          </div>
+          <div className="fp-field">
+            <div className="fp-fieldLabel">最高</div>
+            <input
+              className="fp-input"
+              value={priceMax || ""}
+              onChange={(e) => setMax(e.target.value)}
+              inputMode="numeric"
+              placeholder={`${Math.round(maxB)}`}
+            />
+          </div>
+        </div>
 
-      {/* Chip */}
-      <section className="fp__section">
-        <div className="fp__k">Chip Series</div>
-        <div className="btnRow">
-          {["all", "M1", "M2", "M3", "M4"].map((series) => (
-            <button
-              key={series}
-              type="button"
-              className={`btn ${filters.chipSeries === series ? "isActive" : ""}`}
-              onClick={() =>
-                setFilters((f) =>
-                  f.chipSeries === series ? f : { ...f, chipSeries: series }
-                )
-              }
-            >
-              {series === "all" ? "ALL" : series}
-            </button>
-          ))}
+        <div className="fp-rangeWrap">
+          <input
+            className="fp-range"
+            type="range"
+            min={minB || 0}
+            max={maxB || 0}
+            step={50}
+            value={priceMin || 0}
+            onChange={(e) => setMin(e.target.value)}
+            aria-label="价格最低"
+          />
+          <input
+            className="fp-range fp-range--top"
+            type="range"
+            min={minB || 0}
+            max={maxB || 0}
+            step={50}
+            value={priceMax || 0}
+            onChange={(e) => setMax(e.target.value)}
+            aria-label="价格最高"
+          />
+          <div className="fp-rangeHint">
+            <span>{fmtPrice(minB)}</span>
+            <span>{fmtPrice(maxB)}</span>
+          </div>
         </div>
       </section>
 
-      {/* Screen */}
-      {Array.isArray(screenSizes) && screenSizes.length > 0 ? (
-        <section className="fp__section">
-          <div className="fp__k">Display</div>
-          <div className="btnRow">
-            <button
-              type="button"
-              className={`btn ${filters.screenIn === "all" ? "isActive" : ""}`}
-              onClick={() =>
-                setFilters((f) => (f.screenIn === "all" ? f : { ...f, screenIn: "all" }))
-              }
-            >
-              ALL
-            </button>
-
-            {screenSizes.slice(0, 8).map((size) => (
-              <button
-                key={size}
-                type="button"
-                className={`btn ${Number(filters.screenIn) === size ? "isActive" : ""}`}
-                onClick={() =>
-                  setFilters((f) => (f.screenIn === size ? f : { ...f, screenIn: size }))
-                }
-              >
-                {size}&quot;
-              </button>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {/* 10GbE */}
-      <section className="fp__section">
-        <div className="fp__k">Network</div>
-        <button
-          type="button"
-          className={`toggle ${filters.has10GbE ? "isOn" : ""}`}
-          onClick={() => setFilters((f) => ({ ...f, has10GbE: !f.has10GbE }))}
-        >
-          <span className="toggle__k">10Gb Ethernet</span>
-          <span className="toggle__v">{filters.has10GbE ? "ON" : "OFF"}</span>
-        </button>
+      {/* RAM */}
+      <section className="fp-sec">
+        <div className="fp-head">
+          <div className="fp-label">统一内存（RAM）</div>
+          <div className="fp-badge fp-badge--ram">≥ {filters.ram}GB</div>
+        </div>
+        <GeekSlider
+          type="ram"
+          label=""
+          value={filters.ram}
+          onChange={(v) => setFilters((f) => (f.ram === v ? f : { ...f, ram: v }))}
+        />
       </section>
+
+      {/* SSD */}
+      <section className="fp-sec">
+        <div className="fp-head">
+          <div className="fp-label">固态硬盘（SSD）</div>
+          <div className="fp-badge fp-badge--ssd">≥ {filters.ssd}GB</div>
+        </div>
+        <GeekSlider
+          type="ssd"
+          label=""
+          value={filters.ssd}
+          onChange={(v) => setFilters((f) => (f.ssd === v ? f : { ...f, ssd: v }))}
+        />
+      </section>
+
+      <button className="fp-reset" type="button" onClick={reset}>
+        重置筛选（不清空搜索）
+      </button>
     </div>
   );
 }
