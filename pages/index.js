@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import macData from '../data/macs.json';
 import GeekSlider from '../components/GeekSlider';
 import ProductCard from '../components/ProductCard';
+import AnimatedCount from '../components/AnimatedCount';
 
 const isIOS =
   typeof navigator !== 'undefined' &&
@@ -14,6 +15,8 @@ export default function Home() {
     ram: 8,
     ssd: 256,
     has10GbE: false,
+    chipSeries: 'all',
+    screenIn: 'all'
   });
 
   const products = Array.isArray(macData?.items)
@@ -29,11 +32,24 @@ export default function Home() {
         return (
           s.ram >= filters.ram &&
           s.ssd_gb >= filters.ssd &&
-          (!filters.has10GbE || s.has10GbE)
+          (!filters.has10GbE || s.has10GbE) &&
+          (filters.chipSeries === 'all' ||
+            s.chip_series === filters.chipSeries) &&
+          (filters.screenIn === 'all' ||
+            s.screen_in === Number(filters.screenIn))
         );
       })
       .sort((a, b) => (a.priceNum || 0) - (b.priceNum || 0));
   }, [products, filters]);
+
+  const screenSizes = useMemo(() => {
+    const sizes = new Set();
+    products.forEach(item => {
+      const size = item?.specs?.screen_in;
+      if (size) sizes.add(size);
+    });
+    return Array.from(sizes).sort((a, b) => a - b);
+  }, [products]);
 
   const FilterPanel = () => (
     <div className="space-y-10">
@@ -55,6 +71,63 @@ export default function Home() {
         }
       />
 
+      <div>
+        <p className="filter-label">芯片系列</p>
+        <div className="filter-row">
+          {['all', 'M1', 'M2', 'M3', 'M4'].map(series => (
+            <button
+              key={series}
+              type="button"
+              onClick={() =>
+                setFilters(f =>
+                  f.chipSeries === series ? f : { ...f, chipSeries: series }
+                )
+              }
+              className={`filter-chip ${
+                filters.chipSeries === series ? 'is-active' : ''
+              }`}
+            >
+              {series === 'all' ? '全部' : series}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="filter-label">屏幕尺寸</p>
+        <div className="filter-row">
+          <button
+            type="button"
+            onClick={() =>
+              setFilters(f =>
+                f.screenIn === 'all' ? f : { ...f, screenIn: 'all' }
+              )
+            }
+            className={`filter-chip ${
+              filters.screenIn === 'all' ? 'is-active' : ''
+            }`}
+          >
+            全部
+          </button>
+          {screenSizes.map(size => (
+            <button
+              key={size}
+              type="button"
+              onClick={() =>
+                setFilters(f =>
+                  f.screenIn === size ? f : { ...f, screenIn: size }
+                )
+              }
+              className={`filter-chip ${
+                Number(filters.screenIn) === size ? 'is-active' : ''
+              }`}
+            >
+              {size}&quot;
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="pt-6 border-t border-white/5">
         <label className="flex items-center justify-between cursor-pointer p-3 rounded-xl bg-white/[0.03]">
           <span className="text-xs font-bold text-gray-400 uppercase">
@@ -74,7 +147,7 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
+    <div className="min-h-screen bg-[#000000] text-white">
       <Head>
         <title>MacPicker - 极客选购指南</title>
       </Head>
@@ -82,7 +155,7 @@ export default function Home() {
       {/* 顶部导航 */}
       <nav
         className={`fixed top-0 w-full h-16 border-b border-white/5 z-50 flex items-center px-6 ${
-          isIOS ? 'bg-[#050505]' : 'bg-[#050505]/80 backdrop-blur-xl'
+          isIOS ? 'bg-[#000000]' : 'bg-[#000000]'
         }`}
       >
         <div className="flex items-center gap-2 font-black text-xl">
@@ -109,7 +182,7 @@ export default function Home() {
               匹配结果
             </p>
             <p className="text-3xl font-black">
-              {filteredProducts.length}{' '}
+              <AnimatedCount value={filteredProducts.length} />{' '}
               <span className="text-sm font-normal text-gray-500">台</span>
             </p>
           </div>
@@ -121,9 +194,20 @@ export default function Home() {
             className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6"
           >
             {filteredProducts.length === 0 ? (
-              <p className="col-span-full text-center text-gray-400 mt-20">
-                没有找到符合条件的设备
-              </p>
+              <motion.div
+                className="col-span-full empty-state"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <div className="empty-state__art">
+                  <span className="empty-state__ring" />
+                  <span className="empty-state__ring empty-state__ring--alt" />
+                </div>
+                <div className="empty-state__text">
+                  未找到匹配硬件
+                  <span>尝试放宽筛选条件或切换芯片系列</span>
+                </div>
+              </motion.div>
             ) : (
               filteredProducts.map(mac => (
                 <ProductCard key={mac.id} data={mac} />
