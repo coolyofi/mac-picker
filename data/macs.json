@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-12-30T14:00:03.893Z",
+  "lastUpdated": "2025-12-30T15:00:03.765Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -3787,36 +3787,6 @@
         "screen_in": 14,
         "has10GbE": false,
         "hasXDR": true
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:69d65def05b1c008cb497ced1c117941",
-      "displayTitle": "MacBook Air - M1",
-      "priceNum": 10399,
-      "link": "https://refurb-tracker.com/url/868202",
-      "modelId": "G12B4CH/A",
-      "color": "金色",
-      "image": "https://as-images.apple.com/is/refurb-macbook-air-gold-m1-202010?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 13.3 英寸 MacBook Air Apple M1 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 金色",
-        "&ndash; G12B4CH/A",
-        "最初发布于 2020 年 11 月",
-        "13.3 英寸 (对角线) LED 背光显示屏 (采用 IPS 技术)；初始分辨率 2560 x 1600 (227 ppi)",
-        "16GB 统一内存",
-        "2TB 固态硬盘",
-        "触控 ID 传感器",
-        "720p FaceTime 高清摄像头"
-      ],
-      "specs": {
-        "ram": 16,
-        "ssd_gb": 2048,
-        "cpu": 8,
-        "gpu": 8,
-        "chip_series": "M1",
-        "chip_model": "M1",
-        "screen_in": 13.3,
-        "has10GbE": false,
-        "hasXDR": false
       }
     },
     {
