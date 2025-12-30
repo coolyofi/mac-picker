@@ -36,6 +36,8 @@ function useRandomDarkBackdrop() {
 export default function Home() {
   useRandomDarkBackdrop();
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   const products = useMemo(() => safeItems(macData), []);
 
   // 价格范围（用真实数据自动算）
@@ -134,6 +136,17 @@ export default function Home() {
         </div>
 
         <div className="mp-searchWrap">
+          {/* 移动端菜单按钮 */}
+          <button
+            className="mp-menuBtn"
+            onClick={() => setIsDrawerOpen(true)}
+            aria-label="打开筛选菜单"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+
           <input
             value={filters.q}
             onChange={(e) => setFilters((f) => ({ ...f, q: e.target.value }))}
@@ -184,6 +197,47 @@ export default function Home() {
           )}
         </main>
       </div>
+
+      {/* 移动端抽屉菜单 */}
+      {isDrawerOpen && (
+        <div className="mp-drawer-overlay" onClick={() => setIsDrawerOpen(false)}>
+          <div className="mp-drawer" onClick={(e) => e.stopPropagation()}>
+            <div className="mp-drawer-header">
+              <h3>筛选条件</h3>
+              <button
+                className="mp-drawer-close"
+                onClick={() => setIsDrawerOpen(false)}
+                aria-label="关闭菜单"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+
+            <div className="mp-drawer-content">
+              <div className="mp-sidebarMeta">
+                <div className="mp-metaRow">
+                  <span className="mp-metaKey">数据更新时间</span>
+                  <span className="mp-metaVal">
+                    <ClientOnlyTime lastUpdated={macData?.lastUpdated} />
+                  </span>
+                </div>
+                <div className="mp-metaRow">
+                  <span className="mp-metaKey">当前匹配</span>
+                  <span className="mp-metaVal mp-metaValStrong">{filteredProducts.length} 台</span>
+                </div>
+              </div>
+
+              <FilterPanel
+                filters={filters}
+                setFilters={setFilters}
+                priceBounds={priceBounds}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
