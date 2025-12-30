@@ -25,14 +25,19 @@ body{
   overflow-x:hidden;
 }
 
-/* ====== Root background: dark random gradients + subtle grid ====== */
+/* ====== Root background: dynamic colorful gradients + subtle grid ====== */
 .mp-root{
   min-height:100vh;
   background:
-    radial-gradient(900px 520px at 18% 18%, hsla(var(--bg-h1), 90%, 55%, var(--bg-a1)) 0%, rgba(0,0,0,0) 60%),
-    radial-gradient(820px 520px at 82% 22%, hsla(var(--bg-h2), 90%, 45%, var(--bg-a2)) 0%, rgba(0,0,0,0) 62%),
-    radial-gradient(900px 560px at 62% 92%, hsla(var(--bg-h3), 90%, 55%, var(--bg-a3)) 0%, rgba(0,0,0,0) 64%),
-    linear-gradient(180deg, #050505 0%, #000 70%);
+    /* Large colorful gradients for tech feel */
+    radial-gradient(1200px 800px at 10% 10%, var(--bg-color-1, hsla(280, 85%, 60%, 0.08)) 0%, rgba(0,0,0,0) 50%),
+    radial-gradient(1000px 700px at 90% 20%, var(--bg-color-2, hsla(200, 90%, 65%, 0.06)) 0%, rgba(0,0,0,0) 55%),
+    radial-gradient(1100px 900px at 70% 80%, var(--bg-color-3, hsla(320, 80%, 70%, 0.07)) 0%, rgba(0,0,0,0) 60%),
+    radial-gradient(800px 600px at 30% 70%, var(--bg-color-4, hsla(160, 85%, 55%, 0.05)) 0%, rgba(0,0,0,0) 45%),
+    radial-gradient(900px 500px at 80% 50%, var(--bg-color-5, hsla(40, 90%, 65%, 0.04)) 0%, rgba(0,0,0,0) 50%),
+    radial-gradient(600px 400px at 50% 30%, var(--bg-color-6, hsla(240, 75%, 60%, 0.06)) 0%, rgba(0,0,0,0) 40%),
+    /* Subtle base gradient to maintain dark Pro feel */
+    linear-gradient(135deg, #0a0a0a 0%, #000000 50%, #050505 100%);
   position: relative;
 }
 
