@@ -5,6 +5,7 @@ import macData from '../data/macs.json';
 import GeekSlider from '../components/GeekSlider';
 import ProductCard from '../components/ProductCard';
 import AnimatedCount from '../components/AnimatedCount';
+import ClientOnlyTime from '../components/ClientOnlyTime';
 
 const isIOS =
   typeof navigator !== 'undefined' &&
@@ -159,8 +160,14 @@ export default function Home() {
         }`}
       >
         <div className="flex items-center gap-2 font-black text-xl">
-          <div className="w-3 h-3 bg-blue-500 rounded-full" />
+          <div className="w-2.5 h-2.5 bg-blue-500 rounded-full" />
           MACPICKER
+        </div>
+        <div className="nav-metrics">
+          TOTAL UNITS:
+          <span>
+            <AnimatedCount value={filteredProducts.length} />
+          </span>
         </div>
       </nav>
 
@@ -169,21 +176,17 @@ export default function Home() {
         <aside className="hidden md:block w-80 fixed h-screen border-r border-white/5 p-8 overflow-y-auto">
           <p className="text-xs text-gray-500 mb-6">
             数据更新时间：
-            {macData?.lastUpdated
-              ? new Date(macData.lastUpdated).toLocaleString()
-              : '未知'}
+            <ClientOnlyTime lastUpdated={macData?.lastUpdated} />
           </p>
 
           <h2 className="text-xl font-bold mb-10">配置筛选</h2>
           <FilterPanel />
 
-          <div className="mt-16 p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10">
-            <p className="text-[10px] text-blue-400 font-bold uppercase mb-1">
-              匹配结果
-            </p>
-            <p className="text-3xl font-black">
+          <div className="mt-12 result-card">
+            <p className="result-label">匹配结果</p>
+            <p className="result-value">
               <AnimatedCount value={filteredProducts.length} />{' '}
-              <span className="text-sm font-normal text-gray-500">台</span>
+              <span>Units</span>
             </p>
           </div>
         </aside>

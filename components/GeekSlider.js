@@ -22,29 +22,39 @@ const GeekSlider = ({ type, label, value, onChange }) => {
 
   return (
     <div className="mb-10">
-      <div className="flex justify-between items-end mb-4">
-        <label className={`filter-tag filter-tag--${type}`}>
-          {label}
-        </label>
+      <div className="slider-header">
+        <label className="slider-label">{label}</label>
         <motion.span
           key={value}
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-lg font-mono text-blue-200 font-bold"
+          className={`slider-value slider-value--${type}`}
         >
           {formatLabel(value)}
         </motion.span>
       </div>
 
-      <input
-        type="range"
-        min="0"
-        max={max}
-        step="1"
-        value={currentIndex}
-        onChange={(e) => onChange(stepsArray[e.target.value])}
-        className="geek-slider"
-      />
+      <div className="slider-track">
+        <input
+          type="range"
+          min="0"
+          max={max}
+          step="1"
+          value={currentIndex}
+          onChange={(e) => onChange(stepsArray[e.target.value])}
+          className="geek-slider"
+        />
+        <div className="slider-ticks">
+          {stepsArray.map((_, index) => (
+            <span
+              key={`${type}-tick-${index}`}
+              className={`slider-tick ${
+                index <= currentIndex ? 'is-active' : ''
+              }`}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
