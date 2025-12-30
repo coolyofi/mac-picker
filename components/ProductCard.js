@@ -104,9 +104,11 @@ export default function ProductCard({ data }) {
 
             {details.length ? (
               <ul className="pc-list">
-                {details.map((line, idx) => (
-                  <li key={`${modelId || title}-${idx}`}>{line}</li>
-                ))}
+                {details
+                  .filter(line => !line.includes("– FGND3CH/A") && !line.includes("– G15S3CH/A"))
+                  .map((line, idx) => (
+                    <li key={`${modelId || title}-${idx}`}>{line}</li>
+                  ))}
               </ul>
             ) : (
               <div className="pc-muted">暂无详细数据</div>
