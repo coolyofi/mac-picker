@@ -1,5 +1,6 @@
 import '../styles/globals.css';
 import { useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/next';
 
 export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
@@ -21,5 +22,10 @@ export default function MyApp({ Component, pageProps }) {
     root.style.setProperty('--bg-color-6', generateRandomColor());
   }, []);
 
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <Component {...pageProps} />
+      <Analytics />
+    </>
+  );
 }
