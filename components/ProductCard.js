@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 function fmtPrice(n) {
   const v = Number(n || 0);
@@ -41,6 +41,126 @@ export default function ProductCard({ data }) {
 
   const buy = data?.buyLink || data?.purchase || data?.link || "";
 
+  // Prepare back heading: use the first meaningful detail as back heading
+  const filteredDetails = details.filter(line => !line.includes("&ndash;") && !line.includes("– FGND3CH/A") && !line.includes("– G15S3CH/A"));
+  const backHeading = filteredDetails.length ? filteredDetails[0] : "";
+  const restDetails = filteredDetails.slice(1);
+
+  const backTitleRef = useRef(null);
+  const tagsOverlayRef = useRef(null);
+  const pcTitleRef = useRef(null);
+
+  // Auto-shrink back small title if it overflows the 2-line clamp
+  useEffect(() => {
+    const el = backTitleRef.current;
+    if (!el || !backHeading) return;
+
+    // start from base size (keep in sync with CSS default)
+    let size = 13;
+    const min = 10;
+    const step = 0.5;
+    el.style.fontSize = size + 'px';
+
+    const check = () => {
+      // if still overflowing and we can shrink, reduce size and retry
+      if (el.scrollHeight > el.clientHeight + 1 && size > min) {
+        size = Math.max(min, +(size - step).toFixed(2));
+        el.style.fontSize = size + 'px';
+        requestAnimationFrame(check);
+      }
+    };
+
+    requestAnimationFrame(check);
+
+    const onResize = () => {
+      size = 13;
+      el.style.fontSize = size + 'px';
+      requestAnimationFrame(check);
+    };
+
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [backHeading]);
+
+  // Ensure front product title does not wrap; if it does across cards,
+  // progressively reduce the global page title size (CSS var --mp-title-size)
+  useEffect(() => {
+    const el = pcTitleRef.current;
+    if (!el) return;
+
+    const checkAndAdjust = () => {
+      // if title is overflowing (would wrap/truncate)
+      const isOverflowing = el.scrollWidth > el.clientWidth + 1;
+      if (!isOverflowing) return;
+
+      const pageTitleEl = document.querySelector('.mp-title');
+      if (!pageTitleEl) return;
+
+      // read current title size from css var or computed style
+      const root = document.documentElement;
+      const current = getComputedStyle(root).getPropertyValue('--mp-title-size').trim() || null;
+      let size = null;
+      if (current && current.endsWith('px')) {
+        size = parseFloat(current);
+      } else {
+        size = parseFloat(getComputedStyle(pageTitleEl).fontSize) || 42;
+      }
+
+      const minSize = 28; // do not shrink page title below this
+      const step = 2; // shrink step in px
+
+      // only adjust if not already at or below min
+      while (el.scrollWidth > el.clientWidth + 1 && size > minSize) {
+        size = Math.max(minSize, size - step);
+        root.style.setProperty('--mp-title-size', size + 'px');
+        // force reflow for measurement
+        // eslint-disable-next-line no-unused-expressions
+        pageTitleEl.offsetWidth;
+        if (size === minSize) break;
+      }
+    };
+
+    // run after a tick to allow layout
+    requestAnimationFrame(checkAndAdjust);
+
+    window.addEventListener('resize', checkAndAdjust);
+    return () => window.removeEventListener('resize', checkAndAdjust);
+  }, [title]);
+
+  // Auto-shrink tags in the overlay so they never force the overlay
+  // to exceed its max height (avoid internal scrolling).
+  useEffect(() => {
+    const el = tagsOverlayRef.current;
+    if (!el) return;
+
+    const tags = el.querySelectorAll('.pc-tag');
+    if (!tags || !tags.length) return;
+
+    let size = 12; // start font-size in px (matches upper clamp)
+    const min = 9;
+    const step = 0.5;
+    tags.forEach(t => (t.style.fontSize = size + 'px'));
+
+    const check = () => {
+      if (el.scrollHeight > el.clientHeight + 1 && size > min) {
+        size = Math.max(min, +(size - step).toFixed(2));
+        tags.forEach(t => (t.style.fontSize = size + 'px'));
+        requestAnimationFrame(check);
+      }
+    };
+
+    requestAnimationFrame(check);
+
+    const onResize = () => {
+      size = 12;
+      tags.forEach(t => (t.style.fontSize = size + 'px'));
+      requestAnimationFrame(check);
+    };
+
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [cpu, gpu, ram, ssd, color, xdr, tenge, imageLoaded]);
+
   const handleFlip = () => setFlipped(!flipped);
 
   useEffect(() => {
@@ -62,7 +182,8 @@ export default function ProductCard({ data }) {
         <div className="pc-face pc-front">
           <div className="pc-top">
             <div className="pc-titleWrap">
-              <div className="pc-title">{title}</div>
+              <div className="pc-title" ref={pcTitleRef}>{title}</div>
+              
               {modelId ? <div className="pc-model">{modelId}</div> : null}
             </div>
 
@@ -88,7 +209,7 @@ export default function ProductCard({ data }) {
             </div>
 
             {/* tags overlay on image */}
-            <div className="pc-tagsOverlay">
+            <div className="pc-tagsOverlay" ref={tagsOverlayRef}>
               <div className="pc-tagRow">
                 {cpu !== null ? <span className="pc-tag pc-tag--cpu">CPU {cpu}</span> : null}
                 {gpu !== null ? <span className="pc-tag pc-tag--gpu">GPU {gpu}</span> : null}
@@ -108,29 +229,28 @@ export default function ProductCard({ data }) {
         {/* Back */}
         <div className="pc-face pc-back">
           <div className="pc-backContent">
-            <h3 className="pc-backTitle">{title}</h3>
-            {modelId ? <div className="pc-backModel">{modelId}</div> : null}
+              {backHeading ? (
+                <div className="pc-backSmallTitle" ref={backTitleRef}>{backHeading}</div>
+              ) : null}
 
-            <div className="pc-sep" />
+              <div className="pc-sep" />
 
-            {details.length ? (
-              <ul className="pc-list">
-                {details
-                  .filter(line => !line.includes("&ndash;") && !line.includes("– FGND3CH/A") && !line.includes("– G15S3CH/A"))
-                  .map((line, idx) => (
-                    <li key={`${modelId || title}-${idx}`}>{line}</li>
+              {restDetails.length ? (
+                <ul className="pc-list">
+                  {restDetails.map((line, idx) => (
+                    <li key={`${modelId || title}-rest-${idx}`}>{line}</li>
                   ))}
-              </ul>
-            ) : (
-              <div className="pc-muted">暂无详细数据</div>
-            )}
+                </ul>
+              ) : (
+                <div className="pc-muted">暂无详细数据</div>
+              )}
 
-            {buy ? (
-              <a className="pc-buyTag" href={buy} target="_blank" rel="noreferrer">
-                购买
-              </a>
-            ) : null}
-          </div>
+              {buy ? (
+                <a className="pc-buyTag" href={buy} target="_blank" rel="noreferrer">
+                  购买
+                </a>
+              ) : null}
+            </div>
         </div>
       </div>
     </article>
