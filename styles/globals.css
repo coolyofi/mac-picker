@@ -157,6 +157,42 @@ body{
   letter-spacing: .02em;
 }
 
+/* Top status row (matching count + recent update) */
+.mp-status{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color: rgba(255,255,255,.78);
+  font-size: 13px;
+}
+.mp-status-count{ font-weight: 800; color: rgba(255,255,255,.92); }
+.mp-status-updated{ color: rgba(255,255,255,.56); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.mp-status-sep{ color: rgba(255,255,255,.30); }
+
+/* Ensure sidebar meta remains compact without the updated row */
+.mp-sidebarMeta{ margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,.08); }
+
+/* Updated badge styling */
+.mp-status-updated{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color: rgba(255,255,255,.78);
+}
+.mp-updatedBadge{
+  background: linear-gradient(90deg, rgba(62,160,255,.16), rgba(62,160,255,.08));
+  color: rgba(62,160,255,1);
+  font-weight: 700;
+  padding: 6px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  box-shadow: 0 4px 14px rgba(62,160,255,.06);
+}
+.mp-status-updated .client-time{
+  color: rgba(255,255,255,.86);
+  font-size: 13px;
+}
+
 .mp-searchWrap{
   display:flex;
   flex-direction:column;

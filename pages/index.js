@@ -230,6 +230,12 @@ export default function Home() {
             MacPicker<span className="mp-dot">.</span>Pro
           </div>
           <div className="mp-subtitle">选 Mac 小助手</div>
+          <div className="mp-status" style={{ marginTop: 6 }}>
+            <div className="mp-status-updated">
+              <span className="mp-updatedBadge">最近更新</span>
+              <ClientOnlyTime lastUpdated={macData?.lastUpdated} />
+            </div>
+          </div>
         </div>
 
         <div className="mp-searchWrap">
@@ -251,7 +257,7 @@ export default function Home() {
             placeholder="搜索：型号 / 芯片 / 颜色 / 关键字…"
             inputMode="search"
           />
-          <div className="mp-searchHint">匹配 {filteredProducts.length} 台</div>
+          {/* search hint removed per design: counts hidden on homepage */}
         </div>
       </header>
 
@@ -259,12 +265,6 @@ export default function Home() {
         {/* 左侧筛选（只保留：价格 / RAM / SSD） */}
         <aside className="mp-sidebar">
           <div className="mp-sidebarMeta">
-            <div className="mp-metaRow">
-              <span className="mp-metaKey">数据更新时间</span>
-              <span className="mp-metaVal">
-                <ClientOnlyTime lastUpdated={macData?.lastUpdated} />
-              </span>
-            </div>
             <div className="mp-metaRow">
               <span className="mp-metaKey">当前匹配</span>
               <span className="mp-metaVal mp-metaValStrong">{filteredProducts.length} 台</span>
@@ -319,12 +319,6 @@ export default function Home() {
 
             <div className="mp-drawer-content">
               <div className="mp-sidebarMeta">
-                <div className="mp-metaRow">
-                  <span className="mp-metaKey">数据更新时间</span>
-                  <span className="mp-metaVal">
-                    <ClientOnlyTime lastUpdated={macData?.lastUpdated} />
-                  </span>
-                </div>
                 <div className="mp-metaRow">
                   <span className="mp-metaKey">当前匹配</span>
                   <span className="mp-metaVal mp-metaValStrong">{filteredProducts.length} 台</span>
