@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function fmtPrice(n) {
   const v = Number(n || 0);
@@ -7,7 +7,6 @@ function fmtPrice(n) {
 }
 
 function pickColorText(data) {
-  // 颜色来自脚本智能提取；这里兜底
   return data?.color || data?.specs?.color || "";
 }
 
@@ -22,6 +21,8 @@ function has10GE(specs) {
 
 export default function ProductCard({ data }) {
   const [flipped, setFlipped] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const s = data?.specs || {};
   const title = data?.displayTitle || "Unknown Mac";
@@ -33,10 +34,8 @@ export default function ProductCard({ data }) {
   const xdr = hasXDR(details);
   const tenge = has10GE(s);
 
-  // CPU/GPU：如果缺失就不显示 tag（避免“乱码/空值”）
   const cpu = Number.isFinite(Number(s?.cpu)) ? Number(s.cpu) : null;
   const gpu = Number.isFinite(Number(s?.gpu)) ? Number(s.gpu) : null;
-
   const ram = Number.isFinite(Number(s?.ram)) ? Number(s.ram) : null;
   const ssd = Number.isFinite(Number(s?.ssd_gb)) ? Number(s.ssd_gb) : null;
 
@@ -44,9 +43,21 @@ export default function ProductCard({ data }) {
 
   const handleFlip = () => setFlipped(!flipped);
 
+  useEffect(() => {
+    if (flipped) {
+      const timer = setTimeout(() => setFlipped(false), 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [flipped]);
+
   return (
-    <article className="pc" onClick={handleFlip}>
-      <div className={`pc-flip ${flipped ? 'pc-flipped' : ''}`}>
+    <article
+      className={`pc ${hovered ? "pc-hovered" : ""}`}
+      onClick={handleFlip}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className={`pc-flip ${flipped ? "pc-flipped" : ""}`}>
         {/* Front */}
         <div className="pc-face pc-front">
           <div className="pc-top">
@@ -60,7 +71,7 @@ export default function ProductCard({ data }) {
 
           <div className="pc-sep" />
 
-          {/* tags：按你要求换行布局 */}
+          {/* tags */}
           <div className="pc-tags">
             <div className="pc-tagRow">
               {cpu !== null ? <span className="pc-tag pc-tag--cpu">CPU {cpu}</span> : null}
@@ -82,10 +93,15 @@ export default function ProductCard({ data }) {
           <div className="pc-sep" />
 
           {/* image */}
-          <div className="pc-img">
+          <div className="pc-img" onClick={(e) => { e.stopPropagation(); if (buy) window.open(buy, "_blank"); }}>
             {img ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={img} alt={modelId || title} loading="lazy" />
+              <img
+                src={img}
+                alt={modelId || title}
+                loading="lazy"
+                onLoad={() => setImageLoaded(true)}
+                style={{ opacity: imageLoaded ? 1 : 0.5 }}
+              />
             ) : (
               <div className="pc-imgPh">No Image</div>
             )}

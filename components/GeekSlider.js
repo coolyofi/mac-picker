@@ -40,6 +40,26 @@ export default function GeekSlider({ type, value, onChange }) {
       </div>
 
       <div className="slider__track">
+        <div className="slider__background" />
+        <div className="slider__progress" style={{ width: `${(currentIndex / max) * 100}%` }} />
+
+        <motion.div
+          className="slider__handle"
+          initial={{ scale: 1 }}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 1.15 }}
+          style={{
+            background: "rgba(255, 255, 255, 0.6)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(255, 255, 255, 0.3)",
+            borderRadius: "8px",
+            left: `calc(${(currentIndex / max) * 100}% - 9px)`,
+            top: "50%",
+            transform: "translateY(-50%)",
+            boxShadow: "inset 0 0 8px rgba(255, 255, 255, 0.5)",
+          }}
+        />
+
         <input
           className="geekRange"
           type="range"
@@ -52,8 +72,11 @@ export default function GeekSlider({ type, value, onChange }) {
         />
 
         <div className="ticks" aria-hidden="true">
-          {stepsArray.map((_, idx) => (
-            <span key={`${type}-tick-${idx}`} className={`tick ${idx <= currentIndex ? "isActive" : ""}`} />
+          {stepsArray.map((step, idx) => (
+            <span
+              key={`${type}-tick-${idx}`}
+              className={`tick ${idx <= currentIndex ? "isActive" : ""}`}
+            />
           ))}
         </div>
       </div>

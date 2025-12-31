@@ -1,5 +1,6 @@
 import '../styles/globals.css';
 import { useEffect } from 'react';
+import LiquidBackground from '@/components/LiquidBackground';
 
 export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
@@ -21,5 +22,18 @@ export default function MyApp({ Component, pageProps }) {
     root.style.setProperty('--bg-color-6', generateRandomColor());
   }, []);
 
-  return <Component {...pageProps} />;
+  return (
+    <div style={{ position: 'relative', zIndex: 1 }}>
+      <LiquidBackground 
+        cellCount={8}
+        colorScheme="tech"
+        speed={0.5}
+        flowAmount={1.5}
+        opacity={0.4}
+        hueShiftSpeed={0.3}
+        pulseSpeed={0.015}
+      />
+      <Component {...pageProps} />
+    </div>
+  );
 }
