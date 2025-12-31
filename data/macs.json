@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-12-31T02:14:42.690Z",
+  "lastUpdated": "2025-12-31T16:32:16.360Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -262,36 +262,6 @@
         "ssd_gb": 256,
         "cpu": 8,
         "gpu": 8,
-        "chip_series": "M2",
-        "chip_model": "M2",
-        "screen_in": 13,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:a4c5d0e14d9689d51ddcafb16cb37702",
-      "displayTitle": "MacBook Air - M2",
-      "priceNum": 5599,
-      "link": "https://refurb-tracker.com/url/883630",
-      "modelId": "G160CCH/A",
-      "color": "午夜色",
-      "image": "https://as-images.apple.com/is/refurb-macbook-air-m2-midnight-202208?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 13 英寸 MacBook Air Apple M2 芯片 (配备 8 核中央处理器和 10 核图形处理器) - 午夜色",
-        "&ndash; G160CCH/A",
-        "最初发布于 2022 年 7 月",
-        "13.6 英寸 (对角线) LED 背光显示屏 (采用 IPS 技术)",
-        "16GB 统一内存",
-        "256GB 固态硬盘",
-        "1080p FaceTime 高清摄像头",
-        "两个雷雳 / USB 4 端口"
-      ],
-      "specs": {
-        "ram": 16,
-        "ssd_gb": 256,
-        "cpu": 8,
-        "gpu": 10,
         "chip_series": "M2",
         "chip_model": "M2",
         "screen_in": 13,
@@ -853,36 +823,6 @@
       }
     },
     {
-      "id": "tag:refurb-tracker.com,2007:9cbd591457fcc8d1f3ecab30d6dcfe24",
-      "displayTitle": "MacBook Air - M2",
-      "priceNum": 6899,
-      "link": "https://refurb-tracker.com/url/879813",
-      "modelId": "G15S4CH/A",
-      "color": "深空灰色",
-      "image": "https://as-images.apple.com/is/refurb-macbook-air-m2-spacegray-202208?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 13 英寸 MacBook Air Apple M2 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 深空灰色",
-        "&ndash; G15S4CH/A",
-        "最初发布于 2022 年 7 月",
-        "13.6 英寸 (对角线) LED 背光显示屏 (采用 IPS 技术)",
-        "16GB 统一内存",
-        "512GB 固态硬盘",
-        "1080p FaceTime 高清摄像头",
-        "两个雷雳 / USB 4 端口"
-      ],
-      "specs": {
-        "ram": 16,
-        "ssd_gb": 512,
-        "cpu": 8,
-        "gpu": 8,
-        "chip_series": "M2",
-        "chip_model": "M2",
-        "screen_in": 13,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
       "id": "tag:refurb-tracker.com,2007:34dacf0cf1733601c95f6ea4bd6b3bb1",
       "displayTitle": "MacBook Air - M2",
       "priceNum": 6899,
@@ -1035,38 +975,6 @@
         "gpu": 10,
         "chip_series": "M3",
         "chip_model": "M3",
-        "screen_in": 13,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:c76e3897026669683e24860a609186fa",
-      "displayTitle": "MacBook Air - M4",
-      "priceNum": 7399,
-      "link": "https://refurb-tracker.com/url/907791",
-      "modelId": "G1H70CH/A",
-      "color": "天蓝色",
-      "image": "https://as-images.apple.com/is/refurb-mba13-m4-skyblue-202503?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 13 英寸 MacBook Air Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) - 天蓝色",
-        "&ndash; G1H70CH/A",
-        "最初发布于 2025 年 3 月",
-        "13.6 英寸 Liquid 视网膜显示屏，支持原彩显示¹",
-        "12MP Center Stage 摄像头",
-        "16GB 统一内存",
-        "256GB 固态硬盘²",
-        "带有触控 ID 的背光妙控键盘",
-        "MagSafe 3 充电端口",
-        "两个雷雳 4 端口"
-      ],
-      "specs": {
-        "ram": 16,
-        "ssd_gb": 256,
-        "cpu": 10,
-        "gpu": 10,
-        "chip_series": "M4",
-        "chip_model": "M4",
         "screen_in": 13,
         "has10GbE": false,
         "hasXDR": false
@@ -3382,37 +3290,6 @@
       }
     },
     {
-      "id": "tag:refurb-tracker.com,2007:5e7e470db34b9c553b36e93fb03bed61",
-      "displayTitle": "MacBook Pro - M3",
-      "priceNum": 10099,
-      "link": "https://refurb-tracker.com/url/889849",
-      "modelId": "G1C80CH/A",
-      "color": "深空灰色",
-      "image": "https://as-images.apple.com/is/refurb-mbp14-m3-spacegray-202402?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 14 英寸 MacBook Pro Apple M3 芯片 (配备 8 核中央处理器和 10 核图形处理器) - 深空灰色",
-        "&ndash; G1C80CH/A",
-        "最初发布于 2023 年 10 月",
-        "14.2 英寸 (对角线) Liquid 视网膜 XDR 显示屏；初始分辨率 3024 x 1964 (254 ppi)",
-        "16GB 统一内存",
-        "512GB 固态硬盘",
-        "触控 ID",
-        "1080p FaceTime 高清摄像头",
-        "两个雷雳 4 (USB-C) 端口"
-      ],
-      "specs": {
-        "ram": 16,
-        "ssd_gb": 512,
-        "cpu": 8,
-        "gpu": 10,
-        "chip_series": "M3",
-        "chip_model": "M3",
-        "screen_in": 14,
-        "has10GbE": false,
-        "hasXDR": true
-      }
-    },
-    {
       "id": "tag:refurb-tracker.com,2007:49d6912e4c5a9e904d8971bdcf2e5f3d",
       "displayTitle": "MacBook Air - M2",
       "priceNum": 10099,
@@ -4551,38 +4428,6 @@
       "details": [
         "翻新 15 英寸 MacBook Air Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) - 星光色",
         "&ndash; G1DF0CH/A",
-        "最初发布于 2025 年 3 月",
-        "15.3 英寸 Liquid 视网膜显示屏，支持原彩显示",
-        "12MP Center Stage 摄像头",
-        "16GB 统一内存",
-        "1TB 固态硬盘",
-        "带有触控 ID 的背光妙控键盘",
-        "MagSafe 3 充电端口",
-        "两个雷雳 4 端口"
-      ],
-      "specs": {
-        "ram": 16,
-        "ssd_gb": 1024,
-        "cpu": 10,
-        "gpu": 10,
-        "chip_series": "M4",
-        "chip_model": "M4",
-        "screen_in": 15,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:81c0fa5ab987ceaba86705f85fa5a277",
-      "displayTitle": "MacBook Air - M4",
-      "priceNum": 10999,
-      "link": "https://refurb-tracker.com/url/907809",
-      "modelId": "G1DH0CH/A",
-      "color": "午夜色",
-      "image": "https://as-images.apple.com/is/refurb-mba15-m4-midnight-202503?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 15 英寸 MacBook Air Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) - 午夜色",
-        "&ndash; G1DH0CH/A",
         "最初发布于 2025 年 3 月",
         "15.3 英寸 Liquid 视网膜显示屏，支持原彩显示",
         "12MP Center Stage 摄像头",
@@ -9224,37 +9069,6 @@
         "screen_in": null,
         "has10GbE": true,
         "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:72a5b3384a8deb92541b03513b5bcfad",
-      "displayTitle": "MacBook Pro - M3 Max",
-      "priceNum": 35199,
-      "link": "https://refurb-tracker.com/url/892055",
-      "modelId": "G1CN8CH/A",
-      "color": "银色",
-      "image": "https://as-images.apple.com/is/refurb-mbp16-m3-max-pro-silver-202402?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 16 英寸 MacBook Pro Apple M3 Max 芯片 (配备 16 核中央处理器和 40 核图形处理器) - 银色",
-        "&ndash; G1CN8CH/A",
-        "最初发布于 2023 年 10 月",
-        "16.2 英寸 (对角线) Liquid 视网膜 XDR 显示屏¹；初始分辨率 3456 x 2234 (254 ppi)",
-        "128GB 统一内存",
-        "2TB 固态硬盘²",
-        "触控 ID",
-        "1080p FaceTime 高清摄像头",
-        "三个雷雳 4 (USB-C) 端口"
-      ],
-      "specs": {
-        "ram": 128,
-        "ssd_gb": 2048,
-        "cpu": 16,
-        "gpu": 40,
-        "chip_series": "M3",
-        "chip_model": "M3 Max",
-        "screen_in": 16,
-        "has10GbE": false,
-        "hasXDR": true
       }
     },
     {
