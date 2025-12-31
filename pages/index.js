@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import macData from "../data/macs.json";
 import FilterPanel from "../components/FilterPanel";
 import ProductCard from "../components/ProductCard";
+import SkeletonCard from "../components/SkeletonCard";
 import ClientOnlyTime from "../components/ClientOnlyTime";
 
 const safeItems = (data) => {
@@ -168,6 +169,46 @@ export default function Home() {
     return out;
   }, [products, filters.priceMin, filters.priceMax, filters.ram, filters.ssd, normalizedQuery]);
 
+  // Progressive rendering state to avoid jank when many items
+  const [visibleCount, setVisibleCount] = useState(0);
+
+  useEffect(() => {
+    let mounted = true;
+    const total = filteredProducts.length;
+
+    // If small list, render all at once
+    if (total <= 24) {
+      if (mounted) setVisibleCount(total);
+      return;
+    }
+
+    // For large lists, render progressively in batches
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 700;
+    const initial = isMobile ? 6 : 12;
+    const batch = isMobile ? 6 : 8;
+
+    let current = 0;
+    const scheduleNext = () => {
+      if (!mounted) return;
+      current = Math.min(total, current + (current === 0 ? initial : batch));
+      setVisibleCount(current);
+      if (current < total) {
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(scheduleNext, { timeout: 200 });
+        } else {
+          setTimeout(scheduleNext, 60);
+        }
+      }
+    };
+
+    // start
+    scheduleNext();
+
+    return () => {
+      mounted = false;
+    };
+  }, [filteredProducts]);
+
   return (
     <div className="mp-root">
       {/* 固定背景层 */}
@@ -246,8 +287,13 @@ export default function Home() {
             </div>
           ) : (
             <div className="mp-grid">
-              {filteredProducts.map((mac) => (
+              {filteredProducts.slice(0, visibleCount).map((mac) => (
                 <ProductCard key={mac?.id || `${mac?.modelId}-${mac?.priceNum}`} data={mac} />
+              ))}
+
+              {/* Render skeleton placeholders while progressive loading continues */}
+              {visibleCount < filteredProducts.length && Array.from({ length: Math.min(8, Math.max(3, filteredProducts.length - visibleCount)) }).map((_, i) => (
+                <SkeletonCard key={`skeleton-${i}`} />
               ))}
             </div>
           )}
@@ -289,6 +335,7 @@ export default function Home() {
                 filters={filters}
                 setFilters={setFilters}
                 priceBounds={priceBounds}
+                onApply={() => setIsDrawerOpen(false)}
               />
             </div>
           </div>

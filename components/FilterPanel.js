@@ -40,7 +40,7 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
       ram: localRam,
       ssd: localSsd,
     }));
-    onApply();
+    if (typeof onApply === 'function') onApply();
   };
 
   const reset = () => {
@@ -56,7 +56,7 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
       ram: 8,
       ssd: 256,
     }));
-    onApply();
+    if (typeof onApply === 'function') onApply();
   };
 
   return (
