@@ -71,40 +71,37 @@ export default function ProductCard({ data }) {
 
           <div className="pc-sep" />
 
-          {/* tags */}
-          <div className="pc-tags">
-            <div className="pc-tagRow">
-              {cpu !== null ? <span className="pc-tag pc-tag--cpu">CPU {cpu}</span> : null}
-              {gpu !== null ? <span className="pc-tag pc-tag--gpu">GPU {gpu}</span> : null}
+          {/* image with overlay tags */}
+          <div className="pc-imgContainer">
+            <div className="pc-img">
+              {img ? (
+                <img
+                  src={img}
+                  alt={modelId || title}
+                  loading="lazy"
+                  onLoad={() => setImageLoaded(true)}
+                  style={{ opacity: imageLoaded ? 1 : 0.5 }}
+                />
+              ) : (
+                <div className="pc-imgPh">No Image</div>
+              )}
             </div>
 
-            <div className="pc-tagRow">
-              {ram !== null ? <span className="pc-tag pc-tag--ram">RAM {ram}GB</span> : null}
-              {ssd !== null ? <span className="pc-tag pc-tag--ssd">SSD {ssd}GB</span> : null}
+            {/* tags overlay on image */}
+            <div className="pc-tagsOverlay">
+              <div className="pc-tagRow">
+                {cpu !== null ? <span className="pc-tag pc-tag--cpu">CPU {cpu}</span> : null}
+                {gpu !== null ? <span className="pc-tag pc-tag--gpu">GPU {gpu}</span> : null}
+                {color ? <span className="pc-tag pc-tag--color">{color}</span> : null}
+              </div>
+
+              <div className="pc-tagRow">
+                {ram !== null ? <span className="pc-tag pc-tag--ram">RAM {ram}GB</span> : null}
+                {ssd !== null ? <span className="pc-tag pc-tag--ssd">SSD {ssd}GB</span> : null}
+                {xdr ? <span className="pc-tag pc-tag--xdr">XDR</span> : null}
+                {tenge ? <span className="pc-tag pc-tag--10ge">10GE</span> : null}
+              </div>
             </div>
-
-            <div className="pc-tagRow pc-tagRow--minor">
-              {xdr ? <span className="pc-chip pc-chip--xdr">XDR 显示屏</span> : null}
-              {tenge ? <span className="pc-chip pc-chip--10ge">10GE</span> : null}
-              {color ? <span className="pc-chip pc-chip--color">{color}</span> : null}
-            </div>
-          </div>
-
-          <div className="pc-sep" />
-
-          {/* image */}
-          <div className="pc-img">
-            {img ? (
-              <img
-                src={img}
-                alt={modelId || title}
-                loading="lazy"
-                onLoad={() => setImageLoaded(true)}
-                style={{ opacity: imageLoaded ? 1 : 0.5 }}
-              />
-            ) : (
-              <div className="pc-imgPh">No Image</div>
-            )}
           </div>
         </div>
 

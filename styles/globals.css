@@ -54,6 +54,15 @@ body{
     linear-gradient(135deg, #0a0a0a 0%, #000000 50%, #050505 100%);
 }
 
+/* 深色覆盖层：从左上角亮到周围暗 */
+.mp-bg-gradients::after{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 8% 8%, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.55) 30%, rgba(0,0,0,0.75) 70%);
+  pointer-events: none;
+}
+
 .mp-bg-grid{
   position: absolute;
   inset: 0;
@@ -187,7 +196,7 @@ body{
 .mp-main{ padding-top: 2px; }
 .mp-grid{
   display:grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); /* 卡片宽度压一点 */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* 增加15%卡片最小宽度 (220px -> 253px) */
   gap: 22px; /* 你要更松 */
 }
 .mp-empty{
@@ -414,12 +423,14 @@ body{
   border-radius: 16px;
   border: 1px solid rgba(255,255,255,.12);
   background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.22)), rgba(0,0,0,.6);
-  padding: 14px;
+  padding: 12px;
   position: relative;
   overflow:hidden;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  min-height: 400px; /* 确保翻转卡片有足够的高度显示所有内容 */
+  display: flex;
+  flex-direction: column;
+  height: 360px; /* 缩减三分之一 */
   transform: translateZ(0); /* 硬件加速 */
   animation: fadeInUp 0.6s ease-out forwards;
   opacity: 0;
@@ -470,6 +481,8 @@ body{
   justify-content:space-between;
   gap: 10px;
   position: relative;
+  flex-shrink: 0;
+  margin-bottom: 6px;
 }
 .pc-title{
   font-weight: 850;
@@ -496,24 +509,30 @@ body{
 .pc-sep{
   height: 1px;
   background: rgba(255,255,255,.10);
-  margin: 12px 0;
+  margin: 8px 0;
+  flex-shrink: 0;
 }
 
-.pc-tags{ display:flex; flex-direction:column; gap: 8px; position: relative; }
-.pc-tagRow{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; min-height:32px; }
-.pc-tagRow--minor{ gap: 8px; min-height:28px; }
+.pc-tags{ display:none; }
+.pc-tagRow{ display:flex; flex-wrap:wrap; gap:3px; align-items:center; min-height:auto; }
+.pc-tagRow--minor{ display:flex; gap:5px; }
 
 .pc-tag{
-  font-size: 11px;
-  padding: 6px 10px;
+  font-size: clamp(9px, 1.0vw, 12px);
+  padding: 4px 8px;
   border-radius: 6px;
   border: 1px solid;
   font-weight: 700;
   letter-spacing: .01em;
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px rgba(0,0,0,.15);
-  transition: all 0.2s ease;
-  display: inline-block;
+  transition: all 0.16s ease;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto; /* allow tags to shrink/grow slightly */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 .pc-tag:hover{
@@ -549,6 +568,27 @@ body{
   text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
 }
 
+.pc-tag--xdr{
+  color: #ffffff;
+  background: rgba(138, 43, 226, 0.25);
+  border-color: rgba(138, 43, 226, 0.5);
+  text-shadow: 0 0 8px rgba(138, 43, 226, 0.4);
+}
+
+.pc-tag--10ge{
+  color: #ffffff;
+  background: rgba(255, 69, 0, 0.25);
+  border-color: rgba(255, 69, 0, 0.5);
+  text-shadow: 0 0 8px rgba(255, 69, 0, 0.4);
+}
+
+.pc-tag--color{
+  color: #ffffff;
+  background: rgba(200, 200, 220, 0.25);
+  border-color: rgba(200, 200, 220, 0.5);
+  text-shadow: 0 0 8px rgba(200, 200, 220, 0.3);
+}
+
 .pc-chip{
   font-size: 11px;
   padding: 5px 9px;
@@ -563,25 +603,58 @@ body{
 .pc-chip--10ge{ color: rgba(255,255,255,.90); background: rgba(150,200,255,.08); border-color: rgba(150,200,255,.20); }
 .pc-chip--color{ color: rgba(255,255,255,.80); background: rgba(120,120,150,.08); border-color: rgba(120,120,150,.20); }
 
-/* image */
-.pc-img{
-  height: 160px;
+/* image container with overlay */
+.pc-imgContainer{
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.10);
+  overflow: hidden;
   background: rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.10);
+  margin-bottom: 8px;
+}
+
+.pc-img{
+  flex: 1;
+  border-radius: 12px;
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   justify-content:center;
   overflow:hidden;
+  background: rgba(0,0,0,.15);
+  padding-top: 8%;
 }
 .pc-img img{
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 80%;
+  max-height: 80%;
   transform: translateZ(0);
+  object-fit: contain;
 }
 .pc-imgPh{
   color: rgba(255,255,255,.38);
   font-size: 12px;
+}
+
+/* tags overlay on image */
+.pc-tagsOverlay{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 10%, rgba(0,0,0,0.75) 100%);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; /* allow tags to wrap as card width changes */
+  gap: 6px;
+  align-items: center;
+  z-index: 10;
+  height: auto; /* let content define height */
+  max-height: 50%;
+  justify-content: flex-start;
 }
 
 /* details */
