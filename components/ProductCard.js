@@ -93,7 +93,7 @@ export default function ProductCard({ data }) {
           <div className="pc-sep" />
 
           {/* image */}
-          <div className="pc-img" onClick={(e) => { e.stopPropagation(); if (buy) window.open(buy, "_blank"); }}>
+          <div className="pc-img">
             {img ? (
               <img
                 src={img}
@@ -106,8 +106,6 @@ export default function ProductCard({ data }) {
               <div className="pc-imgPh">No Image</div>
             )}
           </div>
-
-          <div className="pc-flipHint">点击查看详情</div>
         </div>
 
         {/* Back */}
@@ -121,7 +119,7 @@ export default function ProductCard({ data }) {
             {details.length ? (
               <ul className="pc-list">
                 {details
-                  .filter(line => !line.includes("– FGND3CH/A") && !line.includes("– G15S3CH/A"))
+                  .filter(line => !line.includes("&ndash;") && !line.includes("– FGND3CH/A") && !line.includes("– G15S3CH/A"))
                   .map((line, idx) => (
                     <li key={`${modelId || title}-${idx}`}>{line}</li>
                   ))}

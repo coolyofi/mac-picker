@@ -9,11 +9,11 @@
   --txt: rgba(255,255,255,.92);
   --muted: rgba(255,255,255,.56);
 
-  /* Neon（你要：不同颜色、都有 glow、但少一点） */
-  --neon-cpu: #7c5cff; /* 紫 */
-  --neon-gpu: #00d1ff; /* 青 */
-  --neon-ram: #00f2ff; /* 你定的 RAM */
-  --neon-ssd: #39ff14; /* 你定的 SSD */
+  /* Neon（优化的配色：各不相同、视觉清晰、高对比度） */
+  --neon-cpu: #FF6B9D; /* 洋红 */
+  --neon-gpu: #00D9FF; /* 靓青 */
+  --neon-ram: #FFD700; /* 金黄 */
+  --neon-ssd: #00FF88; /* 翠绿 */
 }
 
 *{ box-sizing:border-box; }
@@ -500,49 +500,53 @@ body{
 }
 
 .pc-tags{ display:flex; flex-direction:column; gap: 8px; position: relative; }
-.pc-tagRow{ display:flex; flex-wrap:wrap; gap:8px; }
-.pc-tagRow--minor{ gap: 8px; }
+.pc-tagRow{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; min-height:32px; }
+.pc-tagRow--minor{ gap: 8px; min-height:28px; }
 
 .pc-tag{
   font-size: 11px;
   padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 6px;
+  border: 1px solid;
   font-weight: 700;
   letter-spacing: .01em;
-  background: rgba(255,255,255,.05);
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px rgba(0,0,0,.15);
   transition: all 0.2s ease;
+  display: inline-block;
+  white-space: nowrap;
 }
 .pc-tag:hover{
-  background: rgba(255,255,255,.08);
-  border-color: rgba(255,255,255,.20);
+  filter: brightness(1.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,.25);
 }
 
 .pc-tag--cpu{
-  color: rgba(255,255,255,.85);
-  background: rgba(255,255,255,.05);
-  border-color: rgba(255,255,255,.12);
-  backdrop-filter: blur(10px);
+  color: #ffffff;
+  background: rgba(255, 107, 157, 0.25);
+  border-color: rgba(255, 107, 157, 0.5);
+  text-shadow: 0 0 8px rgba(255, 107, 157, 0.4);
 }
+
 .pc-tag--gpu{
-  color: rgba(255,255,255,.85);
-  background: rgba(255,255,255,.05);
-  border-color: rgba(255,255,255,.12);
-  backdrop-filter: blur(10px);
+  color: #ffffff;
+  background: rgba(0, 217, 255, 0.25);
+  border-color: rgba(0, 217, 255, 0.5);
+  text-shadow: 0 0 8px rgba(0, 217, 255, 0.4);
 }
+
 .pc-tag--ram{
-  color: rgba(255,255,255,.85);
-  background: rgba(255,255,255,.05);
-  border-color: rgba(255,255,255,.12);
-  backdrop-filter: blur(10px);
+  color: #ffffff;
+  background: rgba(255, 215, 0, 0.25);
+  border-color: rgba(255, 215, 0, 0.5);
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
 }
+
 .pc-tag--ssd{
-  color: rgba(255,255,255,.85);
-  background: rgba(255,255,255,.05);
-  border-color: rgba(255,255,255,.12);
-  backdrop-filter: blur(10px);
+  color: #ffffff;
+  background: rgba(0, 255, 136, 0.25);
+  border-color: rgba(0, 255, 136, 0.5);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
 }
 
 .pc-chip{
@@ -663,20 +667,30 @@ body{
 
 .pc-back{
   transform: rotateY(180deg);
-  background: rgba(0,0,0,.5);
+  background: linear-gradient(135deg, rgba(255,255,255,.05), rgba(0,0,0,.4)), rgba(0,0,0,.6);
   border-radius: 12px;
   padding: 18px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+.pc-back::before{
+  content:"";
+  position:absolute;
+  inset:-40% -20% auto -20%;
+  height: 70%;
+  background: radial-gradient(closest-side, rgba(255,255,255,.12), rgba(255,255,255,0));
+  transform: rotate(-12deg);
+  opacity:.70;
+  pointer-events:none;
+  z-index: 0;
 }
 
 .pc-flipHint{
-  margin-top: 12px;
-  text-align: center;
-  font-size: 10px;
-  color: rgba(255,255,255,.5);
-  font-weight: 600;
+  display: none;
 }
 
 .pc-backContent{
@@ -686,6 +700,8 @@ body{
   justify-content: flex-start;
   overflow-y: auto;
   max-height: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .pc-backTitle{
