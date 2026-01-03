@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-03T10:30:05.415Z",
+  "lastUpdated": "2026-01-03T11:30:04.515Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -41,36 +41,6 @@
       "details": [
         "翻新 13.3 英寸 MacBook Air Apple M1 芯片 (配备 8 核中央处理器和 7 核图形处理器) - 深空灰色",
         "&ndash; FGN63CH/A",
-        "最初发布于 2020 年 11 月",
-        "13.3 英寸 (对角线) LED 背光显示屏 (采用 IPS 技术)；初始分辨率 2560 x 1600 (227 ppi)",
-        "8GB 统一内存",
-        "256GB 固态硬盘",
-        "触控 ID 传感器",
-        "720p FaceTime 高清摄像头"
-      ],
-      "specs": {
-        "ram": 8,
-        "ssd_gb": 256,
-        "cpu": 8,
-        "gpu": 7,
-        "chip_series": "M1",
-        "chip_model": "M1",
-        "screen_in": 13.3,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:28a77ab6b4785b02b10e113cdc0cd52f",
-      "displayTitle": "MacBook Air - M1",
-      "priceNum": 4699,
-      "link": "https://refurb-tracker.com/url/868147",
-      "modelId": "FGND3CH/A",
-      "color": "金色",
-      "image": "https://as-images.apple.com/is/refurb-macbook-air-gold-m1-202010?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 13.3 英寸 MacBook Air Apple M1 芯片 (配备 8 核中央处理器和 7 核图形处理器) - 金色",
-        "&ndash; FGND3CH/A",
         "最初发布于 2020 年 11 月",
         "13.3 英寸 (对角线) LED 背光显示屏 (采用 IPS 技术)；初始分辨率 2560 x 1600 (227 ppi)",
         "8GB 统一内存",
