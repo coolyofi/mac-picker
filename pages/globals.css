@@ -469,16 +469,7 @@ body{
 }
 
 /* “液态玻璃感”：只做高光层，不用 blur */
-.pc::before{
-  content:"";
-  position:absolute;
-  inset:-40% -20% auto -20%;
-  height: 70%;
-  background: radial-gradient(closest-side, rgba(255,255,255,.14), rgba(255,255,255,0));
-  transform: rotate(-12deg);
-  opacity:.65;
-  pointer-events:none;
-}
+
 
 .pc-top{
   display:flex;
@@ -560,14 +551,14 @@ body{
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
-.pc-tag--cpu{ color: #ffffff; background: rgba(255, 107, 157, 0.25); border-color: rgba(255, 107, 157, 0.5); text-shadow: 0 0 8px rgba(255, 107, 157, 0.4); }
-.pc-tag--gpu{ color: #ffffff; background: rgba(0, 217, 255, 0.25); border-color: rgba(0, 217, 255, 0.5); text-shadow: 0 0 8px rgba(0, 217, 255, 0.4); }
-.pc-tag--ram{ color: #ffffff; background: rgba(255, 215, 0, 0.25); border-color: rgba(255, 215, 0, 0.5); text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
-.pc-tag--ssd{ color: #ffffff; background: rgba(0, 255, 136, 0.25); border-color: rgba(0, 255, 136, 0.5); text-shadow: 0 0 8px rgba(0, 255, 136, 0.4); }
-.pc-tag--xdr{ color: #ffffff; background: rgba(138, 43, 226, 0.25); border-color: rgba(138, 43, 226, 0.5); text-shadow: 0 0 8px rgba(138, 43, 226, 0.4); }
-.pc-tag--10ge{ color: #ffffff; background: rgba(255, 69, 0, 0.25); border-color: rgba(255, 69, 0, 0.5); text-shadow: 0 0 8px rgba(255, 69, 0, 0.4); }
-.pc-tag--color{ color: #ffffff; background: rgba(200, 200, 220, 0.25); border-color: rgba(200, 200, 220, 0.5); text-shadow: 0 0 8px rgba(200, 200, 220, 0.3); }
-.pc-tag--more{ color: var(--theme-blue); background: rgba(59, 130, 246, 0.1); border-color: var(--theme-blue); cursor: pointer; font-weight: 800; }
+.pc-tag--cpu{ color: #fff; background: rgba(255,107,157,.25); border-color: rgba(255,107,157,.5); }
+.pc-tag--gpu{ color: #fff; background: rgba(0,217,255,.25); border-color: rgba(0,217,255,.5); }
+.pc-tag--ram{ color: #fff; background: rgba(255,215,0,.25); border-color: rgba(255,215,0,.5); }
+.pc-tag--ssd{ color: #fff; background: rgba(0,255,136,.25); border-color: rgba(0,255,136,.5); }
+.pc-tag--xdr{ color: #fff; background: rgba(138,43,226,.25); border-color: rgba(138,43,226,.5); }
+.pc-tag--10ge{ color: #fff; background: rgba(255,69,0,.25); border-color: rgba(255,69,0,.5); }
+.pc-tag--color{ color: #fff; background: rgba(200,200,220,.25); border-color: rgba(200,200,220,.5); }
+.pc-tag--more{ color: var(--theme-blue); background: rgba(59,130,246,.1); border-color: var(--theme-blue); cursor: pointer; font-weight: 800; }
 
 /* 媒体查询：适配不同窗口大小 */
 @media (max-width: 768px) {
@@ -733,17 +724,7 @@ body{
 .pc-front{ transform: rotateY(0deg); }
 .pc-back{ transform: rotateY(180deg); background: linear-gradient(135deg, rgba(255,255,255,.05), rgba(0,0,0,.4)), rgba(0,0,0,.6); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: flex-start; backdrop-filter: blur(10px); position: relative; }
 
-.pc-back::before{
-  content:"";
-  position:absolute;
-  inset:-40% -20% auto -20%;
-  height: 70%;
-  background: radial-gradient(closest-side, rgba(255,255,255,.12), rgba(255,255,255,0));
-  transform: rotate(-12deg);
-  opacity:.70;
-  pointer-events:none;
-  z-index: 0;
-}
+
 
 .pc-flipHint{ display: none; }
 

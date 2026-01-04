@@ -130,6 +130,13 @@ export default function Home() {
   }, []);
 
   const deviceType = useDeviceType();
+  const [showParticles, setShowParticles] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReducedMotion && window.innerWidth >= 980) setShowParticles(true);
+  }, []);
 
   return (
     <div className="mp-root">
@@ -137,7 +144,7 @@ export default function Home() {
       <div className="mp-bg-fixed">
         <div className="mp-bg-gradients"></div>
         <div className="mp-bg-grid"></div>
-        <div className="mp-bg-particles" id="particles"></div>
+        {showParticles && <div className="mp-bg-particles" id="particles"></div>}
       </div>
 
       <Head>

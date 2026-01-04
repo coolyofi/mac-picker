@@ -39,6 +39,11 @@ export function useRandomDarkBackdrop() {
 
     applyScheme();
 
+    // Only attach pointer listeners on desktop and when user hasn't requested reduced motion
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isDesktop = window.innerWidth >= 980;
+    const enablePointer = isDesktop && !prefersReducedMotion;
+
     let animationId;
     const handleMouseMove = (e) => {
       const particles = document.getElementById('particles');
@@ -73,13 +78,17 @@ export function useRandomDarkBackdrop() {
       applyScheme();
     };
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    if (enablePointer) {
+      window.addEventListener('mousemove', handleMouseMove, { passive: true });
+      window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    }
     window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
+      if (enablePointer) {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('touchmove', handleTouchMove);
+      }
       window.removeEventListener('resize', handleResize);
       if (animationId) cancelAnimationFrame(animationId);
       root.style.removeProperty("--bg-h1");
