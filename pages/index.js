@@ -1,11 +1,43 @@
 import Head from "next/head";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback, memo } from "react";
+import dynamic from "next/dynamic";
 import macData from "../data/macs.json";
+<<<<<<< HEAD
 import FilterPanel from "../components/FilterPanel";
 import ProductCard from "../components/ProductCard";
 import SkeletonCard from "../components/SkeletonCard";
+=======
+>>>>>>> 7190f33 (refactor: optimize component imports and enhance filtering logic)
 import ClientOnlyTime from "../components/ClientOnlyTime";
 
+// 1. 动态导入非首屏必要组件，减少初始 JS 体积
+const FilterPanel = dynamic(() => import("../components/FilterPanel"), {
+  loading: () => <div className="mp-loading">加载筛选面板...</div>,
+  ssr: false, // 筛选面板仅客户端渲染
+});
+const ProductCard = dynamic(() => import("../components/ProductCard"), {
+  loading: () => <div className="mp-card-skeleton">加载产品卡片...</div>,
+  ssr: false,
+});
+
+// 2. 抽离重复的 Meta 组件，减少代码重复
+const SidebarMeta = memo(({ lastUpdated, count }) => (
+  <div className="mp-sidebarMeta">
+    <div className="mp-metaRow">
+      <span className="mp-metaKey">数据更新时间</span>
+      <span className="mp-metaVal">
+        <ClientOnlyTime lastUpdated={lastUpdated} />
+      </span>
+    </div>
+    <div className="mp-metaRow">
+      <span className="mp-metaKey">当前匹配</span>
+      <span className="mp-metaVal mp-metaValStrong">{count} 台</span>
+    </div>
+  </div>
+));
+SidebarMeta.displayName = "SidebarMeta";
+
+// 3. 纯函数提升到组件外，支持缓存
 const safeItems = (data) => {
   if (Array.isArray(data?.items)) return data.items;
   if (Array.isArray(data)) return data;
@@ -29,8 +61,14 @@ function useRandomDarkBackdrop() {
     ];
 
     const root = document.documentElement;
+<<<<<<< HEAD
     let currentSchemeIndex = Math.floor(Math.random() * colorSchemes.length);
     let scheme = colorSchemes[currentSchemeIndex];
+=======
+    if (!root) return; // 防错：避免服务端渲染时操作 DOM
+
+    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+>>>>>>> 7190f33 (refactor: optimize component imports and enhance filtering logic)
 
     const applyScheme = () => {
       root.style.setProperty("--bg-h1", `${scheme.h1}`);
@@ -40,6 +78,7 @@ function useRandomDarkBackdrop() {
       root.style.setProperty("--bg-a2", `${scheme.a2}`);
       root.style.setProperty("--bg-a3", `${scheme.a3}`);
 
+<<<<<<< HEAD
       // 设置6个渐变颜色
       root.style.setProperty("--bg-color-1", `hsla(${scheme.h1}, 85%, 60%, ${scheme.a1})`);
       root.style.setProperty("--bg-color-2", `hsla(${scheme.h2}, 90%, 65%, ${scheme.a2})`);
@@ -79,6 +118,23 @@ function useRandomDarkBackdrop() {
       // clearInterval(interval); // 已禁用自动切换
       window.removeEventListener('mousemove', handleMouseMove);
       if (animationId) cancelAnimationFrame(animationId);
+=======
+    root.style.setProperty("--bg-h1", `${h1}`);
+    root.style.setProperty("--bg-h2", `${h2}`);
+    root.style.setProperty("--bg-h3", `${h3}`);
+    root.style.setProperty("--bg-a1", `${a1}`);
+    root.style.setProperty("--bg-a2", `${a2}`);
+    root.style.setProperty("--bg-a3", `${a3}`);
+
+    // 清理副作用：避免卸载时残留样式
+    return () => {
+      root.style.removeProperty("--bg-h1");
+      root.style.removeProperty("--bg-h2");
+      root.style.removeProperty("--bg-h3");
+      root.style.removeProperty("--bg-a1");
+      root.style.removeProperty("--bg-a2");
+      root.style.removeProperty("--bg-a3");
+>>>>>>> 7190f33 (refactor: optimize component imports and enhance filtering logic)
     };
   }, []);
 }
@@ -90,18 +146,18 @@ export default function Home() {
 
   const products = useMemo(() => safeItems(macData), []);
 
-  // 价格范围（用真实数据自动算）
+  // 价格范围（用真实数据自动算，过滤无效数据提高效率）
   const priceBounds = useMemo(() => {
-    let min = Infinity;
-    let max = 0;
-    for (const it of products) {
-      const p = Number(it?.priceNum || 0);
-      if (!Number.isFinite(p) || p <= 0) continue;
-      if (p < min) min = p;
-      if (p > max) max = p;
-    }
-    if (!Number.isFinite(min)) min = 0;
-    return { min, max };
+    const validPrices = products
+      .map(item => Number(item?.priceNum || 0))
+      .filter(p => Number.isFinite(p) && p > 0);
+    
+    if (validPrices.length === 0) return { min: 0, max: 0 };
+    
+    return {
+      min: Math.min(...validPrices),
+      max: Math.max(...validPrices),
+    };
   }, [products]);
 
   const [filters, setFilters] = useState(() => ({
@@ -126,48 +182,55 @@ export default function Home() {
 
   const normalizedQuery = useMemo(() => (filters.q || "").trim().toLowerCase(), [filters.q]);
 
-  const filteredProducts = useMemo(() => {
+  // 优化过滤逻辑：使用短路评估减少计算，缓存的 filterProduct 函数避免重复创建
+  const filterProduct = useCallback((item) => {
+    const s = item?.specs || {};
+    const price = Number(item?.priceNum || 0);
     const minP = Number(filters.priceMin || 0);
     const maxP = Number(filters.priceMax || 0);
     const ramMin = Number(filters.ram || 0);
     const ssdMin = Number(filters.ssd || 0);
 
-    const out = [];
-    for (const item of products) {
-      const s = item?.specs || {};
-      const price = Number(item?.priceNum || 0);
+    // 短路优化：先判断简单条件，不满足直接返回 false
+    if (minP && price < minP) return false;
+    if (maxP && price > maxP) return false;
+    if (Number(s?.ram || 0) < ramMin) return false;
+    if (Number(s?.ssd_gb || 0) < ssdMin) return false;
 
-      // 价格过滤
-      if (minP && price && price < minP) continue;
-      if (maxP && price && price > maxP) continue;
-
-      // RAM / SSD 过滤（数字比对）
-      if (Number(s?.ram || 0) < ramMin) continue;
-      if (Number(s?.ssd_gb || 0) < ssdMin) continue;
-
-      // 全局搜索（标题/型号/芯片/颜色/details 全匹配）
-      if (normalizedQuery) {
-        const hay = [
-          item?.displayTitle,
-          item?.modelId,
-          s?.chip_model,
-          s?.chip_series,
-          item?.color,
-          ...(Array.isArray(item?.details) ? item.details : []),
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-        if (!hay.includes(normalizedQuery)) continue;
-      }
-
-      out.push(item);
+    // 搜索匹配：提前拼接 haystack，避免多次拼接
+    if (normalizedQuery) {
+      const haystack = [
+        item?.displayTitle,
+        item?.modelId,
+        s?.chip_model,
+        s?.chip_series,
+        item?.color,
+        ...(Array.isArray(item?.details) ? item.details : []),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(normalizedQuery);
     }
+    return true;
+  }, [filters.priceMin, filters.priceMax, filters.ram, filters.ssd, normalizedQuery]);
 
-    // 价格从低到高（符合“选购工具”直觉）
-    out.sort((a, b) => Number(a?.priceNum || 0) - Number(b?.priceNum || 0));
-    return out;
-  }, [products, filters.priceMin, filters.priceMax, filters.ram, filters.ssd, normalizedQuery]);
+  // 优化过滤+排序：减少重复计算
+  const filteredProducts = useMemo(() => {
+    // 先过滤
+    const filtered = products.filter(filterProduct);
+    // 排序：仅在过滤结果变化时排序
+    return filtered.sort((a, b) => Number(a?.priceNum || 0) - Number(b?.priceNum || 0));
+  }, [products, filterProduct]);
+
+  // 4. useCallback 包裹传递给子组件的函数（避免子组件重渲染）
+  const handleSetFilters = useCallback((newFilters) => {
+    setFilters((prev) => ({ ...prev, ...newFilters }));
+  }, []);
+
+  const toggleDrawer = useCallback((open) => {
+    setIsDrawerOpen(open);
+  }, []);
 
   // Progressive rendering state to avoid jank when many items
   const [visibleCount, setVisibleCount] = useState(0);
@@ -221,6 +284,8 @@ export default function Home() {
       <Head>
         <title>MacPicker Pro</title>
         <meta name="description" content="选 Mac 小助手" />
+        {/* 预加载关键 CSS，减少渲染阻塞 */}
+        <link rel="preload" href="/styles/main.css" as="style" />
       </Head>
 
       {/* 顶部：标题 + 右上角全局搜索 */}
@@ -242,7 +307,7 @@ export default function Home() {
           {/* 移动端菜单按钮 */}
           <button
             className="mp-menuBtn"
-            onClick={() => setIsDrawerOpen(true)}
+            onClick={() => toggleDrawer(true)}
             aria-label="打开筛选菜单"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -264,6 +329,7 @@ export default function Home() {
       <div className="mp-layout">
         {/* 左侧筛选（只保留：价格 / RAM / SSD） */}
         <aside className="mp-sidebar">
+<<<<<<< HEAD
           <div className="mp-sidebarMeta">
             <div className="mp-metaRow">
               <span className="mp-metaKey">当前匹配</span>
@@ -271,9 +337,12 @@ export default function Home() {
             </div>
           </div>
 
+=======
+          <SidebarMeta lastUpdated={macData?.lastUpdated} count={filteredProducts.length} />
+>>>>>>> 7190f33 (refactor: optimize component imports and enhance filtering logic)
           <FilterPanel
             filters={filters}
-            setFilters={setFilters}
+            setFilters={handleSetFilters}
             priceBounds={priceBounds}
           />
         </aside>
@@ -302,13 +371,13 @@ export default function Home() {
 
       {/* 移动端抽屉菜单 */}
       {isDrawerOpen && (
-        <div className="mp-drawer-overlay" onClick={() => setIsDrawerOpen(false)}>
+        <div className="mp-drawer-overlay" onClick={() => toggleDrawer(false)}>
           <div className="mp-drawer" onClick={(e) => e.stopPropagation()}>
             <div className="mp-drawer-header">
               <h3>筛选条件</h3>
               <button
                 className="mp-drawer-close"
-                onClick={() => setIsDrawerOpen(false)}
+                onClick={() => toggleDrawer(false)}
                 aria-label="关闭菜单"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -318,6 +387,7 @@ export default function Home() {
             </div>
 
             <div className="mp-drawer-content">
+<<<<<<< HEAD
               <div className="mp-sidebarMeta">
                 <div className="mp-metaRow">
                   <span className="mp-metaKey">当前匹配</span>
@@ -325,9 +395,12 @@ export default function Home() {
                 </div>
               </div>
 
+=======
+              <SidebarMeta lastUpdated={macData?.lastUpdated} count={filteredProducts.length} />
+>>>>>>> 7190f33 (refactor: optimize component imports and enhance filtering logic)
               <FilterPanel
                 filters={filters}
-                setFilters={setFilters}
+                setFilters={handleSetFilters}
                 priceBounds={priceBounds}
                 onApply={() => setIsDrawerOpen(false)}
               />
