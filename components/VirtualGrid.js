@@ -21,14 +21,17 @@ function useVirtualDeps() {
         console.log('[VirtualGrid] react-window module keys:', Object.keys(rw || {}));
         console.log('[VirtualGrid] auto-sizer module keys:', Object.keys(as || {}));
 
-        // Prefer the named FixedSizeGrid export. Avoid returning the whole module object as a component.
-        const MaybeGrid = rw?.FixedSizeGrid || rw?.default?.FixedSizeGrid;
-        const MaybeAuto = as?.default || as;
+        // Try several known export shapes (FixedSizeGrid, Grid), and accept AutoSizer as named or default export
+        const MaybeGrid = rw?.FixedSizeGrid || rw?.Grid || rw?.default?.FixedSizeGrid || rw?.default?.Grid;
+        const MaybeAuto = as?.AutoSizer || as?.default || as;
 
         if (!MaybeGrid || !MaybeAuto) {
-          console.warn('VirtualGrid: react-window.FixedSizeGrid or AutoSizer not found', {
+          console.warn('VirtualGrid: react-window.FixedSizeGrid/Grid or AutoSizer not found', {
             fixed: !!(rw && rw.FixedSizeGrid),
+            grid: !!(rw && rw.Grid),
             fixedDefault: !!(rw && rw.default && rw.default.FixedSizeGrid),
+            gridDefault: !!(rw && rw.default && rw.default.Grid),
+            autoNamed: !!(as && as.AutoSizer),
             autoDefault: !!(as && as.default),
           });
           setMissing(true);
