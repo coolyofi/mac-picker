@@ -687,21 +687,14 @@ body{
   align-items: center;
   justify-content: center;
 }
-  letter-spacing: .01em;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 8px rgba(0,0,0,.15);
-  transition: all 0.16s ease;
-  display: inline-flex;
-  align-items: center;
-  flex: 0 1 auto; /* allow tags to shrink/grow slightly */
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 .pc-tag:hover{
   filter: brightness(1.15);
   box-shadow: 0 4px 12px rgba(0,0,0,.25);
+}
+
+.pc-tag--more:hover{
+  background: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 .pc-tag--cpu{
@@ -751,6 +744,46 @@ body{
   background: rgba(200, 200, 220, 0.25);
   border-color: rgba(200, 200, 220, 0.5);
   text-shadow: 0 0 8px rgba(200, 200, 220, 0.3);
+}
+
+.pc-tag--more{
+  color: var(--theme-blue);
+  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--theme-blue);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+/* 媒体查询：适配不同窗口大小 */
+@media (max-width: 768px) {
+  .pc-tagsOverlay {
+    padding: 10px 8px;
+    gap: 4px;
+  }
+  .pc-tagRow {
+    gap: 4px;
+  }
+  .pc-tag {
+    font-size: 10px;
+    padding: 3px 6px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pc-tagsOverlay {
+    padding: 8px 6px;
+    gap: 3px;
+    max-height: 40px; /* 移动端限制高度 */
+  }
+  .pc-tagRow {
+    gap: 3px;
+  }
+  .pc-tag {
+    font-size: 9px;
+    padding: 2px 4px;
+    height: 18px;
+  }
 }
 
 .pc-chip{
@@ -1736,6 +1769,13 @@ main,
 
 .fp-quickBtn:active {
   transform: scale(0.98);
+}
+
+.fp-quickBtn--active {
+  background: var(--theme-blue);
+  color: #fff;
+  border-color: var(--theme-blue);
+  box-shadow: 0 0 0 2px var(--theme-blue-glow);
 }
 
 /* 移动端抽屉加载动画 */

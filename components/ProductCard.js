@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 function fmtPrice(n) {
   const v = Number(n || 0);
@@ -47,8 +47,39 @@ export default function ProductCard({ data }) {
   const restDetails = filteredDetails.slice(1);
 
   const backTitleRef = useRef(null);
-  const tagsOverlayRef = useRef(null);
   const pcTitleRef = useRef(null);
+
+  // 准备Tag列表
+  const allTags = [
+    cpu !== null ? { type: 'cpu', content: `CPU ${cpu}`, className: 'pc-tag--cpu' } : null,
+    gpu !== null ? { type: 'gpu', content: `GPU ${gpu}`, className: 'pc-tag--gpu' } : null,
+    color ? { type: 'color', content: color, className: 'pc-tag--color' } : null,
+    ram !== null ? { type: 'ram', content: `RAM ${ram}GB`, className: 'pc-tag--ram' } : null,
+    ssd !== null ? { type: 'ssd', content: `SSD ${ssd}GB`, className: 'pc-tag--ssd' } : null,
+    xdr ? { type: 'xdr', content: 'XDR', className: 'pc-tag--xdr' } : null,
+    tenge ? { type: '10ge', content: '10GE', className: 'pc-tag--10ge' } : null,
+  ].filter(Boolean);
+
+  // 根据设备类型确定最大显示Tag数量
+  const [maxTags, setMaxTags] = useState(6);
+
+  const updateMaxTags = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const width = window.innerWidth;
+    if (width <= 480) setMaxTags(3); // 移动端
+    else if (width <= 768) setMaxTags(4); // 平板端
+    else setMaxTags(6); // 桌面端
+  }, []);
+
+  useEffect(() => {
+    updateMaxTags();
+    window.addEventListener('resize', updateMaxTags);
+    return () => window.removeEventListener('resize', updateMaxTags);
+  }, [updateMaxTags]);
+
+  const visibleTags = allTags.slice(0, maxTags);
+  const hiddenCount = allTags.length - maxTags;
+  const hasHiddenTags = hiddenCount > 0;
 
   // Auto-shrink back small title if it overflows the 2-line clamp
   useEffect(() => {
@@ -127,39 +158,7 @@ export default function ProductCard({ data }) {
     return () => window.removeEventListener('resize', checkAndAdjust);
   }, [title]);
 
-  // Auto-shrink tags in the overlay so they never force the overlay
-  // to exceed its max height (avoid internal scrolling).
-  useEffect(() => {
-    const el = tagsOverlayRef.current;
-    if (!el) return;
-
-    const tags = el.querySelectorAll('.pc-tag');
-    if (!tags || !tags.length) return;
-
-    let size = 12; // start font-size in px (matches upper clamp)
-    const min = 9;
-    const step = 0.5;
-    tags.forEach(t => (t.style.fontSize = size + 'px'));
-
-    const check = () => {
-      if (el.scrollHeight > el.clientHeight + 1 && size > min) {
-        size = Math.max(min, +(size - step).toFixed(2));
-        tags.forEach(t => (t.style.fontSize = size + 'px'));
-        requestAnimationFrame(check);
-      }
-    };
-
-    requestAnimationFrame(check);
-
-    const onResize = () => {
-      size = 12;
-      tags.forEach(t => (t.style.fontSize = size + 'px'));
-      requestAnimationFrame(check);
-    };
-
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, [cpu, gpu, ram, ssd, color, xdr, tenge, imageLoaded]);
+  // 移除动态Tag调整代码，使用静态CSS布局避免卡顿
 
   const handleFlip = () => setFlipped(!flipped);
 
@@ -209,18 +208,18 @@ export default function ProductCard({ data }) {
             </div>
 
             {/* tags overlay on image */}
-            <div className="pc-tagsOverlay" ref={tagsOverlayRef}>
+            <div className="pc-tagsOverlay">
               <div className="pc-tagRow">
-                {cpu !== null ? <span className="pc-tag pc-tag--cpu">CPU {cpu}</span> : null}
-                {gpu !== null ? <span className="pc-tag pc-tag--gpu">GPU {gpu}</span> : null}
-                {color ? <span className="pc-tag pc-tag--color">{color}</span> : null}
-              </div>
-
-              <div className="pc-tagRow">
-                {ram !== null ? <span className="pc-tag pc-tag--ram">RAM {ram}GB</span> : null}
-                {ssd !== null ? <span className="pc-tag pc-tag--ssd">SSD {ssd}GB</span> : null}
-                {xdr ? <span className="pc-tag pc-tag--xdr">XDR</span> : null}
-                {tenge ? <span className="pc-tag pc-tag--10ge">10GE</span> : null}
+                {visibleTags.map((tag, idx) => (
+                  <span key={tag.type} className={`pc-tag ${tag.className}`}>
+                    {tag.content}
+                  </span>
+                ))}
+                {hasHiddenTags && (
+                  <span className="pc-tag pc-tag--more" title={`还有 ${hiddenCount} 个标签`}>
+                    +{hiddenCount}
+                  </span>
+                )}
               </div>
             </div>
           </div>

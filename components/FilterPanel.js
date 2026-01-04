@@ -22,6 +22,7 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
   const [localRam, setLocalRam] = useState(filters.ram || 8);
   const [localSsd, setLocalSsd] = useState(filters.ssd || 256);
   const [priceError, setPriceError] = useState(""); // 价格容错提示
+  const [selectedBudget, setSelectedBudget] = useState(null); // 选中的快捷预算
 
   // 处理价格输入容错：自动交换不合理的大小顺序
   const safeSetMin = (v) => {
@@ -41,6 +42,8 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
       setLocalMin(nextMin);
       setPriceError("");
     }
+    // 检查是否仍匹配快捷预算
+    checkSelectedBudget(nextMin, localMax);
   };
 
   const safeSetMax = (v) => {
@@ -60,18 +63,22 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
       setLocalMax(nextMax);
       setPriceError("");
     }
+    // 检查是否仍匹配快捷预算
+    checkSelectedBudget(localMin, nextMax);
   };
 
   const setMin = (v) => {
     const nextMin = clampNum(v, minB, maxB);
     setLocalMin(nextMin);
     setPriceError("");
+    checkSelectedBudget(nextMin, localMax);
   };
 
   const setMax = (v) => {
     const nextMax = clampNum(v, minB, maxB);
     setLocalMax(nextMax);
     setPriceError("");
+    checkSelectedBudget(localMin, nextMax);
   };
 
   // 快捷预算快按钮
@@ -84,7 +91,17 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
   const applyQuickBudget = (budget) => {
     setLocalMin(Math.max(minB, budget.min));
     setLocalMax(Math.min(maxB, budget.max));
+    setSelectedBudget(budget.label);
     setPriceError("");
+  };
+
+  // 检查当前价格是否匹配快捷预算
+  const checkSelectedBudget = (min, max) => {
+    const matched = quickBudgets.find(budget => 
+      Math.abs(min - Math.max(minB, budget.min)) < 100 && 
+      Math.abs(max - Math.min(maxB, budget.max)) < 100
+    );
+    setSelectedBudget(matched ? matched.label : null);
   };
 
   const apply = () => {
@@ -175,7 +192,7 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
           {quickBudgets.map((budget) => (
             <button
               key={budget.label}
-              className="fp-quickBtn"
+              className={`fp-quickBtn ${selectedBudget === budget.label ? "fp-quickBtn--active" : ""}`}
               onClick={() => applyQuickBudget(budget)}
               title={`快速选择 ${fmtPrice(budget.min)} - ${fmtPrice(budget.max)}`}
             >

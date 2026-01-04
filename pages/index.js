@@ -570,6 +570,7 @@ export default function Home() {
             filters={filters}
             setFilters={handleSetFilters}
             priceBounds={priceBounds}
+            onApply={() => setVisibleCount(15)} // 应用筛选时重置可见数量
           />
         </aside>
 
