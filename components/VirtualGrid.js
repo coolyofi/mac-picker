@@ -1,14 +1,12 @@
-import React from 'react';
-import ProductCard from './ProductCard';
-
 import React, { useState, useEffect } from 'react';
+import ProductCard from './ProductCard';
 
 // Client-side dynamic import: ensures compatibility across bundlers and ESM/CJS differences.
 // We intentionally load these in an effect so the import happens only in the browser
 // (the page already async-loads `VirtualGrid` with `ssr:false`).
-let GUTTER_SIZE = 22;
-let MIN_COLUMN_WIDTH = 240;
-let ROW_HEIGHT = 360;
+const GUTTER_SIZE = 22;
+const MIN_COLUMN_WIDTH = 240;
+const ROW_HEIGHT = 360;
 
 function useVirtualDeps() {
   const [Grid, setGrid] = useState(null);
@@ -20,13 +18,23 @@ function useVirtualDeps() {
     Promise.all([import('react-window'), import('react-virtualized-auto-sizer')])
       .then(([rw, as]) => {
         if (!mounted) return;
-        const MaybeGrid = rw?.FixedSizeGrid || rw?.default?.FixedSizeGrid || rw?.default || rw;
+        console.log('[VirtualGrid] react-window module keys:', Object.keys(rw || {}));
+        console.log('[VirtualGrid] auto-sizer module keys:', Object.keys(as || {}));
+
+        // Prefer the named FixedSizeGrid export. Avoid returning the whole module object as a component.
+        const MaybeGrid = rw?.FixedSizeGrid || rw?.default?.FixedSizeGrid;
         const MaybeAuto = as?.default || as;
+
         if (!MaybeGrid || !MaybeAuto) {
-          console.warn('VirtualGrid: react-window or auto-sizer not available', { rw, as });
+          console.warn('VirtualGrid: react-window.FixedSizeGrid or AutoSizer not found', {
+            fixed: !!(rw && rw.FixedSizeGrid),
+            fixedDefault: !!(rw && rw.default && rw.default.FixedSizeGrid),
+            autoDefault: !!(as && as.default),
+          });
           setMissing(true);
           return;
         }
+
         setGrid(() => MaybeGrid);
         setAutoSizer(() => MaybeAuto);
       })
@@ -39,10 +47,6 @@ function useVirtualDeps() {
 
   return { Grid, AutoSizer, missing };
 }
-
-const GUTTER_SIZE = 22;
-const MIN_COLUMN_WIDTH = 240;
-const ROW_HEIGHT = 360;
 
 export default function VirtualGrid({ items }) {
   const { Grid, AutoSizer, missing } = useVirtualDeps();
