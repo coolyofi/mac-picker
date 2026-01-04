@@ -285,20 +285,17 @@ export default function Home() {
       }
     }
 
-    // 重置渲染状态
-    setTimeout(() => {
-      if (mounted) {
-        setVisibleCount(0);
-        setSkeletonVisible(true);
-        renderAbort.current = false;
-      }
-    }, 0);
+    // 重置渲染状态 (同步重置，避免 race condition)
+    setVisibleCount(0);
+    setSkeletonVisible(true);
+    renderAbort.current = false;
 
     // 如果结果集较小，一次性渲染
     if (total <= 24) {
       const timer = setTimeout(() => {
         if (mounted && !renderAbort.current) {
           setVisibleCount(total);
+          setSkeletonVisible(false);
         }
       }, 10);
       return () => {
@@ -320,7 +317,10 @@ export default function Home() {
       setVisibleCount(current);
 
       // 若首屏就是全部，不监听滚动
-      if (current >= total) return;
+      if (current >= total) {
+        setSkeletonVisible(false);
+        return;
+      }
 
       // 2. 设置滚动监听：预判加载
       const mainContainer = document.querySelector('.mp-main');
@@ -353,6 +353,7 @@ export default function Home() {
             if (mounted && !renderAbort.current) {
               current = nextCurrent;
               setVisibleCount(current);
+              if (current >= total) setSkeletonVisible(false);
             }
           },
           { timeout: 150 } // 150ms 内没有空闲时间则强制加载，避免等太久
@@ -362,6 +363,7 @@ export default function Home() {
           if (mounted && !renderAbort.current) {
             current = nextCurrent;
             setVisibleCount(current);
+            if (current >= total) setSkeletonVisible(false);
           }
         }, 40); // 低端机 timeout 缩短，加快加载
       }
@@ -388,13 +390,6 @@ export default function Home() {
       <ProductCard key={mac?.id || `${mac?.modelId}-${mac?.priceNum}`} data={mac} />
     ));
   }, [filteredProducts, visibleCount]);
-
-  // ============ 模块4：处理筛选结果变化时的重置 ============
-  useEffect(() => {
-    // 筛选结果长度变化时，立即重置渲染状态
-    setVisibleCount(0);
-    setSkeletonVisible(true);
-  }, [filteredProducts.length]);
 
   const deviceType = useDeviceType();
 
