@@ -15,6 +15,8 @@
   --neon-gpu: #00d1ff; /* 青 */
   --neon-ram: #00f2ff; /* 你定的 RAM */
   --neon-ssd: #39ff14; /* 你定的 SSD */
+
+  --bg-transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 *{ box-sizing:border-box; }
@@ -42,16 +44,64 @@ body{
 .mp-bg-gradients{
   position: absolute;
   inset: 0;
-  background:
-    /* Large colorful gradients for tech feel */
-    radial-gradient(1200px 800px at 10% 10%, var(--bg-color-1, hsla(280, 85%, 60%, 0.08)) 0%, rgba(0,0,0,0) 50%),
-    radial-gradient(1000px 700px at 90% 20%, var(--bg-color-2, hsla(200, 90%, 65%, 0.06)) 0%, rgba(0,0,0,0) 55%),
-    radial-gradient(1100px 900px at 70% 80%, var(--bg-color-3, hsla(320, 80%, 70%, 0.07)) 0%, rgba(0,0,0,0) 60%),
-    radial-gradient(800px 600px at 30% 70%, var(--bg-color-4, hsla(160, 85%, 55%, 0.05)) 0%, rgba(0,0,0,0) 45%),
-    radial-gradient(900px 500px at 80% 50%, var(--bg-color-5, hsla(40, 90%, 65%, 0.04)) 0%, rgba(0,0,0,0) 50%),
-    radial-gradient(600px 400px at 50% 30%, var(--bg-color-6, hsla(240, 75%, 60%, 0.06)) 0%, rgba(0,0,0,0) 40%),
-    /* Subtle base gradient to maintain dark Pro feel */
-    linear-gradient(135deg, #0a0a0a 0%, #000000 50%, #050505 100%);
+  z-index: 2;
+  background: 
+    radial-gradient(circle at 20% 30%, var(--bg-color-1) 0%, transparent 35%),
+    radial-gradient(circle at 80% 70%, var(--bg-color-2) 0%, transparent 40%),
+    radial-gradient(circle at 50% 90%, var(--bg-color-3) 0%, transparent 30%);
+  pointer-events: none;
+}
+
+.mp-bg-gradients::after{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 8% 8%, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.55) 30%, rgba(0,0,0,0.75) 70%);
+  pointer-events: none;
+}
+
+.mp-bg-grid{
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background-image: 
+    linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .mp-bg-grid {
+    background-size: 50px 50px;
+  }
+}
+
+.mp-bg-particles{
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+    var(--bg-color-1) 0%, 
+    var(--bg-color-4) 20%, 
+    transparent 60%
+  );
+  filter: blur(8px);
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .mp-bg-particles {
+    background: radial-gradient(
+      circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+      var(--bg-color-1) 0%, 
+      var(--bg-color-4) 15%, 
+      transparent 50%
+    );
+    filter: blur(6px);
+  }
 }
 
 /* 深色覆盖层：从左上角亮到周围暗 */
