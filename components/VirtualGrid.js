@@ -1,6 +1,12 @@
-import { FixedSizeGrid as Grid } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
+import React from 'react';
 import ProductCard from './ProductCard';
+
+// Fix for import issues with react-window and auto-sizer in some Next.js environments
+const ReactWindow = require('react-window');
+const Grid = ReactWindow.FixedSizeGrid || ReactWindow.default.FixedSizeGrid;
+
+const AutoSizerModule = require('react-virtualized-auto-sizer');
+const AutoSizer = AutoSizerModule.default || AutoSizerModule;
 
 const GUTTER_SIZE = 22;
 const MIN_COLUMN_WIDTH = 240;
