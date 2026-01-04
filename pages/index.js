@@ -202,45 +202,175 @@ export default function Home() {
     setIsDrawerOpen(open);
   }, []);
 
-  // Progressive rendering state to avoid jank when many items
+  // ============ 动态性能检测 ============
+  const getDeviceCapability = useCallback(() => {
+    // 仅在客户端运行（避免 SSR 时 window 不存在）
+    if (typeof window === 'undefined') {
+      return { cpuCores: 4, isHighEnd: false, isMidRange: true };
+    }
+    const cpuCores = navigator.hardwareConcurrency || 4;
+    const memoryInfo = window.performance?.memory;
+    const totalMemory = memoryInfo?.jsHeapSizeLimit || 0;
+    const isHighEnd = cpuCores >= 8 || totalMemory > 8 * 1024 * 1024 * 1024;
+    const isMidRange = cpuCores >= 4;
+    return { cpuCores, isHighEnd, isMidRange };
+  }, []);
+
+  const getBatchSize = useCallback(() => {
+    // 仅在客户端运行
+    if (typeof window === 'undefined') {
+      return 8; // SSR 时返回默认值
+    }
+    const { cpuCores, isHighEnd, isMidRange } = getDeviceCapability();
+    const isMobile = window.innerWidth < 700;
+
+    if (isHighEnd) {
+      return isMobile ? 8 : 12; // 高端机：多加载，更快完成
+    } else if (isMidRange) {
+      return isMobile ? 6 : 8; // 中端机：保持较好平衡
+    } else {
+      return isMobile ? 4 : 6; // 低端机：少加载，避免卡顿
+    }
+  }, [getDeviceCapability]);
+
+  // ============ 渐进式渲染 + 滚动预判加载 ============
   const [visibleCount, setVisibleCount] = useState(0);
+  const [skeletonVisible, setSkeletonVisible] = useState(true);
+  const renderAbort = useRef(false);
+  const scrollHandlerRef = useRef(null);
+
+  useEffect(() => {
+    // 骨架屏最小显示时间：300ms，避免加载太快时的闪烁
+    const skeletonTimer = setTimeout(() => {
+      setSkeletonVisible(false);
+    }, 300);
+
+    return () => clearTimeout(skeletonTimer);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
     const total = filteredProducts.length;
 
-    // If small list, render all at once
-    if (total <= 24) {
-      if (mounted) setVisibleCount(total);
-      return;
+    // 筛选变更时立即中断旧渲染
+    renderAbort.current = true;
+    if (scrollHandlerRef.current) {
+      const mainContainer = document.querySelector('.mp-main');
+      if (mainContainer) {
+        mainContainer.removeEventListener('scroll', scrollHandlerRef.current);
+      }
     }
 
-    // For large lists, render progressively in batches
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 700;
-    const initial = isMobile ? 6 : 12;
-    const batch = isMobile ? 6 : 8;
+    // 重置渲染状态
+    setTimeout(() => {
+      if (mounted) {
+        setVisibleCount(0);
+        setSkeletonVisible(true);
+        renderAbort.current = false;
+      }
+    }, 0);
 
-    let current = 0;
-    const scheduleNext = () => {
-      if (!mounted) return;
-      current = Math.min(total, current + (current === 0 ? initial : batch));
-      setVisibleCount(current);
-      if (current < total) {
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(scheduleNext, { timeout: 200 });
-        } else {
-          setTimeout(scheduleNext, 60);
+    // 如果结果集较小，一次性渲染
+    if (total <= 24) {
+      const timer = setTimeout(() => {
+        if (mounted && !renderAbort.current) {
+          setVisibleCount(total);
         }
+      }, 10);
+      return () => {
+        clearTimeout(timer);
+        mounted = false;
+      };
+    }
+
+    // 大列表：渐进式渲染 + 滚动预判加载
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 700;
+    const batchSize = getBatchSize();
+    const initial = Math.min(total, isMobile ? Math.ceil(batchSize * 1.5) : Math.ceil(batchSize * 1.2));
+    let current = 0;
+
+    // 1. 初始渲染首屏
+    const initRender = () => {
+      if (!mounted || renderAbort.current) return;
+      current = Math.min(total, initial);
+      setVisibleCount(current);
+
+      // 若首屏就是全部，不监听滚动
+      if (current >= total) return;
+
+      // 2. 设置滚动监听：预判加载
+      const mainContainer = document.querySelector('.mp-main');
+      if (!mainContainer) return;
+
+      const handleScroll = () => {
+        if (!mounted || renderAbort.current || current >= total) return;
+
+        const { scrollTop, clientHeight, scrollHeight } = mainContainer;
+        // 当滚动到已渲染内容的 80% 时，提前加载下一批
+        const scrollTrigger = scrollTop + clientHeight >= scrollHeight * 0.8;
+
+        if (scrollTrigger && current < total) {
+          loadNextBatch();
+        }
+      };
+
+      scrollHandlerRef.current = handleScroll;
+      mainContainer.addEventListener('scroll', handleScroll, { passive: true });
+    };
+
+    // 3. 加载下一批（利用 requestIdleCallback 优先占用空闲时间）
+    const loadNextBatch = () => {
+      if (!mounted || renderAbort.current) return;
+      const nextCurrent = Math.min(total, current + batchSize);
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(
+          () => {
+            if (mounted && !renderAbort.current) {
+              current = nextCurrent;
+              setVisibleCount(current);
+            }
+          },
+          { timeout: 150 } // 150ms 内没有空闲时间则强制加载，避免等太久
+        );
+      } else {
+        setTimeout(() => {
+          if (mounted && !renderAbort.current) {
+            current = nextCurrent;
+            setVisibleCount(current);
+          }
+        }, 40); // 低端机 timeout 缩短，加快加载
       }
     };
 
-    // start
-    scheduleNext();
+    // 初始化
+    initRender();
 
     return () => {
       mounted = false;
+      renderAbort.current = true;
+      if (scrollHandlerRef.current) {
+        const mainContainer = document.querySelector('.mp-main');
+        if (mainContainer) {
+          mainContainer.removeEventListener('scroll', scrollHandlerRef.current);
+        }
+      }
     };
-  }, [filteredProducts]);
+  }, [filteredProducts, getBatchSize]);
+
+  // ============ 模块3：缓存已渲染卡片 ============
+  const renderedCards = useMemo(() => {
+    return filteredProducts.slice(0, visibleCount).map((mac) => (
+      <ProductCard key={mac?.id || `${mac?.modelId}-${mac?.priceNum}`} data={mac} />
+    ));
+  }, [filteredProducts, visibleCount]);
+
+  // ============ 模块4：处理筛选结果变化时的重置 ============
+  useEffect(() => {
+    // 筛选结果长度变化时，立即重置渲染状态
+    setVisibleCount(0);
+    setSkeletonVisible(true);
+  }, [filteredProducts.length]);
 
   return (
     <div className="mp-root">
@@ -387,12 +517,14 @@ export default function Home() {
             </div>
           ) : (
             <div className="mp-grid">
-              {filteredProducts.slice(0, visibleCount).map((mac) => (
-                <ProductCard key={mac?.id || `${mac?.modelId}-${mac?.priceNum}`} data={mac} />
-              ))}
+              {/* 使用缓存的已渲染卡片 */}
+              {renderedCards}
 
-              {/* Render skeleton placeholders while progressive loading continues */}
-              {visibleCount < filteredProducts.length && Array.from({ length: Math.min(8, Math.max(3, filteredProducts.length - visibleCount)) }).map((_, i) => (
+              {/* 仅当还有未加载的卡片且骨架屏未超时时，才渲染骨架屏
+                  数量 = 下一批次数量，避免过多骨架屏造成视觉混乱 */}
+              {visibleCount < filteredProducts.length && skeletonVisible && Array.from({
+                length: Math.min(getBatchSize(), Math.max(2, filteredProducts.length - visibleCount))
+              }).map((_, i) => (
                 <SkeletonCard key={`skeleton-${i}`} />
               ))}
             </div>

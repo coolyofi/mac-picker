@@ -99,25 +99,53 @@ body{
   pointer-events: none;
   opacity: 0.95;
 }
+
+/* 微光动效：柔和的渐变移动 */
 .skeleton-rect{
   width: 72%;
   height: 60%;
-  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 75%);
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0.05) 0%, 
+    rgba(255,255,255,0.12) 50%, 
+    rgba(255,255,255,0.05) 100%
+  );
+  background-size: 200% 100%;
   border-radius: 8px;
-  animation: shimmer 1.2s linear infinite;
+  animation: skeletonShine 1.5s infinite linear;
 }
+
 .skeleton-line{
   display: inline-block;
   height: 12px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.04) 75%);
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0.05) 0%, 
+    rgba(255,255,255,0.12) 50%, 
+    rgba(255,255,255,0.05) 100%
+  );
+  background-size: 200% 100%;
   border-radius: 6px;
-  animation: shimmer 1.2s linear infinite;
+  animation: skeletonShine 1.5s infinite linear;
 }
+
 .skeleton-line.short{ width: 120px; height: 16px }
 .skeleton-line.thinner{ width: 90px; height: 12px }
 .skeleton-line.small{ width: 60px; height: 18px }
 .skeleton-line.tiny{ width: 48px; height: 14px }
 
+/* 微光动效关键帧 */
+@keyframes skeletonShine {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* 低端设备：关闭动效，使用静态背景，降低GPU压力 */
+.pc--skeleton-no-animation .skeleton-rect,
+.pc--skeleton-no-animation .skeleton-line {
+  animation: none;
+  background: rgba(255,255,255,0.08);
+}
+
+/* 旧的 shimmer 动效保留为兼容（以防其他地方使用） */
 @keyframes shimmer {
   0% { background-position: -200px 0; }
   100% { background-position: 200px 0; }
