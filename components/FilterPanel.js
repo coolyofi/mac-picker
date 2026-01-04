@@ -1,5 +1,5 @@
 import GeekSlider from "./GeekSlider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function clampNum(n, min, max) {
   const v = Number(n);
@@ -21,27 +21,103 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
   const [localMax, setLocalMax] = useState(filters.priceMax || maxB);
   const [localRam, setLocalRam] = useState(filters.ram || 8);
   const [localSsd, setLocalSsd] = useState(filters.ssd || 256);
+  const [priceError, setPriceError] = useState(""); // 价格容错提示
+
+  // 处理价格输入容错：自动交换不合理的大小顺序
+  const safeSetMin = (v) => {
+    const parsed = Number(v);
+    if (!Number.isFinite(parsed)) {
+      setPriceError("请输入有效数字");
+      return;
+    }
+    const nextMin = clampNum(parsed, minB, maxB);
+    // 如果 min > max，自动交换
+    if (nextMin > localMax) {
+      setLocalMin(localMax);
+      setLocalMax(nextMin);
+      setPriceError("已为您调整价格顺序");
+      setTimeout(() => setPriceError(""), 2000);
+    } else {
+      setLocalMin(nextMin);
+      setPriceError("");
+    }
+  };
+
+  const safeSetMax = (v) => {
+    const parsed = Number(v);
+    if (!Number.isFinite(parsed)) {
+      setPriceError("请输入有效数字");
+      return;
+    }
+    const nextMax = clampNum(parsed, minB, maxB);
+    // 如果 max < min，自动交换
+    if (nextMax < localMin) {
+      setLocalMax(localMin);
+      setLocalMin(nextMax);
+      setPriceError("已为您调整价格顺序");
+      setTimeout(() => setPriceError(""), 2000);
+    } else {
+      setLocalMax(nextMax);
+      setPriceError("");
+    }
+  };
 
   const setMin = (v) => {
     const nextMin = clampNum(v, minB, maxB);
     setLocalMin(nextMin);
+    setPriceError("");
   };
 
   const setMax = (v) => {
     const nextMax = clampNum(v, minB, maxB);
     setLocalMax(nextMax);
+    setPriceError("");
+  };
+
+  // 快捷预算快按钮
+  const quickBudgets = [
+    { label: "6k-8k", min: 6000, max: 8000 },
+    { label: "8k-12k", min: 8000, max: 12000 },
+    { label: "12k+", min: 12000, max: maxB },
+  ];
+
+  const applyQuickBudget = (budget) => {
+    setLocalMin(Math.max(minB, budget.min));
+    setLocalMax(Math.min(maxB, budget.max));
+    setPriceError("");
   };
 
   const apply = () => {
-    setFilters((f) => ({
-      ...f,
+    const nextFilters = {
       priceMin: clampNum(localMin, minB, maxB),
       priceMax: clampNum(localMax, minB, maxB),
       ram: localRam,
       ssd: localSsd,
+    };
+    setFilters((f) => ({
+      ...f,
+      ...nextFilters,
     }));
     if (typeof onApply === 'function') onApply();
   };
+
+  // PC 端实时同步（避免用户手动点击"应用"）
+  useEffect(() => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 700;
+    if (isMobile) return; // 移动端由用户手动点击"应用筛选"
+
+    const timer = setTimeout(() => {
+      setFilters((f) => ({
+        ...f,
+        priceMin: clampNum(localMin, minB, maxB),
+        priceMax: clampNum(localMax, minB, maxB),
+        ram: localRam,
+        ssd: localSsd,
+      }));
+    }, 300); // 300ms debounce，降低频繁更新的性能开销
+
+    return () => clearTimeout(timer);
+  }, [localMin, localMax, localRam, localSsd, minB, maxB, setFilters]);
 
   const reset = () => {
     setLocalMin(minB);
@@ -74,10 +150,10 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
           <div className="fp-field">
             <div className="fp-fieldLabel">最低</div>
             <input
-              className="fp-input"
+              className={`fp-input ${priceError ? "fp-input--error" : ""}`}
               value={localMin || ""}
               onChange={(e) => setLocalMin(e.target.value)}
-              onBlur={() => setMin(localMin)}
+              onBlur={() => safeSetMin(localMin)}
               inputMode="numeric"
               placeholder={`${Math.round(minB)}`}
             />
@@ -85,14 +161,31 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
           <div className="fp-field">
             <div className="fp-fieldLabel">最高</div>
             <input
-              className="fp-input"
+              className={`fp-input ${priceError ? "fp-input--error" : ""}`}
               value={localMax || ""}
               onChange={(e) => setLocalMax(e.target.value)}
-              onBlur={() => setMax(localMax)}
+              onBlur={() => safeSetMax(localMax)}
               inputMode="numeric"
               placeholder={`${Math.round(maxB)}`}
             />
           </div>
+        </div>
+
+        {/* 容错提示 */}
+        {priceError && <div className="fp-errorTip">{priceError}</div>}
+
+        {/* 快捷预算按钮 */}
+        <div className="fp-quickBudgets">
+          {quickBudgets.map((budget) => (
+            <button
+              key={budget.label}
+              className="fp-quickBtn"
+              onClick={() => applyQuickBudget(budget)}
+              title={`快速选择 ${fmtPrice(budget.min)} - ${fmtPrice(budget.max)}`}
+            >
+              {budget.label}
+            </button>
+          ))}
         </div>
 
         <div className="fp-rangeWrap">

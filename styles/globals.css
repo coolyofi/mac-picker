@@ -1238,3 +1238,272 @@ main,
 .count-roll--bounce .count-roll__value {
   /* 弹跳动画由 Framer Motion 控制 */
 }
+
+/* ====== 新增：搜索下拉 + 标签栏 + 容错提示 ====== */
+
+/* SearchWithDropdown 样式 */
+.swd-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.swd-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.swd-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.55);
+  color: var(--txt);
+  outline: none;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.swd-input::placeholder {
+  color: rgba(255,255,255,.35);
+}
+
+.swd-input:focus {
+  border-color: rgba(62,160,255,.55);
+  box-shadow: 0 0 0 3px rgba(62,160,255,.12);
+}
+
+/* 清空按钮 */
+.swd-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,.45);
+  transition: color 0.2s ease;
+  padding: 0;
+}
+
+.swd-clear:hover {
+  color: rgba(255,255,255,.7);
+}
+
+.swd-clear svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* 下拉提示 */
+.swd-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+  background: rgba(0,0,0,.85);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 12px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 16px 48px rgba(0,0,0,.4);
+  z-index: 1000;
+  padding: 6px 0;
+}
+
+.swd-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: background-color 0.15s ease;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+.swd-item:last-child {
+  border-bottom: none;
+}
+
+.swd-item:hover,
+.swd-item--active {
+  background-color: rgba(255,255,255,.08);
+}
+
+.swd-item-text {
+  color: rgba(255,255,255,.82);
+  font-size: 13px;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.swd-item-price {
+  color: rgba(255,255,255,.45);
+  font-size: 12px;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+/* 已选条件标签栏 */
+.mp-appliedTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 0 0 8px 0;
+}
+
+.mp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  font-size: 12px;
+  color: rgba(255,255,255,.78);
+  white-space: nowrap;
+  animation: slideInUp 0.2s ease;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mp-tag-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  color: rgba(255,255,255,.45);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.mp-tag-close:hover {
+  color: rgba(255,255,255,.7);
+}
+
+/* 价格筛选容错提示 */
+.fp-errorTip {
+  font-size: 12px;
+  color: #ff6b6b;
+  padding: 6px 8px;
+  background: rgba(255,107,107,.08);
+  border: 1px solid rgba(255,107,107,.2);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  animation: slideInDown 0.2s ease;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 输入框错误状态 */
+.fp-input--error {
+  border-color: rgba(255,107,107,.4) !important;
+  background: rgba(255,107,107,.06) !important;
+}
+
+/* 快捷预算按钮 */
+.fp-quickBudgets {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.fp-quickBtn {
+  flex: 1;
+  min-width: 60px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.72);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.fp-quickBtn:hover {
+  border-color: rgba(255,255,255,.25);
+  background: rgba(255,255,255,.12);
+  color: rgba(255,255,255,.92);
+}
+
+.fp-quickBtn:active {
+  transform: scale(0.98);
+}
+
+/* 移动端抽屉加载动画 */
+@keyframes drawerSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.mp-drawer {
+  animation: drawerSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 移动端优化：搜索框边距调整 */
+@media (max-width: 768px) {
+  .swd-dropdown {
+    max-height: 200px;
+  }
+
+  .mp-appliedTags {
+    gap: 6px;
+  }
+
+  .mp-tag {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+}

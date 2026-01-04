@@ -2,18 +2,14 @@ import Head from "next/head";
 import { useEffect, useMemo, useRef, useState, useCallback, memo } from "react";
 import dynamic from "next/dynamic";
 import macData from "../data/macs.json";
-<<<<<<< HEAD
-import FilterPanel from "../components/FilterPanel";
-import ProductCard from "../components/ProductCard";
-import SkeletonCard from "../components/SkeletonCard";
-=======
->>>>>>> 7190f33 (refactor: optimize component imports and enhance filtering logic)
+import SearchWithDropdown from "../components/SearchWithDropdown";
 import ClientOnlyTime from "../components/ClientOnlyTime";
+import SkeletonCard from "../components/SkeletonCard";
 
 // 1. 动态导入非首屏必要组件，减少初始 JS 体积
 const FilterPanel = dynamic(() => import("../components/FilterPanel"), {
   loading: () => <div className="mp-loading">加载筛选面板...</div>,
-  ssr: false, // 筛选面板仅客户端渲染
+  ssr: false,
 });
 const ProductCard = dynamic(() => import("../components/ProductCard"), {
   loading: () => <div className="mp-card-skeleton">加载产品卡片...</div>,
@@ -61,14 +57,10 @@ function useRandomDarkBackdrop() {
     ];
 
     const root = document.documentElement;
-<<<<<<< HEAD
+    if (!root) return;
+
     let currentSchemeIndex = Math.floor(Math.random() * colorSchemes.length);
     let scheme = colorSchemes[currentSchemeIndex];
-=======
-    if (!root) return; // 防错：避免服务端渲染时操作 DOM
-
-    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
->>>>>>> 7190f33 (refactor: optimize component imports and enhance filtering logic)
 
     const applyScheme = () => {
       root.style.setProperty("--bg-h1", `${scheme.h1}`);
@@ -78,8 +70,6 @@ function useRandomDarkBackdrop() {
       root.style.setProperty("--bg-a2", `${scheme.a2}`);
       root.style.setProperty("--bg-a3", `${scheme.a3}`);
 
-<<<<<<< HEAD
-      // 设置6个渐变颜色
       root.style.setProperty("--bg-color-1", `hsla(${scheme.h1}, 85%, 60%, ${scheme.a1})`);
       root.style.setProperty("--bg-color-2", `hsla(${scheme.h2}, 90%, 65%, ${scheme.a2})`);
       root.style.setProperty("--bg-color-3", `hsla(${scheme.h3}, 80%, 70%, ${scheme.a3})`);
@@ -90,14 +80,6 @@ function useRandomDarkBackdrop() {
 
     applyScheme();
 
-    // 定时切换（每30秒）- 禁用以保持液态背景稳定
-    // const interval = setInterval(() => {
-    //   currentSchemeIndex = (currentSchemeIndex + 1) % colorSchemes.length;
-    //   scheme = colorSchemes[currentSchemeIndex];
-    //   applyScheme();
-    // }, 30000);
-
-    // 鼠标跟随光点
     let animationId;
     const handleMouseMove = (e) => {
       const particles = document.getElementById('particles');
@@ -115,26 +97,14 @@ function useRandomDarkBackdrop() {
     window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
-      // clearInterval(interval); // 已禁用自动切换
       window.removeEventListener('mousemove', handleMouseMove);
       if (animationId) cancelAnimationFrame(animationId);
-=======
-    root.style.setProperty("--bg-h1", `${h1}`);
-    root.style.setProperty("--bg-h2", `${h2}`);
-    root.style.setProperty("--bg-h3", `${h3}`);
-    root.style.setProperty("--bg-a1", `${a1}`);
-    root.style.setProperty("--bg-a2", `${a2}`);
-    root.style.setProperty("--bg-a3", `${a3}`);
-
-    // 清理副作用：避免卸载时残留样式
-    return () => {
       root.style.removeProperty("--bg-h1");
       root.style.removeProperty("--bg-h2");
       root.style.removeProperty("--bg-h3");
       root.style.removeProperty("--bg-a1");
       root.style.removeProperty("--bg-a2");
       root.style.removeProperty("--bg-a3");
->>>>>>> 7190f33 (refactor: optimize component imports and enhance filtering logic)
     };
   }, []);
 }
@@ -315,31 +285,92 @@ export default function Home() {
             </svg>
           </button>
 
-          <input
+          <SearchWithDropdown
             value={filters.q}
-            onChange={(e) => setFilters((f) => ({ ...f, q: e.target.value }))}
-            className="mp-search"
+            onChange={(newQuery) => setFilters((f) => ({ ...f, q: newQuery }))}
+            products={products}
             placeholder="搜索：型号 / 芯片 / 颜色 / 关键字…"
-            inputMode="search"
           />
           {/* search hint removed per design: counts hidden on homepage */}
+        </div>
+
+        {/* 已选条件标签栏 */}
+        <div className="mp-appliedTags">
+          {filters.priceMin > priceBounds.min && (
+            <div className="mp-tag">
+              ¥{Math.round(filters.priceMin).toLocaleString("zh-CN")} 起
+              <button
+                className="mp-tag-close"
+                onClick={() =>
+                  setFilters((f) => ({
+                    ...f,
+                    priceMin: priceBounds.min || 0,
+                  }))
+                }
+                aria-label="删除价格筛选"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          {filters.priceMax < priceBounds.max && (
+            <div className="mp-tag">
+              最高 ¥{Math.round(filters.priceMax).toLocaleString("zh-CN")}
+              <button
+                className="mp-tag-close"
+                onClick={() =>
+                  setFilters((f) => ({
+                    ...f,
+                    priceMax: priceBounds.max || 0,
+                  }))
+                }
+                aria-label="删除价格上限"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          {filters.ram > 8 && (
+            <div className="mp-tag">
+              ≥ {filters.ram}GB RAM
+              <button
+                className="mp-tag-close"
+                onClick={() =>
+                  setFilters((f) => ({
+                    ...f,
+                    ram: 8,
+                  }))
+                }
+                aria-label="删除RAM筛选"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          {filters.ssd > 256 && (
+            <div className="mp-tag">
+              ≥ {filters.ssd}GB SSD
+              <button
+                className="mp-tag-close"
+                onClick={() =>
+                  setFilters((f) => ({
+                    ...f,
+                    ssd: 256,
+                  }))
+                }
+                aria-label="删除SSD筛选"
+              >
+                ×
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
       <div className="mp-layout">
         {/* 左侧筛选（只保留：价格 / RAM / SSD） */}
         <aside className="mp-sidebar">
-<<<<<<< HEAD
-          <div className="mp-sidebarMeta">
-            <div className="mp-metaRow">
-              <span className="mp-metaKey">当前匹配</span>
-              <span className="mp-metaVal mp-metaValStrong">{filteredProducts.length} 台</span>
-            </div>
-          </div>
-
-=======
           <SidebarMeta lastUpdated={macData?.lastUpdated} count={filteredProducts.length} />
->>>>>>> 7190f33 (refactor: optimize component imports and enhance filtering logic)
           <FilterPanel
             filters={filters}
             setFilters={handleSetFilters}
@@ -387,17 +418,7 @@ export default function Home() {
             </div>
 
             <div className="mp-drawer-content">
-<<<<<<< HEAD
-              <div className="mp-sidebarMeta">
-                <div className="mp-metaRow">
-                  <span className="mp-metaKey">当前匹配</span>
-                  <span className="mp-metaVal mp-metaValStrong">{filteredProducts.length} 台</span>
-                </div>
-              </div>
-
-=======
               <SidebarMeta lastUpdated={macData?.lastUpdated} count={filteredProducts.length} />
->>>>>>> 7190f33 (refactor: optimize component imports and enhance filtering logic)
               <FilterPanel
                 filters={filters}
                 setFilters={handleSetFilters}
