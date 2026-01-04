@@ -160,6 +160,8 @@ export default function Home() {
     priceMax: 0, // 0 表示不设上限（初始化后会 set）
     ram: 8,
     ssd: 256,
+    tags: [],
+    logic: "AND",
   }));
 
   // 初始化 priceMin/priceMax（避免 SSR/CSR 不一致）
@@ -176,6 +178,44 @@ export default function Home() {
 
   const normalizedQuery = useMemo(() => (filters.q || "").trim().toLowerCase(), [filters.q]);
 
+  // 标签匹配函数
+  const matchesTag = useCallback((item, tag) => {
+    const s = item?.specs || {};
+    const category = tag.category;
+    const text = tag.text.toLowerCase();
+
+    switch (category) {
+      case "机型":
+        return item?.displayTitle?.toLowerCase().includes(text) ||
+               item?.modelId?.toLowerCase().includes(text);
+      case "芯片":
+        return s?.chip_model?.toLowerCase().includes(text) ||
+               s?.chip_series?.toLowerCase().includes(text);
+      case "存储":
+        return String(s?.ssd_gb || "").includes(text.replace(/gb/i, "")) ||
+               item?.details?.some(d => d.toLowerCase().includes(text));
+      case "内存":
+        return String(s?.ram || "").includes(text.replace(/gb/i, "")) ||
+               item?.details?.some(d => d.toLowerCase().includes(text));
+      case "颜色":
+        return item?.color?.toLowerCase().includes(text);
+      default:
+        // 自定义标签，搜索所有字段
+        const haystack = [
+          item?.displayTitle,
+          item?.modelId,
+          s?.chip_model,
+          s?.chip_series,
+          item?.color,
+          ...(Array.isArray(item?.details) ? item.details : []),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return haystack.includes(text);
+    }
+  }, []);
+
   // 优化过滤逻辑：使用短路评估减少计算，缓存的 filterProduct 函数避免重复创建
   const filterProduct = useCallback((item) => {
     const s = item?.specs || {};
@@ -191,7 +231,17 @@ export default function Home() {
     if (Number(s?.ram || 0) < ramMin) return false;
     if (Number(s?.ssd_gb || 0) < ssdMin) return false;
 
-    // 搜索匹配：提前拼接 haystack，避免多次拼接
+    // 标签筛选
+    if (filters.tags && filters.tags.length > 0) {
+      const matches = filters.tags.map(tag => matchesTag(item, tag));
+      if (filters.logic === "AND") {
+        return matches.every(Boolean);
+      } else {
+        return matches.some(Boolean);
+      }
+    }
+
+    // 传统搜索匹配（向后兼容）
     if (normalizedQuery) {
       const haystack = [
         item?.displayTitle,
@@ -207,7 +257,7 @@ export default function Home() {
       return haystack.includes(normalizedQuery);
     }
     return true;
-  }, [filters.priceMin, filters.priceMax, filters.ram, filters.ssd, normalizedQuery]);
+  }, [filters.priceMin, filters.priceMax, filters.ram, filters.ssd, filters.tags, filters.logic, normalizedQuery, matchesTag]);
 
   // 优化过滤+排序：减少重复计算
   const filteredProducts = useMemo(() => {
@@ -279,10 +329,7 @@ export default function Home() {
     // 筛选变更时立即中断旧渲染
     renderAbort.current = true;
     if (scrollHandlerRef.current) {
-      const mainContainer = document.querySelector('.mp-main');
-      if (mainContainer) {
-        mainContainer.removeEventListener('scroll', scrollHandlerRef.current);
-      }
+      window.removeEventListener('scroll', scrollHandlerRef.current);
     }
 
     // 重置渲染状态 (同步重置，避免 race condition)
@@ -323,23 +370,21 @@ export default function Home() {
       }
 
       // 2. 设置滚动监听：预判加载
-      const mainContainer = document.querySelector('.mp-main');
-      if (!mainContainer) return;
-
       const handleScroll = () => {
         if (!mounted || renderAbort.current || current >= total) return;
 
-        const { scrollTop, clientHeight, scrollHeight } = mainContainer;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
         // 当滚动到已渲染内容的 80% 时，提前加载下一批
-        const scrollTrigger = scrollTop + clientHeight >= scrollHeight * 0.8;
+        const scrollTrigger = scrollTop + windowHeight >= documentHeight * 0.8;
 
         if (scrollTrigger && current < total) {
           loadNextBatch();
         }
       };
 
-      scrollHandlerRef.current = handleScroll;
-      mainContainer.addEventListener('scroll', handleScroll, { passive: true });
+      window.addEventListener('scroll', handleScroll, { passive: true });
     };
 
     // 3. 加载下一批（利用 requestIdleCallback 优先占用空闲时间）
@@ -376,10 +421,7 @@ export default function Home() {
       mounted = false;
       renderAbort.current = true;
       if (scrollHandlerRef.current) {
-        const mainContainer = document.querySelector('.mp-main');
-        if (mainContainer) {
-          mainContainer.removeEventListener('scroll', scrollHandlerRef.current);
-        }
+        window.removeEventListener('scroll', scrollHandlerRef.current);
       }
     };
   }, [filteredProducts, getBatchSize]);
@@ -406,7 +448,7 @@ export default function Home() {
         <title>MacPicker Pro</title>
         <meta name="description" content="选 Mac 小助手" />
         {/* 预加载关键 CSS，减少渲染阻塞 */}
-        <link rel="preload" href="/styles/main.css" as="style" />
+        <link rel="preload" href="/styles/globals.css" as="style" />
       </Head>
 
       {/* 顶部：标题 + 右上角全局搜索 */}
@@ -437,8 +479,10 @@ export default function Home() {
           </button>
 
           <SearchWithDropdown
-            value={filters.q}
-            onChange={(newQuery) => setFilters((f) => ({ ...f, q: newQuery }))}
+            tags={filters.tags}
+            logic={filters.logic}
+            onTagsChange={(newTags) => setFilters((f) => ({ ...f, tags: newTags }))}
+            onLogicChange={(newLogic) => setFilters((f) => ({ ...f, logic: newLogic }))}
             products={products}
             placeholder="搜索：型号 / 芯片 / 颜色 / 关键字…"
           />

@@ -1,4 +1,4 @@
-import '../styles/globals.css';
+import './globals.css';
 import { useEffect } from 'react';
 import LiquidBackground from '@/components/LiquidBackground';
 

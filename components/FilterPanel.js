@@ -106,17 +106,13 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 700;
     if (isMobile) return; // 移动端由用户手动点击"应用筛选"
 
-    const timer = setTimeout(() => {
-      setFilters((f) => ({
-        ...f,
-        priceMin: clampNum(localMin, minB, maxB),
-        priceMax: clampNum(localMax, minB, maxB),
-        ram: localRam,
-        ssd: localSsd,
-      }));
-    }, 300); // 300ms debounce，降低频繁更新的性能开销
-
-    return () => clearTimeout(timer);
+    setFilters((f) => ({
+      ...f,
+      priceMin: clampNum(localMin, minB, maxB),
+      priceMax: clampNum(localMax, minB, maxB),
+      ram: localRam,
+      ssd: localSsd,
+    }));
   }, [localMin, localMax, localRam, localSsd, minB, maxB, setFilters]);
 
   const reset = () => {

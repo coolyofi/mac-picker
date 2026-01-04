@@ -49,14 +49,14 @@ export default function GeekSlider({ type, value, onChange }) {
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 1.15 }}
           style={{
-            background: "rgba(255, 255, 255, 0.6)",
+            background: "var(--theme-blue)",
             backdropFilter: "blur(8px)",
-            border: "1px solid rgba(255, 255, 255, 0.3)",
-            borderRadius: "8px",
+            border: "1px solid rgba(255, 255, 255, 0.4)",
+            borderRadius: "6px",
             left: `calc(${(currentIndex / max) * 100}% - 9px)`,
             top: "50%",
             transform: "translateY(-50%)",
-            boxShadow: "inset 0 0 8px rgba(255, 255, 255, 0.5)",
+            boxShadow: "0 0 12px var(--theme-blue-glow)",
           }}
         />
 
