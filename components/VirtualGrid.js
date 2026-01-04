@@ -29,6 +29,8 @@ export default function VirtualGrid({ items }) {
             if (index >= items.length) return null;
             
             const item = items[index];
+            // Priority Hints: Prioritize loading for the first 2 rows
+            const isPriority = rowIndex < 2;
             
             return (
               <div style={{
@@ -38,7 +40,7 @@ export default function VirtualGrid({ items }) {
                 width: style.width - GUTTER_SIZE,
                 height: style.height - GUTTER_SIZE,
               }}>
-                <ProductCard data={item} />
+                <ProductCard data={item} priority={isPriority} />
               </div>
             );
           };

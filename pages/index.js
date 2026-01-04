@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useEffect, useMemo, useRef, useState, useCallback, memo } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback, memo, useDeferredValue } from "react";
 import dynamic from "next/dynamic";
 import macData from "../data/macs.json";
 import SearchWithDropdown from "../components/SearchWithDropdown";
@@ -185,11 +185,21 @@ export default function Home() {
   const [isWorkerReady, setIsWorkerReady] = useState(false);
   const workerRef = useRef(null);
 
+  // Concurrent React: Defer the filter updates to keep input responsive
+  const deferredFilters = useDeferredValue(filters);
+
   useEffect(() => {
     // Initialize worker
     workerRef.current = new Worker(new URL('../workers/filter.worker.js', import.meta.url));
     workerRef.current.onmessage = (e) => {
-      setFilteredProducts(e.data);
+      // View Transitions API: Animate list changes
+      if (document.startViewTransition) {
+        document.startViewTransition(() => {
+          setFilteredProducts(e.data);
+        });
+      } else {
+        setFilteredProducts(e.data);
+      }
       setIsWorkerReady(true);
     };
     
@@ -198,12 +208,12 @@ export default function Home() {
     };
   }, []);
 
-  // Send updates to worker
+  // Send updates to worker (using deferred value)
   useEffect(() => {
     if (workerRef.current) {
-      workerRef.current.postMessage({ products, filters });
+      workerRef.current.postMessage({ products, filters: deferredFilters });
     }
-  }, [products, filters]);
+  }, [products, deferredFilters]);
 
   // 4. useCallback 包裹传递给子组件的函数（避免子组件重渲染）
   const handleSetFilters = useCallback((newFilters) => {

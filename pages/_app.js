@@ -1,4 +1,5 @@
 import './globals.css';
+import '../styles/transitions.css';
 import { useEffect } from 'react';
 import LiquidBackground from '@/components/LiquidBackground';
 

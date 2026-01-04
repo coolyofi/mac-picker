@@ -19,7 +19,7 @@ function has10GE(specs) {
   return !!specs?.has10GbE;
 }
 
-export default function ProductCard({ data }) {
+export default function ProductCard({ data, priority = false }) {
   const [flipped, setFlipped] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -198,8 +198,9 @@ export default function ProductCard({ data }) {
                 <img
                   src={img}
                   alt={modelId || title}
-                  loading="lazy"
+                  loading={priority ? "eager" : "lazy"}
                   decoding="async"
+                  fetchPriority={priority ? "high" : "auto"}
                   onLoad={() => setImageLoaded(true)}
                   style={{ opacity: imageLoaded ? 1 : 0.5 }}
                 />
