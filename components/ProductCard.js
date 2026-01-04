@@ -199,6 +199,7 @@ export default function ProductCard({ data }) {
                   src={img}
                   alt={modelId || title}
                   loading="lazy"
+                  decoding="async"
                   onLoad={() => setImageLoaded(true)}
                   style={{ opacity: imageLoaded ? 1 : 0.5 }}
                 />

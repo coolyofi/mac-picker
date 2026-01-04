@@ -16,6 +16,10 @@ const ProductCard = dynamic(() => import("../components/ProductCard"), {
   loading: () => <div className="mp-card-skeleton">加载产品卡片...</div>,
   ssr: false,
 });
+const VirtualGrid = dynamic(() => import("../components/VirtualGrid"), {
+  ssr: false,
+  loading: () => <div className="mp-loading">加载列表...</div>,
+});
 
 // 2. 抽离重复的 Meta 组件，减少代码重复
 const SidebarMeta = memo(({ lastUpdated, count }) => (
@@ -176,96 +180,30 @@ export default function Home() {
     }));
   }, [priceBounds.min, priceBounds.max]);
 
-  const normalizedQuery = useMemo(() => (filters.q || "").trim().toLowerCase(), [filters.q]);
+  // Worker integration for high-performance filtering
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [isWorkerReady, setIsWorkerReady] = useState(false);
+  const workerRef = useRef(null);
 
-  // 标签匹配函数
-  const matchesTag = useCallback((item, tag) => {
-    const s = item?.specs || {};
-    const category = tag.category;
-    const text = tag.text.toLowerCase();
-
-    switch (category) {
-      case "机型":
-        return item?.displayTitle?.toLowerCase().includes(text) ||
-               item?.modelId?.toLowerCase().includes(text);
-      case "芯片":
-        return s?.chip_model?.toLowerCase().includes(text) ||
-               s?.chip_series?.toLowerCase().includes(text);
-      case "存储":
-        return String(s?.ssd_gb || "").includes(text.replace(/gb/i, "")) ||
-               item?.details?.some(d => d.toLowerCase().includes(text));
-      case "内存":
-        return String(s?.ram || "").includes(text.replace(/gb/i, "")) ||
-               item?.details?.some(d => d.toLowerCase().includes(text));
-      case "颜色":
-        return item?.color?.toLowerCase().includes(text);
-      default:
-        // 自定义标签，搜索所有字段
-        const haystack = [
-          item?.displayTitle,
-          item?.modelId,
-          s?.chip_model,
-          s?.chip_series,
-          item?.color,
-          ...(Array.isArray(item?.details) ? item.details : []),
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-        return haystack.includes(text);
-    }
+  useEffect(() => {
+    // Initialize worker
+    workerRef.current = new Worker(new URL('../workers/filter.worker.js', import.meta.url));
+    workerRef.current.onmessage = (e) => {
+      setFilteredProducts(e.data);
+      setIsWorkerReady(true);
+    };
+    
+    return () => {
+      workerRef.current?.terminate();
+    };
   }, []);
 
-  // 优化过滤逻辑：使用短路评估减少计算，缓存的 filterProduct 函数避免重复创建
-  const filterProduct = useCallback((item) => {
-    const s = item?.specs || {};
-    const price = Number(item?.priceNum || 0);
-    const minP = Number(filters.priceMin || 0);
-    const maxP = Number(filters.priceMax || 0);
-    const ramMin = Number(filters.ram || 0);
-    const ssdMin = Number(filters.ssd || 0);
-
-    // 短路优化：先判断简单条件，不满足直接返回 false
-    if (minP && price < minP) return false;
-    if (maxP && price > maxP) return false;
-    if (Number(s?.ram || 0) < ramMin) return false;
-    if (Number(s?.ssd_gb || 0) < ssdMin) return false;
-
-    // 标签筛选
-    if (filters.tags && filters.tags.length > 0) {
-      const matches = filters.tags.map(tag => matchesTag(item, tag));
-      if (filters.logic === "AND") {
-        return matches.every(Boolean);
-      } else {
-        return matches.some(Boolean);
-      }
+  // Send updates to worker
+  useEffect(() => {
+    if (workerRef.current) {
+      workerRef.current.postMessage({ products, filters });
     }
-
-    // 传统搜索匹配（向后兼容）
-    if (normalizedQuery) {
-      const haystack = [
-        item?.displayTitle,
-        item?.modelId,
-        s?.chip_model,
-        s?.chip_series,
-        item?.color,
-        ...(Array.isArray(item?.details) ? item.details : []),
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(normalizedQuery);
-    }
-    return true;
-  }, [filters.priceMin, filters.priceMax, filters.ram, filters.ssd, filters.tags, filters.logic, normalizedQuery, matchesTag]);
-
-  // 优化过滤+排序：减少重复计算
-  const filteredProducts = useMemo(() => {
-    // 先过滤
-    const filtered = products.filter(filterProduct);
-    // 排序：仅在过滤结果变化时排序
-    return filtered.sort((a, b) => Number(a?.priceNum || 0) - Number(b?.priceNum || 0));
-  }, [products, filterProduct]);
+  }, [products, filters]);
 
   // 4. useCallback 包裹传递给子组件的函数（避免子组件重渲染）
   const handleSetFilters = useCallback((newFilters) => {
@@ -276,162 +214,7 @@ export default function Home() {
     setIsDrawerOpen(open);
   }, []);
 
-  // ============ 动态性能检测 ============
-  const getDeviceCapability = useCallback(() => {
-    // 仅在客户端运行（避免 SSR 时 window 不存在）
-    if (typeof window === 'undefined') {
-      return { cpuCores: 4, isHighEnd: false, isMidRange: true };
-    }
-    const cpuCores = navigator.hardwareConcurrency || 4;
-    const memoryInfo = window.performance?.memory;
-    const totalMemory = memoryInfo?.jsHeapSizeLimit || 0;
-    const isHighEnd = cpuCores >= 8 || totalMemory > 8 * 1024 * 1024 * 1024;
-    const isMidRange = cpuCores >= 4;
-    return { cpuCores, isHighEnd, isMidRange };
-  }, []);
 
-  const getBatchSize = useCallback(() => {
-    // 仅在客户端运行
-    if (typeof window === 'undefined') {
-      return 8; // SSR 时返回默认值
-    }
-    const { cpuCores, isHighEnd, isMidRange } = getDeviceCapability();
-    const isMobile = window.innerWidth < 700;
-
-    if (isHighEnd) {
-      return isMobile ? 8 : 12; // 高端机：多加载，更快完成
-    } else if (isMidRange) {
-      return isMobile ? 6 : 8; // 中端机：保持较好平衡
-    } else {
-      return isMobile ? 4 : 6; // 低端机：少加载，避免卡顿
-    }
-  }, [getDeviceCapability]);
-
-  // ============ 渐进式渲染 + 滚动预判加载 ============
-  const [visibleCount, setVisibleCount] = useState(0);
-  const [skeletonVisible, setSkeletonVisible] = useState(true);
-  const renderAbort = useRef(false);
-  const scrollHandlerRef = useRef(null);
-
-  useEffect(() => {
-    // 骨架屏最小显示时间：300ms，避免加载太快时的闪烁
-    const skeletonTimer = setTimeout(() => {
-      setSkeletonVisible(false);
-    }, 300);
-
-    return () => clearTimeout(skeletonTimer);
-  }, []);
-
-  useEffect(() => {
-    let mounted = true;
-    const total = filteredProducts.length;
-
-    // 筛选变更时立即中断旧渲染
-    renderAbort.current = true;
-    if (scrollHandlerRef.current) {
-      window.removeEventListener('scroll', scrollHandlerRef.current);
-    }
-
-    // 重置渲染状态 (同步重置，避免 race condition)
-    setVisibleCount(0);
-    setSkeletonVisible(true);
-    renderAbort.current = false;
-
-    // 如果结果集较小，一次性渲染
-    if (total <= 24) {
-      const timer = setTimeout(() => {
-        if (mounted && !renderAbort.current) {
-          setVisibleCount(total);
-          setSkeletonVisible(false);
-        }
-      }, 10);
-      return () => {
-        clearTimeout(timer);
-        mounted = false;
-      };
-    }
-
-    // 大列表：渐进式渲染 + 滚动预判加载
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 700;
-    const batchSize = getBatchSize();
-    const initial = Math.min(total, isMobile ? Math.ceil(batchSize * 1.5) : Math.ceil(batchSize * 1.2));
-    let current = 0;
-
-    // 1. 初始渲染首屏
-    const initRender = () => {
-      if (!mounted || renderAbort.current) return;
-      current = Math.min(total, initial);
-      setVisibleCount(current);
-
-      // 若首屏就是全部，不监听滚动
-      if (current >= total) {
-        setSkeletonVisible(false);
-        return;
-      }
-
-      // 2. 设置滚动监听：预判加载
-      const handleScroll = () => {
-        if (!mounted || renderAbort.current || current >= total) return;
-
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-        // 当滚动到已渲染内容的 80% 时，提前加载下一批
-        const scrollTrigger = scrollTop + windowHeight >= documentHeight * 0.8;
-
-        if (scrollTrigger && current < total) {
-          loadNextBatch();
-        }
-      };
-
-      window.addEventListener('scroll', handleScroll, { passive: true });
-    };
-
-    // 3. 加载下一批（利用 requestIdleCallback 优先占用空闲时间）
-    const loadNextBatch = () => {
-      if (!mounted || renderAbort.current) return;
-      const nextCurrent = Math.min(total, current + batchSize);
-
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(
-          () => {
-            if (mounted && !renderAbort.current) {
-              current = nextCurrent;
-              setVisibleCount(current);
-              if (current >= total) setSkeletonVisible(false);
-            }
-          },
-          { timeout: 150 } // 150ms 内没有空闲时间则强制加载，避免等太久
-        );
-      } else {
-        setTimeout(() => {
-          if (mounted && !renderAbort.current) {
-            current = nextCurrent;
-            setVisibleCount(current);
-            if (current >= total) setSkeletonVisible(false);
-          }
-        }, 40); // 低端机 timeout 缩短，加快加载
-      }
-    };
-
-    // 初始化
-    initRender();
-
-    return () => {
-      mounted = false;
-      renderAbort.current = true;
-      if (scrollHandlerRef.current) {
-        window.removeEventListener('scroll', scrollHandlerRef.current);
-      }
-    };
-  }, [filteredProducts, getBatchSize]);
-
-  // ============ 模块3：缓存已渲染卡片 ============
-  const renderedCards = useMemo(() => {
-    return filteredProducts.slice(0, visibleCount).map((mac) => (
-      <ProductCard key={mac?.id || `${mac?.modelId}-${mac?.priceNum}`} data={mac} />
-    ));
-  }, [filteredProducts, visibleCount]);
 
   const deviceType = useDeviceType();
 
@@ -576,24 +359,17 @@ export default function Home() {
 
         {/* 主内容：卡片网格 */}
         <main className="mp-main">
-          {filteredProducts.length === 0 ? (
+          {!isWorkerReady ? (
+             <div className="mp-grid">
+                {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+             </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="mp-empty">
               <div className="mp-emptyTitle">没有匹配到机器</div>
               <div className="mp-emptySub">试试降低 RAM/SSD 要求，或者清空搜索关键字。</div>
             </div>
           ) : (
-            <div className="mp-grid">
-              {/* 使用缓存的已渲染卡片 */}
-              {renderedCards}
-
-              {/* 仅当还有未加载的卡片且骨架屏未超时时，才渲染骨架屏
-                  数量 = 下一批次数量，避免过多骨架屏造成视觉混乱 */}
-              {visibleCount < filteredProducts.length && skeletonVisible && Array.from({
-                length: Math.min(getBatchSize(), Math.max(2, filteredProducts.length - visibleCount))
-              }).map((_, i) => (
-                <SkeletonCard key={`skeleton-${i}`} />
-              ))}
-            </div>
+            <VirtualGrid items={filteredProducts} />
           )}
         </main>
       </div>
