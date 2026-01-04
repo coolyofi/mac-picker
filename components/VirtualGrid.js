@@ -1,18 +1,69 @@
 import React from 'react';
 import ProductCard from './ProductCard';
 
-// Fix for import issues with react-window and auto-sizer in some Next.js environments
-const ReactWindow = require('react-window');
-const Grid = ReactWindow.FixedSizeGrid || ReactWindow.default.FixedSizeGrid;
+import React, { useState, useEffect } from 'react';
 
-const AutoSizerModule = require('react-virtualized-auto-sizer');
-const AutoSizer = AutoSizerModule.default || AutoSizerModule;
+// Client-side dynamic import: ensures compatibility across bundlers and ESM/CJS differences.
+// We intentionally load these in an effect so the import happens only in the browser
+// (the page already async-loads `VirtualGrid` with `ssr:false`).
+let GUTTER_SIZE = 22;
+let MIN_COLUMN_WIDTH = 240;
+let ROW_HEIGHT = 360;
+
+function useVirtualDeps() {
+  const [Grid, setGrid] = useState(null);
+  const [AutoSizer, setAutoSizer] = useState(null);
+  const [missing, setMissing] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    Promise.all([import('react-window'), import('react-virtualized-auto-sizer')])
+      .then(([rw, as]) => {
+        if (!mounted) return;
+        const MaybeGrid = rw?.FixedSizeGrid || rw?.default?.FixedSizeGrid || rw?.default || rw;
+        const MaybeAuto = as?.default || as;
+        if (!MaybeGrid || !MaybeAuto) {
+          console.warn('VirtualGrid: react-window or auto-sizer not available', { rw, as });
+          setMissing(true);
+          return;
+        }
+        setGrid(() => MaybeGrid);
+        setAutoSizer(() => MaybeAuto);
+      })
+      .catch((err) => {
+        console.error('VirtualGrid dynamic import failed', err && err.message ? err.message : err);
+        setMissing(true);
+      });
+    return () => { mounted = false; };
+  }, []);
+
+  return { Grid, AutoSizer, missing };
+}
 
 const GUTTER_SIZE = 22;
 const MIN_COLUMN_WIDTH = 240;
 const ROW_HEIGHT = 360;
 
 export default function VirtualGrid({ items }) {
+  const { Grid, AutoSizer, missing } = useVirtualDeps();
+
+  if (missing) {
+    console.warn('VirtualGrid: missing Grid or AutoSizer, will not render virtualized list');
+    return (
+      <div className="mp-virtual-grid-missing">
+        <div className="mp-empty mp-empty--warn">
+          <div className="mp-emptyTitle">虚拟化依赖缺失</div>
+          <div className="mp-emptySub">缺少依赖：虚拟化列表无法渲染。将回退为非虚拟化渲染。</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!Grid || !AutoSizer) {
+    // still loading – parent will show skeleton/placeholder; avoid rendering until deps ready
+    return null;
+  }
+
   return (
     <div style={{ flex: 1, height: 'calc(100vh - 140px)', width: '100%' }}>
       <AutoSizer>

@@ -13,7 +13,7 @@ function fmtPrice(n) {
   return `¥${Math.round(v).toLocaleString("zh-CN")}`;
 }
 
-export default function FilterPanel({ filters, setFilters, priceBounds, onApply }) {
+export default function FilterPanel({ filters, setFilters, priceBounds, onApply, appliedFields = [] }) {
   const minB = Number(priceBounds?.min || 0);
   const maxB = Number(priceBounds?.max || 0);
 
@@ -25,6 +25,12 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
   const [selectedBudget, setSelectedBudget] = useState(null);
   const [selectedMemory, setSelectedMemory] = useState(null);
   const [selectedStorage, setSelectedStorage] = useState(null); // 选中的快捷预算
+
+  // Visual feedback states when a field change was applied by the worker
+  const [animatePrice, setAnimatePrice] = useState(false);
+  const [animateRam, setAnimateRam] = useState(false);
+  const [animateSsd, setAnimateSsd] = useState(false);
+  const [animateSearch, setAnimateSearch] = useState(false);
 
   // 处理价格输入容错：自动交换不合理的大小顺序
   const safeSetMin = (v) => {
@@ -163,10 +169,31 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
     if (typeof onApply === 'function') onApply();
   };
 
+  // 当 worker 确认某些筛选已被应用时，接收到的字段会通过 `appliedFields` 传入，短暂触发局部动画
+  useEffect(() => {
+    if (!appliedFields || appliedFields.length === 0) return;
+    if (appliedFields.some(k => k === 'priceMin' || k === 'priceMax')) {
+      setAnimatePrice(true);
+      setTimeout(() => setAnimatePrice(false), 450);
+    }
+    if (appliedFields.includes('ram')) {
+      setAnimateRam(true);
+      setTimeout(() => setAnimateRam(false), 450);
+    }
+    if (appliedFields.includes('ssd')) {
+      setAnimateSsd(true);
+      setTimeout(() => setAnimateSsd(false), 450);
+    }
+    if (appliedFields.some(k => k === 'q' || k === 'tags')) {
+      setAnimateSearch(true);
+      setTimeout(() => setAnimateSearch(false), 450);
+    }
+  }, [appliedFields]);
+
   return (
     <div className="fp">
       {/* Price */}
-      <section className="fp-sec">
+      <section className={`fp-sec ${animatePrice ? "fp-sec--pulse" : ""}`}>
         <div className="fp-head">
           <div className="fp-label">价格范围</div>
           <div className="fp-badge">
@@ -246,29 +273,11 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
       </section>
 
       {/* RAM */}
-      <section className="fp-sec">
-        <div className="fp-head">
+      <section className={`fp-sec ${animateRam ? "fp-sec--pulse" : ""}`}>
+        <div>
           <div className="fp-label">统一内存（RAM）</div>
-          <div className="fp-badge fp-badge--ram">≥ {localRam}GB</div>
+          <div className="fp-subLabel">滑动调整最低内存要求</div>
         </div>
-
-        {/* 内存快速选择按钮 */}
-        <div className="fp-quickBudgets">
-          {[8, 16, 32, 64, 128].map((ram) => (
-            <button
-              key={ram}
-              className={`fp-quickBtn ${selectedMemory === ram ? "fp-quickBtn--active" : ""}`}
-              onClick={() => {
-                setLocalRam(ram);
-                setSelectedMemory(ram);
-              }}
-              title={`选择 ${ram}GB RAM`}
-            >
-              {ram}GB
-            </button>
-          ))}
-        </div>
-
         <GeekSlider
           type="ram"
           label=""
@@ -281,29 +290,8 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
       </section>
 
       {/* SSD */}
-      <section className="fp-sec">
-        <div className="fp-head">
-          <div className="fp-label">固态硬盘（SSD）</div>
-          <div className="fp-badge fp-badge--ssd">≥ {localSsd}GB</div>
-        </div>
-
-        {/* 存储快速选择按钮 */}
-        <div className="fp-quickBudgets">
-          {[256, 512, 1024, 2048, 4096].map((ssd) => (
-            <button
-              key={ssd}
-              className={`fp-quickBtn ${selectedStorage === ssd ? "fp-quickBtn--active" : ""}`}
-              onClick={() => {
-                setLocalSsd(ssd);
-                setSelectedStorage(ssd);
-              }}
-              title={`选择 ${ssd >= 1024 ? `${ssd / 1024}TB` : `${ssd}GB`} SSD`}
-            >
-              {ssd >= 1024 ? `${ssd / 1024}TB` : `${ssd}GB`}
-            </button>
-          ))}
-        </div>
-
+      <section className={`fp-sec ${animateSsd ? "fp-sec--pulse" : ""}`}>
+        <div className="fp-label">固态硬盘（SSD）</div>
         <GeekSlider
           type="ssd"
           label=""
