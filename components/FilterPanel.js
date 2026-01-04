@@ -22,7 +22,9 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
   const [localRam, setLocalRam] = useState(filters.ram || 8);
   const [localSsd, setLocalSsd] = useState(filters.ssd || 256);
   const [priceError, setPriceError] = useState(""); // 价格容错提示
-  const [selectedBudget, setSelectedBudget] = useState(null); // 选中的快捷预算
+  const [selectedBudget, setSelectedBudget] = useState(null);
+  const [selectedMemory, setSelectedMemory] = useState(null);
+  const [selectedStorage, setSelectedStorage] = useState(null); // 选中的快捷预算
 
   // 处理价格输入容错：自动交换不合理的大小顺序
   const safeSetMin = (v) => {
@@ -104,6 +106,16 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
     setSelectedBudget(matched ? matched.label : null);
   };
 
+  const checkSelectedMemory = (value) => {
+    const memoryOptions = [8, 16, 32, 64, 128];
+    setSelectedMemory(memoryOptions.includes(value) ? value : null);
+  };
+
+  const checkSelectedStorage = (value) => {
+    const storageOptions = [256, 512, 1024, 2048, 4096];
+    setSelectedStorage(storageOptions.includes(value) ? value : null);
+  };
+
   const apply = () => {
     const nextFilters = {
       priceMin: clampNum(localMin, minB, maxB),
@@ -137,6 +149,9 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
     setLocalMax(maxB);
     setLocalRam(8);
     setLocalSsd(256);
+    setSelectedBudget(null);
+    setSelectedMemory(null);
+    setSelectedStorage(null);
     setFilters((f) => ({
       ...f,
       q: f.q,
@@ -236,11 +251,32 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
           <div className="fp-label">统一内存（RAM）</div>
           <div className="fp-badge fp-badge--ram">≥ {localRam}GB</div>
         </div>
+
+        {/* 内存快速选择按钮 */}
+        <div className="fp-quickBudgets">
+          {[8, 16, 32, 64, 128].map((ram) => (
+            <button
+              key={ram}
+              className={`fp-quickBtn ${selectedMemory === ram ? "fp-quickBtn--active" : ""}`}
+              onClick={() => {
+                setLocalRam(ram);
+                setSelectedMemory(ram);
+              }}
+              title={`选择 ${ram}GB RAM`}
+            >
+              {ram}GB
+            </button>
+          ))}
+        </div>
+
         <GeekSlider
           type="ram"
           label=""
           value={localRam}
-          onChange={(v) => setLocalRam(v)}
+          onChange={(v) => {
+            setLocalRam(v);
+            checkSelectedMemory(v);
+          }}
         />
       </section>
 
@@ -250,11 +286,32 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply 
           <div className="fp-label">固态硬盘（SSD）</div>
           <div className="fp-badge fp-badge--ssd">≥ {localSsd}GB</div>
         </div>
+
+        {/* 存储快速选择按钮 */}
+        <div className="fp-quickBudgets">
+          {[256, 512, 1024, 2048, 4096].map((ssd) => (
+            <button
+              key={ssd}
+              className={`fp-quickBtn ${selectedStorage === ssd ? "fp-quickBtn--active" : ""}`}
+              onClick={() => {
+                setLocalSsd(ssd);
+                setSelectedStorage(ssd);
+              }}
+              title={`选择 ${ssd >= 1024 ? `${ssd / 1024}TB` : `${ssd}GB`} SSD`}
+            >
+              {ssd >= 1024 ? `${ssd / 1024}TB` : `${ssd}GB`}
+            </button>
+          ))}
+        </div>
+
         <GeekSlider
           type="ssd"
           label=""
           value={localSsd}
-          onChange={(v) => setLocalSsd(v)}
+          onChange={(v) => {
+            setLocalSsd(v);
+            checkSelectedStorage(v);
+          }}
         />
       </section>
 
