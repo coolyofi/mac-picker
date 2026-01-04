@@ -10,11 +10,11 @@
   --muted: rgba(255,255,255,.56);
   --mp-title-size: 42px;
 
-  /* Neon（优化的配色：各不相同、视觉清晰、高对比度） */
-  --neon-cpu: #FF6B9D; /* 洋红 */
-  --neon-gpu: #00D9FF; /* 靓青 */
-  --neon-ram: #FFD700; /* 金黄 */
-  --neon-ssd: #00FF88; /* 翠绿 */
+  /* Neon（你要：不同颜色、都有 glow、但少一点） */
+  --neon-cpu: #7c5cff; /* 紫 */
+  --neon-gpu: #00d1ff; /* 青 */
+  --neon-ram: #00f2ff; /* 你定的 RAM */
+  --neon-ssd: #39ff14; /* 你定的 SSD */
 }
 
 *{ box-sizing:border-box; }
@@ -24,7 +24,6 @@ body{
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, system-ui, sans-serif;
   background:#000;
   overflow-x:hidden;
-  position: relative;
 }
 
 /* ====== Root background: dynamic colorful gradients + subtle grid ====== */
