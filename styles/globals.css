@@ -1135,6 +1135,58 @@ body{
   display: none;
 }
 
+/* ====== Responsive Breakpoints ====== */
+
+/* Mobile: ≤768px */
+@media (max-width: 768px) {
+  .mp-sidebar {
+    position: fixed;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    transition: left 0.3s ease;
+  }
+  .mp-sidebar.open {
+    left: 0;
+  }
+  .mp-main {
+    width: 100%;
+  }
+  .mp-topbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+  }
+}
+
+/* Tablet: 769px ~ 1024px */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .mp-sidebar {
+    width: 30%;
+    transition: width 0.3s ease;
+  }
+  .mp-sidebar.collapsed {
+    width: 50px;
+  }
+  .mp-main {
+    width: 70%;
+  }
+}
+
+/* Desktop: ≥1025px */
+@media (min-width: 1025px) {
+  .mp-layout {
+    display: flex;
+  }
+  .mp-sidebar {
+    width: 280px;
+  }
+  .mp-main {
+    flex: 1;
+  }
+}
+
 /* Responsive */
 @media (max-width: 980px){
   .mp-layout{

@@ -5,6 +5,7 @@ import macData from "../data/macs.json";
 import SearchWithDropdown from "../components/SearchWithDropdown";
 import ClientOnlyTime from "../components/ClientOnlyTime";
 import SkeletonCard from "../components/SkeletonCard";
+import { useDeviceType } from "../hooks/useDeviceType";
 
 // 1. 动态导入非首屏必要组件，减少初始 JS 体积
 const FilterPanel = dynamic(() => import("../components/FilterPanel"), {
@@ -372,6 +373,8 @@ export default function Home() {
     setSkeletonVisible(true);
   }, [filteredProducts.length]);
 
+  const deviceType = useDeviceType();
+
   return (
     <div className="mp-root">
       {/* 固定背景层 */}
@@ -497,7 +500,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="mp-layout">
+      <div className={`mp-layout ${deviceType}`}>
         {/* 左侧筛选（只保留：价格 / RAM / SSD） */}
         <aside className="mp-sidebar">
           <SidebarMeta lastUpdated={macData?.lastUpdated} count={filteredProducts.length} />
