@@ -175,6 +175,8 @@ export default function Home() {
           </button>
 
           <SearchWithDropdown
+            query={filters.q}
+            onQueryChange={(val) => setFilters((f) => ({ ...f, q: val }))}
             tags={filters.tags}
             logic={filters.logic}
             onTagsChange={(newTags) => setFilters((f) => ({ ...f, tags: newTags }))}

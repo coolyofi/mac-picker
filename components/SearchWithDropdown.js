@@ -1,73 +1,112 @@
 import { useEffect, useRef, useState, useMemo } from "react";
 
 /**
- * 搜索框 + 下拉提示组件
- * - 实时下拉提示
+ * SearchWithDropdown - Advanced Search Component
+ * Supports:
+ * - Text input (live search via query)
+ * - Tag management (add/remove tags)
+ * - Logic toggle (AND/OR)
+ * - Autocomplete suggestions
  */
 export default function SearchWithDropdown({ 
-  value = "",
-  onChange,
-  products, 
+  query = "",
+  onQueryChange,
+  tags = [],
+  onTagsChange,
+  logic = "AND",
+  onLogicChange,
+  products = [], 
   placeholder = "搜索…" 
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [highlightIdx, setHighlightIdx] = useState(-1);
-  const [inputValue, setInputValue] = useState(value);
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const containerRef = useRef(null);
 
-  // 同步外部value
-  useEffect(() => {
-    setInputValue(value);
-  }, [value]);
-
-  // 生成提示列表（从产品数据提取）
+  // Generate suggestions based on query
   const suggestions = useMemo(() => {
-    if (!inputValue || inputValue.length < 1) return [];
+    if (!query || query.length < 1) return [];
     
-    const query = inputValue.toLowerCase();
+    const q = query.toLowerCase();
     const seen = new Set();
     const results = [];
 
-    // 匹配产品数据
-    for (const item of products) {
-      const candidates = [
-        item?.displayTitle,
-        item?.modelId,
-        item?.specs?.chip_model,
-        item?.specs?.chip_series,
-        item?.color,
-      ].filter(Boolean);
-
-      for (const candidate of candidates) {
-        const candidateStr = String(candidate).toLowerCase();
-        if (candidateStr.includes(query) && !seen.has(candidateStr)) {
-          seen.add(candidateStr);
-          results.push({
-            text: String(candidate),
-            type: "product",
-            itemId: item?.id
-          });
-        }
+    // Helper to add result
+    const addResult = (text, category, type = "product") => {
+      const key = `${category}:${text}`.toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        results.push({ text, category, type });
       }
+    };
 
+    // 1. Check for category prefixes (e.g. "M1", "16GB")
+    // This is a simplified heuristic. Real app might use a trie or index.
+    
+    for (const item of products) {
       if (results.length >= 10) break;
+
+      // Chip
+      if (item?.specs?.chip_model?.toLowerCase().includes(q)) {
+        addResult(item.specs.chip_model, "芯片");
+      }
+      // Model
+      if (item?.displayTitle?.toLowerCase().includes(q)) {
+        addResult(item.displayTitle, "机型");
+      }
+      // Color
+      if (item?.color?.toLowerCase().includes(q)) {
+        addResult(item.color, "颜色");
+      }
+      // RAM
+      if (String(item?.specs?.ram).includes(q)) {
+        addResult(`${item.specs.ram}GB`, "内存");
+      }
+      // SSD
+      if (String(item?.specs?.ssd_gb).includes(q)) {
+        addResult(`${item.specs.ssd_gb}GB`, "存储");
+      }
     }
 
     return results;
-  }, [inputValue, products]);
+  }, [query, products]);
 
-  // 处理输入变化
+  // Handle input change
   const handleInputChange = (e) => {
     const val = e.target.value;
-    setInputValue(val);
-    onChange(val);
-    setIsOpen(val.length > 0 && suggestions.length > 0);
+    onQueryChange(val);
+    setIsOpen(val.length > 0);
     setHighlightIdx(-1);
   };
 
-  // 处理键盘事件
+  // Add a tag
+  const addTag = (tag) => {
+    // Avoid duplicates
+    if (tags.some(t => t.text === tag.text && t.category === tag.category)) {
+      onQueryChange(""); // Just clear input
+      return;
+    }
+    onTagsChange([...tags, tag]);
+    onQueryChange("");
+    setIsOpen(false);
+    inputRef.current?.focus();
+  };
+
+  // Remove a tag
+  const removeTag = (index) => {
+    const newTags = [...tags];
+    newTags.splice(index, 1);
+    onTagsChange(newTags);
+  };
+
+  // Handle keyboard
   const handleKeyDown = (e) => {
+    if (e.key === "Backspace" && query === "" && tags.length > 0) {
+      removeTag(tags.length - 1);
+      return;
+    }
+
     if (isOpen && suggestions.length > 0) {
       switch (e.key) {
         case "ArrowDown":
@@ -81,100 +120,107 @@ export default function SearchWithDropdown({
         case "Enter":
           e.preventDefault();
           if (highlightIdx >= 0) {
-            const selected = suggestions[highlightIdx];
-            setInputValue(selected.text);
-            onChange(selected.text);
-            setIsOpen(false);
+            addTag(suggestions[highlightIdx]);
+          } else if (query.trim()) {
+            // Add as generic keyword tag
+            addTag({ text: query.trim(), category: "关键字" });
           }
           break;
         case "Escape":
           setIsOpen(false);
-          setHighlightIdx(-1);
           break;
       }
+    } else if (e.key === "Enter" && query.trim()) {
+      e.preventDefault();
+      addTag({ text: query.trim(), category: "关键字" });
     }
   };
 
-  // 处理建议点击
-  const handleSuggestionClick = (suggestion) => {
-    setInputValue(suggestion.text);
-    onChange(suggestion.text);
-    setIsOpen(false);
-  };
-
-  // 清空
-  const handleClear = () => {
-    setInputValue("");
-    onChange("");
-    setIsOpen(false);
-    inputRef.current?.focus();
-  };
-
-  // 点击外部关闭下拉
+  // Click outside to close
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target) &&
-        inputRef.current &&
-        !inputRef.current.contains(e.target)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
         setIsOpen(false);
       }
     };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }
-  }, [isOpen]);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className="swd-wrapper">
-      <div className="swd-input-wrapper">
+    <div className="swd-container" ref={containerRef}>
+      <div className="swd-input-box" onClick={() => inputRef.current?.focus()}>
+        {/* Logic Toggle */}
+        {tags.length > 1 && (
+          <button 
+            className="swd-logic-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onLogicChange(logic === "AND" ? "OR" : "AND");
+            }}
+            title="切换匹配逻辑"
+          >
+            {logic}
+          </button>
+        )}
+
+        {/* Tags */}
+        {tags.map((tag, idx) => (
+          <div key={`${tag.category}-${tag.text}-${idx}`} className="swd-tag">
+            <span className="swd-tag-cat">{tag.category}:</span>
+            <span className="swd-tag-text">{tag.text}</span>
+            <button 
+              className="swd-tag-remove"
+              onClick={(e) => {
+                e.stopPropagation();
+                removeTag(idx);
+              }}
+            >
+              ×
+            </button>
+          </div>
+        ))}
+
+        {/* Input */}
         <input
           ref={inputRef}
           type="text"
           className="swd-input"
-          value={inputValue}
+          value={query}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => inputValue && suggestions.length > 0 && setIsOpen(true)}
-          placeholder={placeholder}
-          inputMode="search"
+          onFocus={() => query && suggestions.length > 0 && setIsOpen(true)}
+          placeholder={tags.length === 0 ? placeholder : ""}
           autoComplete="off"
         />
 
-        {/* 清空按钮 */}
-        {inputValue && (
+        {/* Clear Button (only if query exists) */}
+        {query && (
           <button
-            className="swd-clear"
-            onClick={handleClear}
-            aria-label="清空搜索"
-            type="button"
+            className="swd-clear-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onQueryChange("");
+              inputRef.current?.focus();
+            }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M18 6L6 18M6 6l12 12"/>
-            </svg>
+            ×
           </button>
         )}
       </div>
 
-      {/* 下拉提示 */}
+      {/* Dropdown */}
       {isOpen && suggestions.length > 0 && (
         <div className="swd-dropdown" ref={dropdownRef}>
-          {suggestions.map((suggestion, idx) => (
+          {suggestions.map((s, idx) => (
             <div
-              key={`${suggestion.text}-${idx}`}
-              className={`swd-item ${idx === highlightIdx ? "swd-item--active" : ""}`}
-              onClick={() => handleSuggestionClick(suggestion)}
-              role="option"
-              aria-selected={idx === highlightIdx}
+              key={`${s.category}-${s.text}-${idx}`}
+              className={`swd-item ${idx === highlightIdx ? "active" : ""}`}
+              onClick={() => addTag(s)}
+              onMouseEnter={() => setHighlightIdx(idx)}
             >
-              <div className="swd-item-text">
-                {suggestion.text}
-              </div>
-              {suggestion.type === "preset" && <span className="swd-item-type">预设</span>}
+              <span className="swd-item-text">{s.text}</span>
+              <span className="swd-item-cat">{s.category}</span>
             </div>
           ))}
         </div>
