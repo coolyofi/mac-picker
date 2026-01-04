@@ -16,6 +16,9 @@
   --neon-ram: #00f2ff; /* 你定的 RAM */
   --neon-ssd: #39ff14; /* 你定的 SSD */
 
+  --theme-blue: #3ea0ff;
+  --theme-blue-glow: rgba(62, 160, 255, 0.3);
+
   --bg-transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -46,9 +49,9 @@ body{
   inset: 0;
   z-index: 2;
   background: 
-    radial-gradient(circle at 20% 30%, var(--bg-color-1) 0%, transparent 35%),
-    radial-gradient(circle at 80% 70%, var(--bg-color-2) 0%, transparent 40%),
-    radial-gradient(circle at 50% 90%, var(--bg-color-3) 0%, transparent 30%);
+    radial-gradient(circle at 80% 80%, var(--bg-color-1) 0%, transparent 60%),
+    radial-gradient(circle at 40% 90%, var(--bg-color-2) 0%, transparent 50%),
+    radial-gradient(circle at 90% 30%, var(--bg-color-3) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -56,7 +59,7 @@ body{
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 8% 8%, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.55) 30%, rgba(0,0,0,0.75) 70%);
+  background: radial-gradient(circle at 0% 0%, #000 0%, #000 35%, transparent 85%);
   pointer-events: none;
 }
 
@@ -65,8 +68,8 @@ body{
   inset: 0;
   z-index: 3;
   background-image: 
-    linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
   background-size: 80px 80px;
   pointer-events: none;
 }
@@ -84,23 +87,23 @@ body{
   pointer-events: none;
   background: radial-gradient(
     circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-    var(--bg-color-1) 0%, 
-    var(--bg-color-4) 20%, 
-    transparent 60%
+    rgba(62, 160, 255, 0.12) 0%, 
+    rgba(62, 160, 255, 0.04) 30%, 
+    transparent 70%
   );
-  filter: blur(8px);
-  opacity: 0.8;
+  filter: blur(12px);
+  opacity: 0.45;
 }
 
 @media (max-width: 768px) {
   .mp-bg-particles {
     background: radial-gradient(
       circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-      var(--bg-color-1) 0%, 
-      var(--bg-color-4) 15%, 
-      transparent 50%
+      rgba(62, 160, 255, 0.1) 0%, 
+      rgba(62, 160, 255, 0.03) 20%, 
+      transparent 60%
     );
-    filter: blur(6px);
+    filter: blur(8px);
   }
 }
 
@@ -333,7 +336,7 @@ body{
 }
 .mp-metaKey{ color: rgba(255,255,255,.45); font-size:12px; }
 .mp-metaVal{ color: rgba(255,255,255,.82); font-size:12px; }
-.mp-metaValStrong{ font-weight: 800; }
+.mp-metaValStrong{ font-weight: 800; color: var(--theme-blue); }
 
 /* Main */
 .mp-main{ padding-top: 2px; }
@@ -545,10 +548,10 @@ body{
 .fp-apply{
   height: 40px;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(62, 160, 255, 0.3);
+  background: rgba(62, 160, 255, 0.08);
   backdrop-filter: blur(12px);
-  color: rgba(255,255,255,.82);
+  color: rgba(255,255,255,.9);
   font-weight: 700;
   cursor:pointer;
   transition: all 0.2s ease;
@@ -556,9 +559,9 @@ body{
   flex: 1;
 }
 .fp-apply:hover{
-  border-color: rgba(255,255,255,.20);
-  background: rgba(255,255,255,.10);
-  box-shadow: 0 6px 24px rgba(0,0,0,.12);
+  border-color: var(--theme-blue);
+  background: rgba(62, 160, 255, 0.15);
+  box-shadow: 0 0 20px var(--theme-blue-glow);
 }
 
 /* ====== ProductCard (matches your HTML demo hierarchy) ====== */
@@ -1088,7 +1091,8 @@ body{
 .slider__progress{
   position: absolute;
   height: 6px;
-  background: rgba(255,255,255,.20);
+  background: var(--theme-blue);
+  box-shadow: 0 0 10px var(--theme-blue-glow);
   border-radius: 999px;
   left: 0;
   top: 50%;
@@ -1179,6 +1183,19 @@ body{
   align-items: center;
   gap: 4px;
   pointer-events: none;
+}
+
+.tick::before{
+  content: '';
+  width: 2px;
+  height: 2px;
+  background: rgba(255,255,255,.2);
+  border-radius: 50%;
+}
+
+.tick.isActive::before{
+  background: var(--theme-blue);
+  box-shadow: 0 0 4px var(--theme-blue);
 }
 
 .tick__label{
@@ -1503,10 +1520,11 @@ main,
   gap: 6px;
   padding: 6px 10px;
   border-radius: 8px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(62, 160, 255, 0.1);
+  border: 1px solid rgba(62, 160, 255, 0.2);
   font-size: 12px;
-  color: rgba(255,255,255,.78);
+  color: var(--theme-blue);
+  font-weight: 600;
   white-space: nowrap;
   animation: slideInUp 0.2s ease;
 }
@@ -1532,15 +1550,16 @@ main,
   margin: 0;
   border: none;
   background: none;
-  color: rgba(255,255,255,.45);
+  color: rgba(62, 160, 255, 0.6);
   cursor: pointer;
   font-size: 14px;
   line-height: 1;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .mp-tag-close:hover {
-  color: rgba(255,255,255,.7);
+  color: var(--theme-blue);
+  transform: scale(1.2);
 }
 
 /* 价格筛选容错提示 */
