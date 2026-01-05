@@ -947,7 +947,7 @@ body{
 
 /* Desktop: ≥1025px */
 @media (min-width: 1025px) {
-  .mp-layout { display: flex; }
+  .mp-layout { display: flex; height: calc(100vh - 120px); }
   .mp-sidebar { width: 280px; }
   .mp-main { flex: 1; }
 }

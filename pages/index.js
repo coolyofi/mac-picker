@@ -5,7 +5,6 @@ import ProductCard from "../components/ProductCard";
 import macData from "../data/macs.json";
 import SearchWithDropdown from "../components/SearchWithDropdown";
 import ClientOnlyTime from "../components/ClientOnlyTime";
-import SkeletonCard from "../components/SkeletonCard";
 import { useDeviceType } from "../hooks/useDeviceType";
 import { useRandomDarkBackdrop } from "../hooks/useRandomDarkBackdrop";
 
@@ -41,6 +40,79 @@ const safeItems = (data) => {
   if (Array.isArray(data?.items)) return data.items;
   if (Array.isArray(data)) return data;
   return [];
+};
+
+const matchesTag = (item, tag) => {
+  const s = item?.specs || {};
+  const category = tag.category;
+  const text = tag.text.toLowerCase();
+  switch (category) {
+    case "机型":
+      return item?.displayTitle?.toLowerCase().includes(text) ||
+             item?.modelId?.toLowerCase().includes(text);
+    case "芯片":
+      return s?.chip_model?.toLowerCase().includes(text) ||
+             s?.chip_series?.toLowerCase().includes(text);
+    case "存储":
+      return String(s?.ssd_gb || "").includes(text.replace(/gb/i, "")) ||
+             item?.details?.some(d => d.toLowerCase().includes(text));
+    case "内存":
+      return String(s?.ram || "").includes(text.replace(/gb/i, "")) ||
+             item?.details?.some(d => d.toLowerCase().includes(text));
+    case "颜色":
+      return item?.color?.toLowerCase().includes(text);
+    default: {
+      const haystack = [
+        item?.displayTitle,
+        item?.modelId,
+        s?.chip_model,
+        s?.chip_series,
+        item?.color,
+        ...(Array.isArray(item?.details) ? item.details : []),
+      ].filter(Boolean).join(" ").toLowerCase();
+      return haystack.includes(text);
+    }
+  }
+};
+
+const filterProducts = (items, filters) => {
+  const { q, priceMin, priceMax, ram, ssd, tags, logic } = filters;
+  const normalizedQuery = (q || "").trim().toLowerCase();
+  const minP = Number(priceMin || 0);
+  const maxP = Number(priceMax || 0);
+  const ramMin = Number(ram || 0);
+  const ssdMin = Number(ssd || 0);
+
+  const filtered = items.filter((item) => {
+    const s = item?.specs || {};
+    const price = Number(item?.priceNum || 0);
+    if (minP && price < minP) return false;
+    if (maxP && price > maxP) return false;
+    if (Number(s?.ram || 0) < ramMin) return false;
+    if (Number(s?.ssd_gb || 0) < ssdMin) return false;
+    if (tags && tags.length > 0) {
+      const matches = tags.map(tag => matchesTag(item, tag));
+      if (logic === "AND") {
+        if (!matches.every(Boolean)) return false;
+      } else if (!matches.some(Boolean)) {
+        return false;
+      }
+    }
+    if (normalizedQuery) {
+      const haystack = [
+        item?.displayTitle,
+        item?.modelId,
+        s?.chip_model,
+        s?.chip_series,
+        item?.color,
+        ...(Array.isArray(item?.details) ? item.details : []),
+      ].filter(Boolean).join(" ").toLowerCase();
+      if (!haystack.includes(normalizedQuery)) return false;
+    }
+    return true;
+  });
+
+  return filtered.sort((a, b) => Number(a?.priceNum || 0) - Number(b?.priceNum || 0));
 };
 
 export default function Home() {
@@ -86,57 +158,25 @@ export default function Home() {
     }));
   }, [priceBounds.min, priceBounds.max]);
 
-  // Worker integration for high-performance filtering
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [isWorkerReady, setIsWorkerReady] = useState(false);
-  const workerRef = useRef(null);
+  // Concurrent React: Defer the filter updates to keep input responsive
+  const filteredProducts = useMemo(() => filterProducts(products, filters), [products, filters]);
 
   // Track which fields were included in the last applied update (for per-field feedback)
   const [lastAppliedFields, setLastAppliedFields] = useState([]);
-  const pendingAppliedFieldsRef = useRef([]);
   const lastSentFiltersRef = useRef(filters);
 
-  // Concurrent React: Defer the filter updates to keep input responsive
-  const deferredFilters = useDeferredValue(filters);
-
   useEffect(() => {
-    // Initialize worker
-    console.log('[Index] Initializing filter worker');
-    workerRef.current = new Worker(new URL('../workers/filter.worker.js', import.meta.url));
-    workerRef.current.onmessage = (e) => {
-      console.log('[Index] Worker onmessage received', e?.data?.length ? `${e.data.length} items` : e.data);
-      // When worker responds, update the list (no global view-transition)
-      setFilteredProducts(e.data);
-      setIsWorkerReady(true);
-
-      // Trigger per-field visual feedback for the fields that changed in the last request
-      const applied = pendingAppliedFieldsRef.current || [];
-      if (applied.length > 0) {
-        setLastAppliedFields(applied);
-        setTimeout(() => setLastAppliedFields([]), 700);
-      }
-    };
-    
-    return () => {
-      console.log('[Index] Terminating filter worker');
-      workerRef.current?.terminate();
-    };
-  }, []);
-
-  // Send updates to worker (using deferred value)
-  useEffect(() => {
-    if (workerRef.current) {
-      const prev = lastSentFiltersRef.current || {};
-      const changed = [];
-      const keys = ['priceMin','priceMax','ram','ssd','q','tags','logic'];
-      keys.forEach(k => {
-        if (JSON.stringify(prev[k]) !== JSON.stringify(deferredFilters[k])) changed.push(k);
-      });
-      pendingAppliedFieldsRef.current = changed;
-      lastSentFiltersRef.current = deferredFilters;
-      workerRef.current.postMessage({ products, filters: deferredFilters });
+    const prev = lastSentFiltersRef.current || {};
+    const keys = ['priceMin','priceMax','ram','ssd','q','tags','logic'];
+    const changed = keys.filter((k) => JSON.stringify(prev[k]) !== JSON.stringify(filters[k]));
+    lastSentFiltersRef.current = filters;
+    if (changed.length > 0) {
+      setLastAppliedFields(changed);
+      const timer = setTimeout(() => setLastAppliedFields([]), 700);
+      return () => clearTimeout(timer);
     }
-  }, [products, deferredFilters]);
+    setLastAppliedFields([]);
+  }, [filters]);
 
   // 4. useCallback 包裹传递给子组件的函数（避免子组件重渲染）
   const handleSetFilters = useCallback((newFilters) => {
@@ -157,26 +197,19 @@ export default function Home() {
   }, []);
 
   const [vgridMissing, setVGridMissing] = useState(false);
-  const [forceFallback, setForceFallback] = useState(false);
   const vgridPreloadedRef = useRef(false);
 
-  // If after a few seconds the worker hasn't hydrated or the virtual grid isn't present,
-  // enable a forced fallback to render a simple non-virtualized list from server-provided `products`.
   useEffect(() => {
     const t = setTimeout(() => {
       const hasVGrid = !!document.querySelector('.mp-virtual-grid');
-      if (!hasVGrid && !isWorkerReady) {
-        setVGridMissing(true);
-        setForceFallback(true);
-      }
+      setVGridMissing(!hasVGrid);
     }, 3000);
     return () => clearTimeout(t);
-  }, [isWorkerReady]);
+  }, [filteredProducts.length]);
 
   // Try to proactively preload the VirtualGrid chunk when we have results
   useEffect(() => {
-    console.log('[Index] Preload check: isWorkerReady=', isWorkerReady, 'filteredProducts=', (filteredProducts||[]).length);
-    if (!isWorkerReady) return;
+    console.log('[Index] Preload check: filteredProducts=', (filteredProducts||[]).length);
     if (!filteredProducts || filteredProducts.length === 0) return;
     try {
       if (VirtualGrid && typeof VirtualGrid.preload === 'function' && !vgridPreloadedRef.current) {
@@ -213,7 +246,7 @@ export default function Home() {
       console.warn('VirtualGrid preload failed', err);
       setVGridMissing(true);
     }
-  }, [isWorkerReady, filteredProducts]);
+  }, [filteredProducts]);
 
   return (
     <div className="mp-root">
@@ -363,15 +396,24 @@ export default function Home() {
 
         {/* 主内容：卡片网格 */}
         <main className="mp-main">
-          {console.log('[Index] Render check: isWorkerReady=', isWorkerReady, 'filteredProducts=', (filteredProducts||[]).length, 'vgridMissing=', vgridMissing)}
-          {!isWorkerReady ? (
-             <div className="mp-grid">
-                {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
-             </div>
-          ) : filteredProducts.length === 0 ? (
+          {console.log('[Index] Render check: filteredProducts=', (filteredProducts||[]).length, 'vgridMissing=', vgridMissing)}
+          {filteredProducts.length === 0 ? (
             <div className="mp-empty">
               <div className="mp-emptyTitle">没有匹配到机器</div>
               <div className="mp-emptySub">试试降低 RAM/SSD 要求，或者清空搜索关键字。</div>
+            </div>
+          ) : vgridMissing ? (
+            <div>
+              <div className="mp-empty mp-empty--warn">
+                <div className="mp-emptyTitle">列表加载失败（已回退）</div>
+                <div className="mp-emptySub">虚拟化列表无法渲染，已切换为非虚拟化回退渲染（前 24 条）。若需更快恢复，请刷新页面。</div>
+              </div>
+
+              <div className="mp-grid">
+                {filteredProducts.slice(0, 24).map((item) => (
+                  <ProductCard key={item.id || item.modelId || Math.random()} data={item} />
+                ))}
+              </div>
             </div>
           ) : (
             (console.log('[Index] Rendering VirtualGrid with', (filteredProducts||[]).length, 'items'), <VirtualGrid items={filteredProducts} />)

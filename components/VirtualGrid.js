@@ -14,7 +14,7 @@ export default function VirtualGrid({ items }) {
   console.log('[VirtualGrid] render: items=', (items||[]).length);
 
   return (
-    <div style={{ flex: 1, height: '100%', width: '100%', minHeight: '400px' }}>
+    <div style={{ height: '600px', width: '100%', position: 'relative', overflow: 'hidden' }}>
       <AutoSizer>
         {({ height, width }) => {
           console.log('[VirtualGrid] AutoSizer dimensions', { height, width });
@@ -24,12 +24,11 @@ export default function VirtualGrid({ items }) {
           const safeColumnCount = Math.max(1, columnCount);
           console.log('[VirtualGrid] columns', { columnCount, safeColumnCount });
           
-          // Calculate column width including gutter space
-          const totalColumnSpace = width + GUTTER_SIZE;
-          const columnWidth = totalColumnSpace / safeColumnCount;
-          
-          const rowCount = Math.ceil(items.length / safeColumnCount);
+          // Column width including gutter space for proper spacing
+          const columnWidth = MIN_COLUMN_WIDTH + GUTTER_SIZE;
           const rowHeight = ROW_HEIGHT + GUTTER_SIZE;
+
+          const rowCount = Math.ceil(items.length / safeColumnCount);
 
           const Cell = ({ columnIndex, rowIndex, style }) => {
             const index = rowIndex * safeColumnCount + columnIndex;
@@ -39,46 +38,26 @@ export default function VirtualGrid({ items }) {
             const isPriority = rowIndex < 2;
             
             return (
-              <div style={{
-                ...style,
-                left: style.left,
-                top: style.top,
-                width: style.width - GUTTER_SIZE,
-                height: style.height - GUTTER_SIZE,
-              }}>
+              <div style={style}>
                 <ProductCard data={item} priority={isPriority} />
               </div>
             );
           };
 
           console.log('[VirtualGrid] rendering Grid with', { safeColumnCount, columnWidth, height, rowCount, rowHeight, width });
-          try {
-            const gridProps = {
-              className: "mp-virtual-grid",
-              columnCount: safeColumnCount,
-              height: height,
-              rowCount: rowCount,
-              width: width,
-              columnWidth: columnWidth,
-              rowHeight: rowHeight,
-            };
-
-            return (
-              <Grid {...gridProps}>
-                {Cell}
-              </Grid>
-            );
-          } catch (err) {
-            console.error('[VirtualGrid] Grid render error:', err);
-            return (
-              <div className="mp-virtual-grid-error">
-                <div className="mp-empty mp-empty--warn">
-                  <div className="mp-emptyTitle">虚拟化渲染错误</div>
-                  <div className="mp-emptySub">Grid 组件渲染失败：{err.message}</div>
-                </div>
-              </div>
-            );
-          }
+          // Use react-window Grid for virtualization
+          return (
+            <Grid
+              columnCount={safeColumnCount}
+              columnWidth={columnWidth}
+              height={height}
+              rowCount={rowCount}
+              rowHeight={rowHeight}
+              width={width}
+            >
+              {Cell}
+            </Grid>
+          );
         }}
       </AutoSizer>
     </div>
