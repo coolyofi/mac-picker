@@ -186,6 +186,7 @@ body{
   display:grid;
   grid-template-columns: 320px 1fr;
   gap: 26px; /* 你要更松一点 */
+  min-height: calc(100vh - 120px); /* Ensure layout has height for virtual grid */
 }
 
 /* Sidebar */
@@ -216,7 +217,10 @@ body{
 .mp-metaValStrong{ font-weight: 800; color: var(--theme-blue); }
 
 /* Main */
-.mp-main{ padding-top: 2px; }
+.mp-main{ 
+  padding-top: 2px; 
+  height: 100%; /* Take full height of grid area */
+}
 .mp-grid{
   display:grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* 增加15%卡片最小宽度 (220px -> 253px) */

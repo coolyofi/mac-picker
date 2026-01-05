@@ -373,19 +373,6 @@ export default function Home() {
               <div className="mp-emptyTitle">没有匹配到机器</div>
               <div className="mp-emptySub">试试降低 RAM/SSD 要求，或者清空搜索关键字。</div>
             </div>
-          ) : vgridMissing ? (
-            <div>
-              <div className="mp-empty mp-empty--warn">
-                <div className="mp-emptyTitle">列表加载失败（已回退）</div>
-                <div className="mp-emptySub">无法加载虚拟化列表，已切换为非虚拟化回退渲染（前 24 条）。若需更快恢复，请刷新页面。</div>
-              </div>
-
-              <div className="mp-grid">
-                {filteredProducts.slice(0, 24).map((item) => (
-                  <ProductCard key={item.id || item.modelId || Math.random()} data={item} />
-                ))}
-              </div>
-            </div>
           ) : (
             (console.log('[Index] Rendering VirtualGrid with', (filteredProducts||[]).length, 'items'), <VirtualGrid items={filteredProducts} />)
           )}
