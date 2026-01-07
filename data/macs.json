@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-07T08:30:05.048Z",
+  "lastUpdated": "2026-01-07T09:30:06.306Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -481,35 +481,6 @@
         "chip_series": "M2",
         "chip_model": "M2",
         "screen_in": 13,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:2b636b9f3c4630ea14a6dc8d71db16cd",
-      "displayTitle": "Mac mini - M4",
-      "priceNum": 6399,
-      "link": "https://refurb-tracker.com/url/902499",
-      "modelId": "FCYT4CH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-mini-202501?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac mini Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) 和千兆以太网端口",
-        "&ndash; FCYT4CH/A",
-        "最初发布于 2024 年 10 月",
-        "24GB 统一内存",
-        "512GB 固态硬盘¹",
-        "千兆以太网端口",
-        "三个雷雳 4 端口"
-      ],
-      "specs": {
-        "ram": 24,
-        "ssd_gb": 512,
-        "cpu": 10,
-        "gpu": 10,
-        "chip_series": "M4",
-        "chip_model": "M4",
-        "screen_in": null,
         "has10GbE": false,
         "hasXDR": false
       }
