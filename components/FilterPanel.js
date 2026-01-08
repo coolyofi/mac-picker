@@ -141,6 +141,7 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply,
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 700;
     if (isMobile) return; // 移动端由用户手动点击"应用筛选"
 
+    console.log('[FilterPanel] Updating filters:', { localMin, localMax, localRam, localSsd });
     setFilters((f) => ({
       ...f,
       priceMin: clampNum(localMin, minB, maxB),
@@ -189,6 +190,14 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply,
       setTimeout(() => setAnimateSearch(false), 450);
     }
   }, [appliedFields]);
+
+  // 同步 local state 与 filters
+  useEffect(() => {
+    setLocalMin(filters.priceMin);
+    setLocalMax(filters.priceMax);
+    setLocalRam(filters.ram);
+    setLocalSsd(filters.ssd);
+  }, [filters.priceMin, filters.priceMax, filters.ram, filters.ssd]);
 
   return (
     <div className="fp">

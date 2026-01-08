@@ -83,6 +83,8 @@ const filterProducts = (items, filters) => {
   const ramMin = Number(ram || 0);
   const ssdMin = Number(ssd || 0);
 
+  console.log('[filterProducts] Filtering with:', { minP, maxP, ramMin, ssdMin, q: normalizedQuery });
+
   const filtered = items.filter((item) => {
     const s = item?.specs || {};
     const price = Number(item?.priceNum || 0);
@@ -112,6 +114,7 @@ const filterProducts = (items, filters) => {
     return true;
   });
 
+  console.log('[filterProducts] Filtered count:', filtered.length);
   return filtered.sort((a, b) => Number(a?.priceNum || 0) - Number(b?.priceNum || 0));
 };
 
