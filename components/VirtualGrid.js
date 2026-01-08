@@ -5,10 +5,8 @@ const GUTTER_SIZE = 22;
 const MIN_COLUMN_WIDTH = 240;
 
 export default function VirtualGrid({ items }) {
-  console.log('[VirtualGrid] render: items=', (items||[]).length);
-
   return (
-    <div style={{
+    <div className="mp-virtual-grid" style={{
       display: 'grid',
       gridTemplateColumns: `repeat(auto-fill, minmax(${MIN_COLUMN_WIDTH}px, 1fr))`,
       gap: `${GUTTER_SIZE}px`,

@@ -141,7 +141,6 @@ export default function FilterPanel({ filters, setFilters, priceBounds, onApply,
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 700;
     if (isMobile) return; // 移动端由用户手动点击"应用筛选"
 
-    console.log('[FilterPanel] Updating filters:', { localMin, localMax, localRam, localSsd });
     setFilters((f) => ({
       ...f,
       priceMin: clampNum(localMin, minB, maxB),

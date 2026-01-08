@@ -83,8 +83,6 @@ const filterProducts = (items, filters) => {
   const ramMin = Number(ram || 0);
   const ssdMin = Number(ssd || 0);
 
-  console.log('[filterProducts] Filtering with:', { minP, maxP, ramMin, ssdMin, q: normalizedQuery });
-
   const filtered = items.filter((item) => {
     const s = item?.specs || {};
     const price = Number(item?.priceNum || 0);
@@ -114,7 +112,6 @@ const filterProducts = (items, filters) => {
     return true;
   });
 
-  console.log('[filterProducts] Filtered count:', filtered.length);
   return filtered.sort((a, b) => Number(a?.priceNum || 0) - Number(b?.priceNum || 0));
 };
 
@@ -212,41 +209,33 @@ export default function Home() {
 
   // Try to proactively preload the VirtualGrid chunk when we have results
   useEffect(() => {
-    console.log('[Index] Preload check: filteredProducts=', (filteredProducts||[]).length);
     if (!filteredProducts || filteredProducts.length === 0) return;
     try {
       if (VirtualGrid && typeof VirtualGrid.preload === 'function' && !vgridPreloadedRef.current) {
-        console.log('[Index] Calling VirtualGrid.preload()');
         VirtualGrid.preload();
         vgridPreloadedRef.current = true;
         // After a short timeout, check whether the virtual DOM appeared
         const t = setTimeout(() => {
           const hasVGrid = !!document.querySelector('.mp-virtual-grid');
-          console.log('[Index] after preload check mp-virtual-grid exists=', hasVGrid);
           if (!hasVGrid) setVGridMissing(true);
         }, 2000);
         return () => clearTimeout(t);
       } else if (!vgridPreloadedRef.current) {
-        console.log('[Index] Fallback dynamic import: importing VirtualGrid directly');
         import('../components/VirtualGrid')
           .then((mod) => {
-            console.log('[Index] Dynamic import resolved for VirtualGrid', !!mod);
             vgridPreloadedRef.current = true;
             // After import, check DOM
             setTimeout(() => {
               const hasVGrid = !!document.querySelector('.mp-virtual-grid');
-              console.log('[Index] after dynamic import mp-virtual-grid exists=', hasVGrid);
               if (!hasVGrid) setVGridMissing(true);
             }, 1000);
           })
-          .catch(err => {
-            console.warn('[Index] Dynamic import failed', err && err.message ? err.message : err);
+          .catch(() => {
             setVGridMissing(true);
           });
       }
     } catch (err) {
       // don't crash the UI; mark missing and surface a hint
-      console.warn('VirtualGrid preload failed', err);
       setVGridMissing(true);
     }
   }, [filteredProducts]);
@@ -399,7 +388,6 @@ export default function Home() {
 
         {/* 主内容：卡片网格 */}
         <main className="mp-main">
-          {console.log('[Index] Render check: filteredProducts=', (filteredProducts||[]).length, 'vgridMissing=', vgridMissing)}
           {filteredProducts.length === 0 ? (
             <div className="mp-empty">
               <div className="mp-emptyTitle">没有匹配到机器</div>
@@ -419,7 +407,7 @@ export default function Home() {
               </div>
             </div>
           ) : (
-            (console.log('[Index] Rendering VirtualGrid with', (filteredProducts||[]).length, 'items'), <VirtualGrid items={filteredProducts} />)
+            <VirtualGrid items={filteredProducts} />
           )}
         </main>
       </div>

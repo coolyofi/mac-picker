@@ -69,7 +69,6 @@ export default function GeekSlider({ type, value, onChange }) {
           value={currentIndex}
           onChange={(e) => {
             const newValue = stepsArray[Number(e.target.value)];
-            console.log(`[GeekSlider] ${type} changed to ${newValue}`);
             onChange(newValue);
           }}
           aria-label={`${type}-slider`}
