@@ -370,10 +370,10 @@ export default function Home() {
             </div>
           )}
 
-          {(filters.tags || []).map((t) => (
-            <div key={t} className="mp-tag">
-              {t}
-              <button className="mp-tag-close" onClick={() => setFilters((f) => ({ ...f, tags: (f.tags||[]).filter(x => x !== t) }))} aria-label="删除标签">×</button>
+          {(filters.tags || []).map((t, idx) => (
+            <div key={`${t.category}-${t.text}-${idx}`} className="mp-tag">
+              {t.category}: {t.text}
+              <button className="mp-tag-close" onClick={() => setFilters((f) => ({ ...f, tags: (f.tags||[]).filter((_, i) => i !== idx) }))} aria-label="删除标签">×</button>
             </div>
           ))}
 
