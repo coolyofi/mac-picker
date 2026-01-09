@@ -1,22 +1,13 @@
 import Head from "next/head";
-import { useEffect, useMemo, useRef, useState, useCallback, memo, useDeferredValue } from "react";
-import dynamic from "next/dynamic";
+import { useEffect, useMemo, useState, useCallback, memo } from "react";
 import ProductCard from "../components/ProductCard";
+import FilterPanel from "../components/FilterPanel";
+import VirtualGrid from "../components/VirtualGrid";
 import macData from "../data/macs.json";
 import SearchWithDropdown from "../components/SearchWithDropdown";
 import ClientOnlyTime from "../components/ClientOnlyTime";
 import { useDeviceType } from "../hooks/useDeviceType";
 import { useRandomDarkBackdrop } from "../hooks/useRandomDarkBackdrop";
-
-// 1. 动态导入非首屏必要组件，减少初始 JS 体积
-const FilterPanel = dynamic(() => import("../components/FilterPanel"), {
-  loading: () => <div className="mp-loading">加载筛选面板...</div>,
-  ssr: false,
-});
-const VirtualGrid = dynamic(() => import("../components/VirtualGrid"), {
-  ssr: false,
-  loading: () => <div className="mp-loading">加载列表...</div>,
-});
 
 // 2. 抽离重复的 Meta 组件，减少代码重复
 const SidebarMeta = memo(({ lastUpdated, count }) => (
@@ -139,18 +130,15 @@ export default function Home() {
   const [filters, setFilters] = useState(() => ({
     q: "",
     priceMin: 0,
-    priceMax: 0, // 0 表示不设上限（初始化后会 set）
+    priceMax: 0,
     ram: 8,
     ssd: 256,
     tags: [],
     logic: "AND",
   }));
 
-  // 初始化 priceMin/priceMax（避免 SSR/CSR 不一致）
-  const didInit = useRef(false);
+  // 初始化 priceMin/priceMax
   useEffect(() => {
-    if (didInit.current) return;
-    didInit.current = true;
     setFilters((f) => ({
       ...f,
       priceMin: priceBounds.min || 0,
@@ -158,27 +146,20 @@ export default function Home() {
     }));
   }, [priceBounds.min, priceBounds.max]);
 
-  // Concurrent React: Defer the filter updates to keep input responsive
+  // 直接过滤产品
   const filteredProducts = useMemo(() => filterProducts(products, filters), [products, filters]);
 
-  // Track which fields were included in the last applied update (for per-field feedback)
+  // Track which fields were included in the last applied update
   const [lastAppliedFields, setLastAppliedFields] = useState([]);
-  const lastSentFiltersRef = useRef(filters);
 
   useEffect(() => {
-    const prev = lastSentFiltersRef.current || {};
     const keys = ['priceMin','priceMax','ram','ssd','q','tags','logic'];
-    const changed = keys.filter((k) => JSON.stringify(prev[k]) !== JSON.stringify(filters[k]));
-    lastSentFiltersRef.current = filters;
-    if (changed.length > 0) {
-      setLastAppliedFields(changed);
-      const timer = setTimeout(() => setLastAppliedFields([]), 700);
-      return () => clearTimeout(timer);
-    }
-    setLastAppliedFields([]);
+    setLastAppliedFields(keys);
+    const timer = setTimeout(() => setLastAppliedFields([]), 700);
+    return () => clearTimeout(timer);
   }, [filters]);
 
-  // 4. useCallback 包裹传递给子组件的函数（避免子组件重渲染）
+  // useCallback 包裹传递给子组件的函数
   const handleSetFilters = useCallback((newFilters) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
   }, []);
@@ -188,57 +169,6 @@ export default function Home() {
   }, []);
 
   const deviceType = useDeviceType();
-  const [showParticles, setShowParticles] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!prefersReducedMotion && window.innerWidth >= 980) setShowParticles(true);
-  }, []);
-
-  const [vgridMissing, setVGridMissing] = useState(false);
-  const vgridPreloadedRef = useRef(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      const hasVGrid = !!document.querySelector('.mp-virtual-grid');
-      setVGridMissing(!hasVGrid);
-    }, 3000);
-    return () => clearTimeout(t);
-  }, [filteredProducts.length]);
-
-  // Try to proactively preload the VirtualGrid chunk when we have results
-  useEffect(() => {
-    if (!filteredProducts || filteredProducts.length === 0) return;
-    try {
-      if (VirtualGrid && typeof VirtualGrid.preload === 'function' && !vgridPreloadedRef.current) {
-        VirtualGrid.preload();
-        vgridPreloadedRef.current = true;
-        // After a short timeout, check whether the virtual DOM appeared
-        const t = setTimeout(() => {
-          const hasVGrid = !!document.querySelector('.mp-virtual-grid');
-          if (!hasVGrid) setVGridMissing(true);
-        }, 2000);
-        return () => clearTimeout(t);
-      } else if (!vgridPreloadedRef.current) {
-        import('../components/VirtualGrid')
-          .then((mod) => {
-            vgridPreloadedRef.current = true;
-            // After import, check DOM
-            setTimeout(() => {
-              const hasVGrid = !!document.querySelector('.mp-virtual-grid');
-              if (!hasVGrid) setVGridMissing(true);
-            }, 1000);
-          })
-          .catch(() => {
-            setVGridMissing(true);
-          });
-      }
-    } catch (err) {
-      // don't crash the UI; mark missing and surface a hint
-      setVGridMissing(true);
-    }
-  }, [filteredProducts]);
 
   return (
     <div className="mp-root">
@@ -246,7 +176,6 @@ export default function Home() {
       <div className="mp-bg-fixed">
         <div className="mp-bg-gradients"></div>
         <div className="mp-bg-grid"></div>
-        {showParticles && <div className="mp-bg-particles" id="particles"></div>}
       </div>
 
       <Head>
@@ -392,19 +321,6 @@ export default function Home() {
             <div className="mp-empty">
               <div className="mp-emptyTitle">没有匹配到机器</div>
               <div className="mp-emptySub">试试降低 RAM/SSD 要求，或者清空搜索关键字。</div>
-            </div>
-          ) : vgridMissing ? (
-            <div>
-              <div className="mp-empty mp-empty--warn">
-                <div className="mp-emptyTitle">列表加载失败（已回退）</div>
-                <div className="mp-emptySub">虚拟化列表无法渲染，已切换为非虚拟化回退渲染（前 24 条）。若需更快恢复，请刷新页面。</div>
-              </div>
-
-              <div className="mp-grid">
-                {filteredProducts.slice(0, 24).map((item) => (
-                  <ProductCard key={item.id || item.modelId || Math.random()} data={item} />
-                ))}
-              </div>
             </div>
           ) : (
             <VirtualGrid items={filteredProducts} />
