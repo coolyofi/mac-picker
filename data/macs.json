@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-11T07:30:05.410Z",
+  "lastUpdated": "2026-01-11T08:30:06.952Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -8244,35 +8244,6 @@
         "screen_in": 16,
         "has10GbE": false,
         "hasXDR": true
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:3710f4cd21d6fab7fbc6776631771b07",
-      "displayTitle": "Mac Studio - M2 Ultra",
-      "priceNum": 29799,
-      "link": "https://refurb-tracker.com/url/888573",
-      "modelId": "G1803CH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-studio-202307?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac Studio Apple M2 Ultra 芯片 (配备 24 核中央处理器和 60 核图形处理器)",
-        "&ndash; G1803CH/A",
-        "最初发布于 2023 年 6 月",
-        "128GB 统一内存",
-        "1TB 固态硬盘¹",
-        "正面：两个雷雳 4 端口，一个 SDXC 卡插槽",
-        "背面：四个雷雳 4 端口，两个 USB-A 端口，一个 HDMI 端口，一个 10Gb 以太网端口，一个 3.5 毫米耳机插孔"
-      ],
-      "specs": {
-        "ram": 128,
-        "ssd_gb": 1024,
-        "cpu": 24,
-        "gpu": 60,
-        "chip_series": "M2",
-        "chip_model": "M2 Ultra",
-        "screen_in": null,
-        "has10GbE": true,
-        "hasXDR": false
       }
     },
     {
