@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-11T10:30:04.789Z",
+  "lastUpdated": "2026-01-11T11:30:06.505Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -4328,37 +4328,6 @@
         "screen_in": 13,
         "has10GbE": false,
         "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:dcc72c7551b74a7adeb4893a9ff45ffc",
-      "displayTitle": "MacBook Pro - M3",
-      "priceNum": 11249,
-      "link": "https://refurb-tracker.com/url/889851",
-      "modelId": "G1AA1CH/A",
-      "color": "银色",
-      "image": "https://as-images.apple.com/is/refurb-mbp14-m3-silver-202402?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 14 英寸 MacBook Pro Apple M3 芯片 (配备 8 核中央处理器和 10 核图形处理器) - 银色",
-        "&ndash; G1AA1CH/A",
-        "最初发布于 2023 年 10 月",
-        "14.2 英寸 (对角线) Liquid 视网膜 XDR 显示屏；初始分辨率 3024 x 1964 (254 ppi)",
-        "16GB 统一内存",
-        "1TB 固态硬盘",
-        "触控 ID",
-        "1080p FaceTime 高清摄像头",
-        "两个雷雳 4 (USB-C) 端口"
-      ],
-      "specs": {
-        "ram": 16,
-        "ssd_gb": 1024,
-        "cpu": 8,
-        "gpu": 10,
-        "chip_series": "M3",
-        "chip_model": "M3",
-        "screen_in": 14,
-        "has10GbE": false,
-        "hasXDR": true
       }
     },
     {
