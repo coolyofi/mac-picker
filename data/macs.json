@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-13T03:30:05.717Z",
+  "lastUpdated": "2026-01-13T04:30:12.976Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -3925,6 +3925,96 @@
       }
     },
     {
+      "id": "tag:refurb-tracker.com,2007:f0859f4ff88500383ba9872a51ab985d",
+      "displayTitle": "iMac - M4",
+      "priceNum": 10599,
+      "link": "https://refurb-tracker.com/url/905097",
+      "modelId": "G1E71CH/A",
+      "color": "紫色",
+      "image": "https://as-images.apple.com/is/refurb-imac-purple-202502?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 24 英寸 iMac Apple M4 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 紫色",
+        "&ndash; G1E71CH/A",
+        "最初发布于 2024 年 10 月",
+        "24 英寸 4.5K 视网膜显示屏²",
+        "16GB 统一内存",
+        "512GB 固态硬盘¹",
+        "12MP Center Stage 摄像头，支持桌上视角功能",
+        "两个雷雳 / USB 4 端口"
+      ],
+      "specs": {
+        "ram": 16,
+        "ssd_gb": 512,
+        "cpu": 8,
+        "gpu": 8,
+        "chip_series": "M4",
+        "chip_model": "M4",
+        "screen_in": 24,
+        "has10GbE": false,
+        "hasXDR": false
+      }
+    },
+    {
+      "id": "tag:refurb-tracker.com,2007:592cd7c749ecfdb218e0a5d245189a79",
+      "displayTitle": "iMac - M4",
+      "priceNum": 10599,
+      "link": "https://refurb-tracker.com/url/905096",
+      "modelId": "G1E61CH/A",
+      "color": "粉色",
+      "image": "https://as-images.apple.com/is/refurb-imac-pink-202502?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 24 英寸 iMac Apple M4 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 粉色",
+        "&ndash; G1E61CH/A",
+        "最初发布于 2024 年 10 月",
+        "24 英寸 4.5K 视网膜显示屏²",
+        "16GB 统一内存",
+        "512GB 固态硬盘¹",
+        "12MP Center Stage 摄像头，支持桌上视角功能",
+        "两个雷雳 / USB 4 端口"
+      ],
+      "specs": {
+        "ram": 16,
+        "ssd_gb": 512,
+        "cpu": 8,
+        "gpu": 8,
+        "chip_series": "M4",
+        "chip_model": "M4",
+        "screen_in": 24,
+        "has10GbE": false,
+        "hasXDR": false
+      }
+    },
+    {
+      "id": "tag:refurb-tracker.com,2007:58edd308d4d1e96887d453fd05715115",
+      "displayTitle": "iMac - M4",
+      "priceNum": 10599,
+      "link": "https://refurb-tracker.com/url/910098",
+      "modelId": "G1E31CH/A",
+      "color": "黄色",
+      "image": "https://as-images.apple.com/is/refurb-imac-yellow-202502?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 24 英寸 iMac Apple M4 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 黄色",
+        "&ndash; G1E31CH/A",
+        "最初发布于 2024 年 10 月",
+        "24 英寸 4.5K 视网膜显示屏²",
+        "16GB 统一内存",
+        "512GB 固态硬盘¹",
+        "12MP Center Stage 摄像头，支持桌上视角功能",
+        "两个雷雳 / USB 4 端口"
+      ],
+      "specs": {
+        "ram": 16,
+        "ssd_gb": 512,
+        "cpu": 8,
+        "gpu": 8,
+        "chip_series": "M4",
+        "chip_model": "M4",
+        "screen_in": 24,
+        "has10GbE": false,
+        "hasXDR": false
+      }
+    },
+    {
       "id": "tag:refurb-tracker.com,2007:2bf39f8ef38bc26cbc0c945accb35689",
       "displayTitle": "MacBook Air - M2",
       "priceNum": 10699,
@@ -4575,6 +4665,66 @@
       "specs": {
         "ram": 16,
         "ssd_gb": 1024,
+        "cpu": 8,
+        "gpu": 8,
+        "chip_series": "M4",
+        "chip_model": "M4",
+        "screen_in": 24,
+        "has10GbE": false,
+        "hasXDR": false
+      }
+    },
+    {
+      "id": "tag:refurb-tracker.com,2007:d68d3791e5a6903155da892d77a1a649",
+      "displayTitle": "iMac - M4",
+      "priceNum": 11799,
+      "link": "https://refurb-tracker.com/url/910099",
+      "modelId": "G1E52CH/A",
+      "color": "蓝色",
+      "image": "https://as-images.apple.com/is/refurb-imac-blue-202502?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 24 英寸 iMac Apple M4 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 蓝色",
+        "&ndash; G1E52CH/A",
+        "最初发布于 2024 年 10 月",
+        "24 英寸 4.5K 视网膜显示屏²",
+        "16GB 统一内存",
+        "1TB 固态硬盘¹",
+        "12MP Center Stage 摄像头，支持桌上视角功能",
+        "两个雷雳 / USB 4 端口"
+      ],
+      "specs": {
+        "ram": 16,
+        "ssd_gb": 1024,
+        "cpu": 8,
+        "gpu": 8,
+        "chip_series": "M4",
+        "chip_model": "M4",
+        "screen_in": 24,
+        "has10GbE": false,
+        "hasXDR": false
+      }
+    },
+    {
+      "id": "tag:refurb-tracker.com,2007:f996eaa882236da80c31988fb596e478",
+      "displayTitle": "iMac - M4",
+      "priceNum": 11799,
+      "link": "https://refurb-tracker.com/url/905101",
+      "modelId": "G1E54CH/A",
+      "color": "蓝色",
+      "image": "https://as-images.apple.com/is/refurb-imac-blue-202502?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 24 英寸 iMac Apple M4 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 蓝色",
+        "&ndash; G1E54CH/A",
+        "最初发布于 2024 年 10 月",
+        "24 英寸 4.5K 视网膜显示屏²",
+        "24GB 统一内存",
+        "512GB 固态硬盘¹",
+        "12MP Center Stage 摄像头，支持桌上视角功能",
+        "两个雷雳 / USB 4 端口"
+      ],
+      "specs": {
+        "ram": 24,
+        "ssd_gb": 512,
         "cpu": 8,
         "gpu": 8,
         "chip_series": "M4",
@@ -5675,6 +5825,66 @@
       }
     },
     {
+      "id": "tag:refurb-tracker.com,2007:72c953b9f86a638cd83890f0c81c0317",
+      "displayTitle": "iMac - M4",
+      "priceNum": 13099,
+      "link": "https://refurb-tracker.com/url/905119",
+      "modelId": "G1E25CH/A",
+      "color": "银色",
+      "image": "https://as-images.apple.com/is/refurb-imac-silver-202502?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 24 英寸 iMac Apple M4 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 银色",
+        "&ndash; G1E25CH/A",
+        "最初发布于 2024 年 10 月",
+        "24 英寸 4.5K 视网膜显示屏²",
+        "24GB 统一内存",
+        "1TB 固态硬盘¹",
+        "12MP Center Stage 摄像头，支持桌上视角功能",
+        "两个雷雳 / USB 4 端口"
+      ],
+      "specs": {
+        "ram": 24,
+        "ssd_gb": 1024,
+        "cpu": 8,
+        "gpu": 8,
+        "chip_series": "M4",
+        "chip_model": "M4",
+        "screen_in": 24,
+        "has10GbE": false,
+        "hasXDR": false
+      }
+    },
+    {
+      "id": "tag:refurb-tracker.com,2007:22d918547bb5bae95eddf69ed3977083",
+      "displayTitle": "iMac - M4",
+      "priceNum": 13099,
+      "link": "https://refurb-tracker.com/url/905120",
+      "modelId": "G1E45CH/A",
+      "color": "绿色",
+      "image": "https://as-images.apple.com/is/refurb-imac-green-202502?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 24 英寸 iMac Apple M4 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 绿色",
+        "&ndash; G1E45CH/A",
+        "最初发布于 2024 年 10 月",
+        "24 英寸 4.5K 视网膜显示屏²",
+        "24GB 统一内存",
+        "1TB 固态硬盘¹",
+        "12MP Center Stage 摄像头，支持桌上视角功能",
+        "两个雷雳 / USB 4 端口"
+      ],
+      "specs": {
+        "ram": 24,
+        "ssd_gb": 1024,
+        "cpu": 8,
+        "gpu": 8,
+        "chip_series": "M4",
+        "chip_model": "M4",
+        "screen_in": 24,
+        "has10GbE": false,
+        "hasXDR": false
+      }
+    },
+    {
       "id": "tag:refurb-tracker.com,2007:e51c9d228a4c9dc9ffd41e506ba9c54e",
       "displayTitle": "iMac - M4",
       "priceNum": 13199,
@@ -6670,6 +6880,69 @@
       }
     },
     {
+      "id": "tag:refurb-tracker.com,2007:54d164b425336dbbf44866159011c19b",
+      "displayTitle": "iMac - M4",
+      "priceNum": 14399,
+      "link": "https://refurb-tracker.com/url/910109",
+      "modelId": "G1K77CH/A",
+      "color": "紫色",
+      "image": "https://as-images.apple.com/is/refurb-imac-touch-id-purple-202502?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 24 英寸 iMac Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) 以及千兆以太网端口和纳米纹理玻璃面板 - 紫色",
+        "&ndash; G1K77CH/A",
+        "最初发布于 2024 年 10 月",
+        "24 英寸 4.5K 视网膜显示屏²",
+        "24GB 统一内存",
+        "512GB 固态硬盘¹",
+        "12MP Center Stage 摄像头，支持桌上视角功能",
+        "四个雷雳 4 端口",
+        "千兆以太网端口"
+      ],
+      "specs": {
+        "ram": 24,
+        "ssd_gb": 512,
+        "cpu": 10,
+        "gpu": 10,
+        "chip_series": "M4",
+        "chip_model": "M4",
+        "screen_in": 24,
+        "has10GbE": false,
+        "hasXDR": false
+      }
+    },
+    {
+      "id": "tag:refurb-tracker.com,2007:8cc02f885f233cbcef173cc13a5dbef2",
+      "displayTitle": "MacBook Air - M4",
+      "priceNum": 14399,
+      "link": "https://refurb-tracker.com/url/906580",
+      "modelId": "G1GS4CH/A",
+      "color": "银色",
+      "image": "https://as-images.apple.com/is/refurb-mba13-m4-silver-202503?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 13 英寸 MacBook Air Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) - 银色",
+        "&ndash; G1GS4CH/A",
+        "最初发布于 2025 年 3 月",
+        "13.6 英寸 Liquid 视网膜显示屏，支持原彩显示¹",
+        "12MP Center Stage 摄像头",
+        "32GB 统一内存",
+        "2TB 固态硬盘²",
+        "带有触控 ID 的背光妙控键盘",
+        "MagSafe 3 充电端口",
+        "两个雷雳 4 端口"
+      ],
+      "specs": {
+        "ram": 32,
+        "ssd_gb": 2048,
+        "cpu": 10,
+        "gpu": 10,
+        "chip_series": "M4",
+        "chip_model": "M4",
+        "screen_in": 13,
+        "has10GbE": false,
+        "hasXDR": false
+      }
+    },
+    {
       "id": "tag:refurb-tracker.com,2007:a6252eb464c789e91730523f7ee6f71d",
       "displayTitle": "MacBook Pro - M4",
       "priceNum": 15149,
@@ -6853,6 +7126,68 @@
         "screen_in": 16,
         "has10GbE": false,
         "hasXDR": true
+      }
+    },
+    {
+      "id": "tag:refurb-tracker.com,2007:a931444df170e67816e529fd350cc809",
+      "displayTitle": "iMac - M4",
+      "priceNum": 15699,
+      "link": "https://refurb-tracker.com/url/905141",
+      "modelId": "G1K15CH/A",
+      "color": "银色",
+      "image": "https://as-images.apple.com/is/refurb-imac-touch-id-silver-202502?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 24 英寸 iMac Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) 和千兆以太网端口 - 银色",
+        "&ndash; G1K15CH/A",
+        "最初发布于 2024 年 10 月",
+        "24 英寸 4.5K 视网膜显示屏²",
+        "32GB 统一内存",
+        "1TB 固态硬盘¹",
+        "12MP Center Stage 摄像头，支持桌上视角功能",
+        "四个雷雳 4 端口",
+        "千兆以太网端口"
+      ],
+      "specs": {
+        "ram": 32,
+        "ssd_gb": 1024,
+        "cpu": 10,
+        "gpu": 10,
+        "chip_series": "M4",
+        "chip_model": "M4",
+        "screen_in": 24,
+        "has10GbE": false,
+        "hasXDR": false
+      }
+    },
+    {
+      "id": "tag:refurb-tracker.com,2007:5f4b5acaae67d0c28a1fdb2c936335d4",
+      "displayTitle": "iMac - M4",
+      "priceNum": 15699,
+      "link": "https://refurb-tracker.com/url/905146",
+      "modelId": "G1K65CH/A",
+      "color": "粉色",
+      "image": "https://as-images.apple.com/is/refurb-imac-touch-id-pink-202502?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 24 英寸 iMac Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) 和千兆以太网端口 - 粉色",
+        "&ndash; G1K65CH/A",
+        "最初发布于 2024 年 10 月",
+        "24 英寸 4.5K 视网膜显示屏²",
+        "32GB 统一内存",
+        "1TB 固态硬盘¹",
+        "12MP Center Stage 摄像头，支持桌上视角功能",
+        "四个雷雳 4 端口",
+        "千兆以太网端口"
+      ],
+      "specs": {
+        "ram": 32,
+        "ssd_gb": 1024,
+        "cpu": 10,
+        "gpu": 10,
+        "chip_series": "M4",
+        "chip_model": "M4",
+        "screen_in": 24,
+        "has10GbE": false,
+        "hasXDR": false
       }
     },
     {
