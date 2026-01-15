@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-15T07:30:04.576Z",
+  "lastUpdated": "2026-01-15T08:30:05.882Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -8736,37 +8736,6 @@
         "screen_in": null,
         "has10GbE": true,
         "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:41f85d7b535e38ed40fd411de95a0945",
-      "displayTitle": "MacBook Pro - M3 Max",
-      "priceNum": 32699,
-      "link": "https://refurb-tracker.com/url/892048",
-      "modelId": "G1CM7CH/A",
-      "color": "深空黑色",
-      "image": "https://as-images.apple.com/is/refurb-mbp16-m3-max-pro-spaceblack-202402?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 16 英寸 MacBook Pro Apple M3 Max 芯片 (配备 16 核中央处理器和 40 核图形处理器) - 深空黑色",
-        "&ndash; G1CM7CH/A",
-        "最初发布于 2023 年 10 月",
-        "16.2 英寸 (对角线) Liquid 视网膜 XDR 显示屏¹；初始分辨率 3456 x 2234 (254 ppi)",
-        "128GB 统一内存",
-        "1TB 固态硬盘²",
-        "触控 ID",
-        "1080p FaceTime 高清摄像头",
-        "三个雷雳 4 (USB-C) 端口"
-      ],
-      "specs": {
-        "ram": 128,
-        "ssd_gb": 1024,
-        "cpu": 16,
-        "gpu": 40,
-        "chip_series": "M3",
-        "chip_model": "M3 Max",
-        "screen_in": 16,
-        "has10GbE": false,
-        "hasXDR": true
       }
     },
     {
