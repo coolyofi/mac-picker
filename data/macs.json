@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-17T16:30:03.979Z",
+  "lastUpdated": "2026-01-17T17:30:05.903Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -130,36 +130,6 @@
       "details": [
         "翻新 13 英寸 MacBook Air Apple M2 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 深空灰色",
         "&ndash; G15S3CH/A",
-        "最初发布于 2022 年 7 月",
-        "13.6 英寸 (对角线) LED 背光显示屏 (采用 IPS 技术)",
-        "16GB 统一内存",
-        "256GB 固态硬盘",
-        "1080p FaceTime 高清摄像头",
-        "两个雷雳 / USB 4 端口"
-      ],
-      "specs": {
-        "ram": 16,
-        "ssd_gb": 256,
-        "cpu": 8,
-        "gpu": 8,
-        "chip_series": "M2",
-        "chip_model": "M2",
-        "screen_in": 13,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:021efd3cabf60cb7c3bb78ab68e65822",
-      "displayTitle": "MacBook Air - M2",
-      "priceNum": 5599,
-      "link": "https://refurb-tracker.com/url/879812",
-      "modelId": "G15W3CH/A",
-      "color": "银色",
-      "image": "https://as-images.apple.com/is/refurb-macbook-air-m2-silver-202208?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 13 英寸 MacBook Air Apple M2 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 银色",
-        "&ndash; G15W3CH/A",
         "最初发布于 2022 年 7 月",
         "13.6 英寸 (对角线) LED 背光显示屏 (采用 IPS 技术)",
         "16GB 统一内存",
