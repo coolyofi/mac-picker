@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-19T14:30:05.789Z",
+  "lastUpdated": "2026-01-19T15:30:04.614Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -633,36 +633,6 @@
       "specs": {
         "ram": 24,
         "ssd_gb": 256,
-        "cpu": 8,
-        "gpu": 10,
-        "chip_series": "M2",
-        "chip_model": "M2",
-        "screen_in": 13,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:0e0bdbd43bf30b59381657704f24a303",
-      "displayTitle": "MacBook Air - M2",
-      "priceNum": 6899,
-      "link": "https://refurb-tracker.com/url/880113",
-      "modelId": "G1612CH/A",
-      "color": "午夜色",
-      "image": "https://as-images.apple.com/is/refurb-macbook-air-m2-midnight-202208?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 13 英寸 MacBook Air Apple M2 芯片 (配备 8 核中央处理器和 10 核图形处理器) - 午夜色",
-        "&ndash; G1612CH/A",
-        "最初发布于 2022 年 7 月",
-        "13.6 英寸 (对角线) LED 背光显示屏 (采用 IPS 技术)",
-        "16GB 统一内存",
-        "512GB 固态硬盘",
-        "1080p FaceTime 高清摄像头",
-        "两个雷雳 / USB 4 端口"
-      ],
-      "specs": {
-        "ram": 16,
-        "ssd_gb": 512,
         "cpu": 8,
         "gpu": 10,
         "chip_series": "M2",
@@ -6375,35 +6345,6 @@
         "screen_in": 14,
         "has10GbE": false,
         "hasXDR": true
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:9ccd291871b57c49c8677dbb8cc1ae88",
-      "displayTitle": "Mac mini - M4 Pro",
-      "priceNum": 13999,
-      "link": "https://refurb-tracker.com/url/903489",
-      "modelId": "G1KZECH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-mini-pro-202501?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac mini Apple M4 Pro 芯片 (配备 14 核中央处理器和 20 核图形处理器) 和千兆以太网端口",
-        "&ndash; G1KZECH/A",
-        "最初发布于 2024 年 10 月",
-        "64GB 统一内存",
-        "512GB 固态硬盘¹",
-        "千兆以太网端口",
-        "三个雷雳 5 端口"
-      ],
-      "specs": {
-        "ram": 64,
-        "ssd_gb": 512,
-        "cpu": 14,
-        "gpu": 20,
-        "chip_series": "M4",
-        "chip_model": "M4 Pro",
-        "screen_in": null,
-        "has10GbE": false,
-        "hasXDR": false
       }
     },
     {
