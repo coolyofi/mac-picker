@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-20T04:30:05.949Z",
+  "lastUpdated": "2026-01-20T05:30:04.783Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -7404,37 +7404,6 @@
         "screen_in": 24,
         "has10GbE": false,
         "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:e203d469dea0fb38d39706c245c9bebd",
-      "displayTitle": "MacBook Pro - M4 Pro",
-      "priceNum": 16999,
-      "link": "https://refurb-tracker.com/url/902538",
-      "modelId": "FX2F3CH/A",
-      "color": "银色",
-      "image": "https://as-images.apple.com/is/refurb-mbp14-m4-silver-202502?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 14 英寸 MacBook Pro Apple M4 Pro 芯片 (配备 14 核中央处理器和 20 核图形处理器) - 银色",
-        "&ndash; FX2F3CH/A",
-        "最初发布于 2024 年 10 月",
-        "14.2 英寸 (对角线) Liquid 视网膜 XDR 显示屏¹；初始分辨率 3024 x 1964 (254 ppi)",
-        "24GB 统一内存",
-        "1TB 固态硬盘²",
-        "触控 ID",
-        "12MP Center Stage 摄像头，支持桌上视角功能",
-        "三个雷雳 5 (USB-C) 端口"
-      ],
-      "specs": {
-        "ram": 24,
-        "ssd_gb": 1024,
-        "cpu": 14,
-        "gpu": 20,
-        "chip_series": "M4",
-        "chip_model": "M4 Pro",
-        "screen_in": 14,
-        "has10GbE": false,
-        "hasXDR": true
       }
     },
     {
