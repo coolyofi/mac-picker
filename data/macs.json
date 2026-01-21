@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-21T12:30:03.996Z",
+  "lastUpdated": "2026-01-21T13:30:05.886Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -7838,6 +7838,37 @@
         "chip_series": "M2",
         "chip_model": "M2 Max",
         "screen_in": 16,
+        "has10GbE": false,
+        "hasXDR": true
+      }
+    },
+    {
+      "id": "tag:refurb-tracker.com,2007:b30058472f22f882b2ceab26e7d127d9",
+      "displayTitle": "MacBook Pro - M3 Max",
+      "priceNum": 22299,
+      "link": "https://refurb-tracker.com/url/890323",
+      "modelId": "FRX53CH/A",
+      "color": "深空黑色",
+      "image": "https://as-images.apple.com/is/refurb-mbp14-m3-max-pro-spaceblack-202402?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 14 英寸 MacBook Pro Apple M3 Max 芯片 (配备 14 核中央处理器和 30 核图形处理器) - 深空黑色",
+        "&ndash; FRX53CH/A",
+        "最初发布于 2023 年 10 月",
+        "14.2 英寸 (对角线) Liquid 视网膜 XDR 显示屏¹；初始分辨率 3024 x 1964 (254 ppi)",
+        "36GB 统一内存",
+        "1TB 固态硬盘²",
+        "触控 ID",
+        "1080p FaceTime 高清摄像头",
+        "三个雷雳 4 (USB-C) 端口"
+      ],
+      "specs": {
+        "ram": 36,
+        "ssd_gb": 1024,
+        "cpu": 14,
+        "gpu": 30,
+        "chip_series": "M3",
+        "chip_model": "M3 Max",
+        "screen_in": 14,
         "has10GbE": false,
         "hasXDR": true
       }
