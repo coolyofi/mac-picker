@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-21T00:30:04.494Z",
+  "lastUpdated": "2026-01-21T01:30:05.546Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -1874,36 +1874,6 @@
       "details": [
         "翻新 24 英寸 iMac Apple M4 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 银色",
         "&ndash; FWUC3CH/A",
-        "最初发布于 2024 年 10 月",
-        "24 英寸 4.5K 视网膜显示屏²",
-        "16GB 统一内存",
-        "256GB 固态硬盘¹",
-        "12MP Center Stage 摄像头，支持桌上视角功能",
-        "两个雷雳 / USB 4 端口"
-      ],
-      "specs": {
-        "ram": 16,
-        "ssd_gb": 256,
-        "cpu": 8,
-        "gpu": 8,
-        "chip_series": "M4",
-        "chip_model": "M4",
-        "screen_in": 24,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:e4cc37c22a4aef97907fb23d00ca7b0a",
-      "displayTitle": "iMac - M4",
-      "priceNum": 9299,
-      "link": "https://refurb-tracker.com/url/905076",
-      "modelId": "FWUD3CH/A",
-      "color": "黄色",
-      "image": "https://as-images.apple.com/is/refurb-imac-yellow-202502?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 24 英寸 iMac Apple M4 芯片 (配备 8 核中央处理器和 8 核图形处理器) - 黄色",
-        "&ndash; FWUD3CH/A",
         "最初发布于 2024 年 10 月",
         "24 英寸 4.5K 视网膜显示屏²",
         "16GB 统一内存",
