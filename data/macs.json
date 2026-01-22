@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-22T06:30:06.102Z",
+  "lastUpdated": "2026-01-22T07:30:06.015Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -6169,35 +6169,6 @@
       }
     },
     {
-      "id": "tag:refurb-tracker.com,2007:bf79f9c1229924b303e75cdab9517e91",
-      "displayTitle": "Mac Studio - M2 Max",
-      "priceNum": 13799,
-      "link": "https://refurb-tracker.com/url/888635",
-      "modelId": "G17Z9CH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-studio-202307?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac Studio Apple M2 Max 芯片 (配备 12 核中央处理器和 38 核图形处理器)",
-        "&ndash; G17Z9CH/A",
-        "最初发布于 2023 年 6 月",
-        "32GB 统一内存",
-        "512GB 固态硬盘¹",
-        "正面：两个 USB-C 端口，一个 SDXC 卡插槽",
-        "背面：四个雷雳 4 端口，两个 USB-A 端口，一个 HDMI 端口，一个 10Gb 以太网端口，一个 3.5 毫米耳机插孔"
-      ],
-      "specs": {
-        "ram": 32,
-        "ssd_gb": 512,
-        "cpu": 12,
-        "gpu": 38,
-        "chip_series": "M2",
-        "chip_model": "M2 Max",
-        "screen_in": null,
-        "has10GbE": true,
-        "hasXDR": false
-      }
-    },
-    {
       "id": "tag:refurb-tracker.com,2007:776a2a8f592715f7edf6514df8bd541b",
       "displayTitle": "MacBook Pro - M3 Pro",
       "priceNum": 13799,
@@ -7377,37 +7348,6 @@
         "screen_in": 16,
         "has10GbE": false,
         "hasXDR": true
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:cdf2301cf541cef06d0d0eec4d443e75",
-      "displayTitle": "iMac - M4",
-      "priceNum": 18199,
-      "link": "https://refurb-tracker.com/url/905152",
-      "modelId": "G1K16CH/A",
-      "color": "银色",
-      "image": "https://as-images.apple.com/is/refurb-imac-touch-id-silver-202502?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 24 英寸 iMac Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) 和千兆以太网端口 - 银色",
-        "&ndash; G1K16CH/A",
-        "最初发布于 2024 年 10 月",
-        "24 英寸 4.5K 视网膜显示屏²",
-        "32GB 统一内存",
-        "2TB 固态硬盘¹",
-        "12MP Center Stage 摄像头，支持桌上视角功能",
-        "四个雷雳 4 端口",
-        "千兆以太网端口"
-      ],
-      "specs": {
-        "ram": 32,
-        "ssd_gb": 2048,
-        "cpu": 10,
-        "gpu": 10,
-        "chip_series": "M4",
-        "chip_model": "M4",
-        "screen_in": 24,
-        "has10GbE": false,
-        "hasXDR": false
       }
     },
     {
