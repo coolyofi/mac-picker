@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-22T13:30:05.884Z",
+  "lastUpdated": "2026-01-22T14:30:05.944Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -8049,37 +8049,6 @@
       ],
       "specs": {
         "ram": 48,
-        "ssd_gb": 1024,
-        "cpu": 16,
-        "gpu": 40,
-        "chip_series": "M3",
-        "chip_model": "M3 Max",
-        "screen_in": 16,
-        "has10GbE": false,
-        "hasXDR": true
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:dcf29f3cd7ee7a5c967ec973016c5bb0",
-      "displayTitle": "MacBook Pro - M3 Max",
-      "priceNum": 27799,
-      "link": "https://refurb-tracker.com/url/892037",
-      "modelId": "G1CN3CH/A",
-      "color": "银色",
-      "image": "https://as-images.apple.com/is/refurb-mbp16-m3-max-pro-silver-202402?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 16 英寸 MacBook Pro Apple M3 Max 芯片 (配备 16 核中央处理器和 40 核图形处理器) - 银色",
-        "&ndash; G1CN3CH/A",
-        "最初发布于 2023 年 10 月",
-        "16.2 英寸 (对角线) Liquid 视网膜 XDR 显示屏¹；初始分辨率 3456 x 2234 (254 ppi)",
-        "64GB 统一内存",
-        "1TB 固态硬盘²",
-        "触控 ID",
-        "1080p FaceTime 高清摄像头",
-        "三个雷雳 4 (USB-C) 端口"
-      ],
-      "specs": {
-        "ram": 64,
         "ssd_gb": 1024,
         "cpu": 16,
         "gpu": 40,
