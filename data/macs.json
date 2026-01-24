@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-24T13:30:06.809Z",
+  "lastUpdated": "2026-01-24T14:30:05.711Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -699,6 +699,38 @@
         "chip_series": "M2",
         "chip_model": "M2",
         "screen_in": 13,
+        "has10GbE": false,
+        "hasXDR": false
+      }
+    },
+    {
+      "id": "tag:refurb-tracker.com,2007:b06ca6c6b6d7f7e3a892fe7fb8a42bd6",
+      "displayTitle": "MacBook Air - M3",
+      "priceNum": 7699,
+      "link": "https://refurb-tracker.com/url/894157",
+      "modelId": "G1BR0CH/A",
+      "color": "银色",
+      "image": "https://as-images.apple.com/is/refurb-mba15-m3-silver-202405?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 15 英寸 MacBook Air Apple M3 芯片 (配备 8 核中央处理器和 10 核图形处理器) - 银色",
+        "&ndash; G1BR0CH/A",
+        "最初发布于 2024 年 3 月",
+        "15.3 英寸 (对角线) LED 背光显示屏 (采用 IPS 技术)¹；",
+        "初始分辨率 2880 x 1864 (224 ppi)",
+        "16GB 统一内存",
+        "256GB 固态硬盘²",
+        "触控 ID",
+        "1080p FaceTime 高清摄像头",
+        "两个雷雳 / USB 4 端口"
+      ],
+      "specs": {
+        "ram": 16,
+        "ssd_gb": 256,
+        "cpu": 8,
+        "gpu": 10,
+        "chip_series": "M3",
+        "chip_model": "M3",
+        "screen_in": 15,
         "has10GbE": false,
         "hasXDR": false
       }
