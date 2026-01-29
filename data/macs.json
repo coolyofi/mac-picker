@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-29T11:30:06.423Z",
+  "lastUpdated": "2026-01-29T12:30:06.128Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -757,38 +757,6 @@
         "chip_series": "M2",
         "chip_model": "M2",
         "screen_in": 13,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:8cd303a2215ff2c2fc259477f645ef74",
-      "displayTitle": "MacBook Air - M3",
-      "priceNum": 7099,
-      "link": "https://refurb-tracker.com/url/893077",
-      "modelId": "FRYM3CH/A",
-      "color": "深空灰色",
-      "image": "https://as-images.apple.com/is/refurb-mba15-m3-spacegray-202405?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 15 英寸 MacBook Air Apple M3 芯片 (配备 8 核中央处理器和 10 核图形处理器) - 深空灰色",
-        "&ndash; FRYM3CH/A",
-        "最初发布于 2024 年 3 月",
-        "15.3 英寸 (对角线) LED 背光显示屏 (采用 IPS 技术)¹；",
-        "初始分辨率 2880 x 1864 (224 ppi)",
-        "8GB 统一内存",
-        "256GB 固态硬盘²",
-        "触控 ID",
-        "1080p FaceTime 高清摄像头",
-        "两个雷雳 / USB 4 端口"
-      ],
-      "specs": {
-        "ram": 8,
-        "ssd_gb": 256,
-        "cpu": 8,
-        "gpu": 10,
-        "chip_series": "M3",
-        "chip_model": "M3",
-        "screen_in": 15,
         "has10GbE": false,
         "hasXDR": false
       }
@@ -9043,37 +9011,6 @@
         "gpu": 38,
         "chip_series": "M2",
         "chip_model": "M2 Max",
-        "screen_in": 16,
-        "has10GbE": false,
-        "hasXDR": true
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:48b74faeaf88d7cb46539e9861dd65bf",
-      "displayTitle": "MacBook Pro - M4 Max",
-      "priceNum": 32899,
-      "link": "https://refurb-tracker.com/url/903091",
-      "modelId": "G1FW7CH/A",
-      "color": "深空黑色",
-      "image": "https://as-images.apple.com/is/refurb-mbp16-m4-spaceblack-202502?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 16 英寸 MacBook Pro Apple M4 Max 芯片 (配备 16 核中央处理器和 40 核图形处理器) - 深空黑色",
-        "&ndash; G1FW7CH/A",
-        "最初发布于 2024 年 10 月",
-        "16.2 英寸 (对角线) Liquid 视网膜 XDR 显示屏¹；初始分辨率 3456 x 2234 (254 ppi)",
-        "128GB 统一内存",
-        "1TB 固态硬盘²",
-        "触控 ID",
-        "12MP Center Stage 摄像头，支持桌上视角功能",
-        "三个雷雳 5 (USB-C) 端口"
-      ],
-      "specs": {
-        "ram": 128,
-        "ssd_gb": 1024,
-        "cpu": 16,
-        "gpu": 40,
-        "chip_series": "M4",
-        "chip_model": "M4 Max",
         "screen_in": 16,
         "has10GbE": false,
         "hasXDR": true
