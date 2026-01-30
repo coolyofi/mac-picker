@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-30T00:30:07.187Z",
+  "lastUpdated": "2026-01-30T01:30:06.632Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -7075,6 +7075,37 @@
         "chip_series": "M4",
         "chip_model": "M4 Pro",
         "screen_in": 16,
+        "has10GbE": false,
+        "hasXDR": true
+      }
+    },
+    {
+      "id": "tag:refurb-tracker.com,2007:5dfc07c96cd8c33d2b76b8d8dfd79d33",
+      "displayTitle": "MacBook Pro - M4 Max",
+      "priceNum": 22899,
+      "link": "https://refurb-tracker.com/url/902560",
+      "modelId": "FX2K3CH/A",
+      "color": "深空黑色",
+      "image": "https://as-images.apple.com/is/refurb-mbp14-m4-spaceblack-202502?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 14 英寸 MacBook Pro Apple M4 Max 芯片 (配备 14 核中央处理器和 32 核图形处理器) - 深空黑色",
+        "&ndash; FX2K3CH/A",
+        "最初发布于 2024 年 10 月",
+        "14.2 英寸 (对角线) Liquid 视网膜 XDR 显示屏¹；初始分辨率 3024 x 1964 (254 ppi)",
+        "36GB 统一内存",
+        "1TB 固态硬盘²",
+        "触控 ID",
+        "12MP Center Stage 摄像头，支持桌上视角功能",
+        "三个雷雳 5 (USB-C) 端口"
+      ],
+      "specs": {
+        "ram": 36,
+        "ssd_gb": 1024,
+        "cpu": 14,
+        "gpu": 32,
+        "chip_series": "M4",
+        "chip_model": "M4 Max",
+        "screen_in": 14,
         "has10GbE": false,
         "hasXDR": true
       }
