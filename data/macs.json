@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-03T04:30:05.600Z",
+  "lastUpdated": "2026-02-03T05:30:05.438Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -7366,93 +7366,6 @@
         "screen_in": 16,
         "has10GbE": false,
         "hasXDR": true
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:a60ac564c29135957079ecdad9215b6e",
-      "displayTitle": "Mac Studio - M3 Ultra",
-      "priceNum": 63099,
-      "link": "https://refurb-tracker.com/url/906592",
-      "modelId": "G1CE3CH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-studio-202503?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac Studio Apple M3 Ultra 芯片 (配备 32 核中央处理器和 80 核图形处理器)",
-        "&ndash; G1CE3CH/A",
-        "最初发布于 2025 年 3 月",
-        "512GB 统一内存",
-        "1TB 固态硬盘¹",
-        "正面：两个雷雳 5 端口，一个 SDXC 卡插槽",
-        "背面：四个雷雳 5 端口，两个 USB-A 端口，一个 HDMI 端口，一个 10Gb 以太网端口，一个耳机插孔"
-      ],
-      "specs": {
-        "ram": 512,
-        "ssd_gb": 1024,
-        "cpu": 32,
-        "gpu": 80,
-        "chip_series": "M3",
-        "chip_model": "M3 Ultra",
-        "screen_in": null,
-        "has10GbE": true,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:7268a33cd5daa81a93c97a25460ad8b4",
-      "displayTitle": "Mac Studio - M3 Ultra",
-      "priceNum": 65599,
-      "link": "https://refurb-tracker.com/url/906593",
-      "modelId": "G1CE8CH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-studio-202503?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac Studio Apple M3 Ultra 芯片 (配备 32 核中央处理器和 80 核图形处理器)",
-        "&ndash; G1CE8CH/A",
-        "最初发布于 2025 年 3 月",
-        "512GB 统一内存",
-        "2TB 固态硬盘¹",
-        "正面：两个雷雳 5 端口，一个 SDXC 卡插槽",
-        "背面：四个雷雳 5 端口，两个 USB-A 端口，一个 HDMI 端口，一个 10Gb 以太网端口，一个耳机插孔"
-      ],
-      "specs": {
-        "ram": 512,
-        "ssd_gb": 2048,
-        "cpu": 32,
-        "gpu": 80,
-        "chip_series": "M3",
-        "chip_model": "M3 Ultra",
-        "screen_in": null,
-        "has10GbE": true,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:6088900a3968c35445fadf0e4f8b26e6",
-      "displayTitle": "Mac Studio - M3 Ultra",
-      "priceNum": 69399,
-      "link": "https://refurb-tracker.com/url/906594",
-      "modelId": "G1CEDCH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-studio-202503?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac Studio Apple M3 Ultra 芯片 (配备 32 核中央处理器和 80 核图形处理器)",
-        "&ndash; G1CEDCH/A",
-        "最初发布于 2025 年 3 月",
-        "512GB 统一内存",
-        "4TB 固态硬盘¹",
-        "正面：两个雷雳 5 端口，一个 SDXC 卡插槽",
-        "背面：四个雷雳 5 端口，两个 USB-A 端口，一个 HDMI 端口，一个 10Gb 以太网端口，一个耳机插孔"
-      ],
-      "specs": {
-        "ram": 512,
-        "ssd_gb": 4096,
-        "cpu": 32,
-        "gpu": 80,
-        "chip_series": "M3",
-        "chip_model": "M3 Ultra",
-        "screen_in": null,
-        "has10GbE": true,
-        "hasXDR": false
       }
     }
   ]
