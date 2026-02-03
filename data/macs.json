@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-03T14:30:04.918Z",
+  "lastUpdated": "2026-02-03T15:30:06.197Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -6418,35 +6418,6 @@
         "screen_in": 16,
         "has10GbE": false,
         "hasXDR": true
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:8cc33a8813969b9fd0ed40da0aa75c0b",
-      "displayTitle": "Mac Studio - M4 Max",
-      "priceNum": 17799,
-      "link": "https://refurb-tracker.com/url/911834",
-      "modelId": "G1CD7CH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-studio-202503?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac Studio Apple M4 Max 芯片 (配备 14 核中央处理器和 32 核图形处理器)",
-        "&ndash; G1CD7CH/A",
-        "最初发布于 2025 年 3 月",
-        "36GB 统一内存",
-        "2TB 固态硬盘¹",
-        "正面：两个 USB-C 端口 (速率最高可达 10Gb/s)，一个 SDXC 卡插槽 (UHS-II)",
-        "背面：四个雷雳 5 端口，两个 USB-A 端口，一个 HDMI 端口，一个 10Gb 以太网端口，一个耳机插孔"
-      ],
-      "specs": {
-        "ram": 36,
-        "ssd_gb": 2048,
-        "cpu": 14,
-        "gpu": 32,
-        "chip_series": "M4",
-        "chip_model": "M4 Max",
-        "screen_in": null,
-        "has10GbE": true,
-        "hasXDR": false
       }
     },
     {
