@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-03T07:30:04.443Z",
+  "lastUpdated": "2026-02-03T08:30:06.002Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -386,35 +386,6 @@
         "chip_series": "M2",
         "chip_model": "M2",
         "screen_in": 13,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:4023558e994b2df2d003c2f3b0460172",
-      "displayTitle": "Mac mini - M4",
-      "priceNum": 6299,
-      "link": "https://refurb-tracker.com/url/902941",
-      "modelId": "G1CFACH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-mini-202501?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac mini Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) 和千兆以太网端口",
-        "&ndash; G1CFACH/A",
-        "最初发布于 2024 年 10 月",
-        "32GB 统一内存",
-        "256GB 固态硬盘",
-        "千兆以太网端口",
-        "三个雷雳 4 端口"
-      ],
-      "specs": {
-        "ram": 32,
-        "ssd_gb": 256,
-        "cpu": 10,
-        "gpu": 10,
-        "chip_series": "M4",
-        "chip_model": "M4",
-        "screen_in": null,
         "has10GbE": false,
         "hasXDR": false
       }
@@ -817,35 +788,6 @@
         "chip_series": "M2",
         "chip_model": "M2",
         "screen_in": 13,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:2eea9bb89c864dd75f49c9df16535535",
-      "displayTitle": "Mac mini - M4",
-      "priceNum": 7599,
-      "link": "https://refurb-tracker.com/url/902945",
-      "modelId": "G1CF2CH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-mini-202501?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac mini Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) 和千兆以太网端口",
-        "&ndash; G1CF2CH/A",
-        "最初发布于 2024 年 10 月",
-        "32GB 统一内存",
-        "512GB 固态硬盘¹",
-        "千兆以太网端口",
-        "三个雷雳 4 端口"
-      ],
-      "specs": {
-        "ram": 32,
-        "ssd_gb": 512,
-        "cpu": 10,
-        "gpu": 10,
-        "chip_series": "M4",
-        "chip_model": "M4",
-        "screen_in": null,
         "has10GbE": false,
         "hasXDR": false
       }
@@ -1502,38 +1444,6 @@
         "chip_series": "M4",
         "chip_model": "M4",
         "screen_in": 15,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:116ede16cdcf3f9fbfee00564aad088a",
-      "displayTitle": "MacBook Air - M4",
-      "priceNum": 8699,
-      "link": "https://refurb-tracker.com/url/906569",
-      "modelId": "G1CX1CH/A",
-      "color": "午夜色",
-      "image": "https://as-images.apple.com/is/refurb-mba13-m4-midnight-202503?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 13 英寸 MacBook Air Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) - 午夜色",
-        "&ndash; G1CX1CH/A",
-        "最初发布于 2025 年 3 月",
-        "13.6 英寸 Liquid 视网膜显示屏，支持原彩显示¹",
-        "12MP Center Stage 摄像头",
-        "24GB 统一内存",
-        "256GB 固态硬盘²",
-        "带有触控 ID 的背光妙控键盘",
-        "MagSafe 3 充电端口",
-        "两个雷雳 4 端口"
-      ],
-      "specs": {
-        "ram": 24,
-        "ssd_gb": 256,
-        "cpu": 10,
-        "gpu": 10,
-        "chip_series": "M4",
-        "chip_model": "M4",
-        "screen_in": 13,
         "has10GbE": false,
         "hasXDR": false
       }
@@ -7155,35 +7065,6 @@
         "screen_in": 16,
         "has10GbE": false,
         "hasXDR": true
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:d91119e8c34d01e3753dbf64dd233fdf",
-      "displayTitle": "Mac Studio - M4 Max",
-      "priceNum": 24799,
-      "link": "https://refurb-tracker.com/url/906585",
-      "modelId": "G1CD6CH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-studio-202503?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac Studio Apple M4 Max 芯片 (配备 16 核中央处理器和 40 核图形处理器)",
-        "&ndash; G1CD6CH/A",
-        "最初发布于 2025 年 3 月",
-        "128GB 统一内存",
-        "1TB 固态硬盘¹",
-        "正面：两个 USB-C 端口 (速率最高可达 10Gb/s)，一个 SDXC 卡插槽 (UHS-II)",
-        "背面：四个雷雳 5 端口，两个 USB-A 端口，一个 HDMI 端口，一个 10Gb 以太网端口，一个耳机插孔"
-      ],
-      "specs": {
-        "ram": 128,
-        "ssd_gb": 1024,
-        "cpu": 16,
-        "gpu": 40,
-        "chip_series": "M4",
-        "chip_model": "M4 Max",
-        "screen_in": null,
-        "has10GbE": true,
-        "hasXDR": false
       }
     },
     {
