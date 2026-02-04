@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-04T05:30:05.899Z",
+  "lastUpdated": "2026-02-04T06:30:06.059Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -180,7 +180,7 @@
       }
     },
     {
-      "id": "tag:refurb-tracker.com,2007:4b2d59ba4f562ce4f03b731685cd0fdd",
+      "id": "tag:refurb-tracker.com,2007:dee992f5e1dc9509055a922f3177c23b",
       "displayTitle": "Mac mini - M4",
       "priceNum": 5699,
       "link": "https://refurb-tracker.com/url/902939",
@@ -6047,35 +6047,6 @@
         "chip_model": "M4 Max",
         "screen_in": null,
         "has10GbE": true,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:96cf06abe05304332844bfa8d2492e88",
-      "displayTitle": "Mac mini - M4 Pro",
-      "priceNum": 15299,
-      "link": "https://refurb-tracker.com/url/902971",
-      "modelId": "G1JV9CH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-mini-pro-202501?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac mini Apple M4 Pro 芯片 (配备 14 核中央处理器和 20 核图形处理器) 和千兆以太网端口",
-        "&ndash; G1JV9CH/A",
-        "最初发布于 2024 年 10 月",
-        "64GB 统一内存",
-        "1TB 固态硬盘¹",
-        "千兆以太网端口",
-        "三个雷雳 5 端口"
-      ],
-      "specs": {
-        "ram": 64,
-        "ssd_gb": 1024,
-        "cpu": 14,
-        "gpu": 20,
-        "chip_series": "M4",
-        "chip_model": "M4 Pro",
-        "screen_in": null,
-        "has10GbE": false,
         "hasXDR": false
       }
     },
