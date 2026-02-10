@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-10T09:30:06.194Z",
+  "lastUpdated": "2026-02-10T10:30:06.999Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -6861,35 +6861,6 @@
         "screen_in": 16,
         "has10GbE": false,
         "hasXDR": true
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:d4843ea24f447172a12fcb883b1ac55d",
-      "displayTitle": "Mac mini - M4 Pro",
-      "priceNum": 18499,
-      "link": "https://refurb-tracker.com/url/902975",
-      "modelId": "G1JVMCH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-mini-pro-202501?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac mini Apple M4 Pro 芯片 (配备 14 核中央处理器和 20 核图形处理器) 和 10Gb 以太网端口",
-        "&ndash; G1JVMCH/A",
-        "最初发布于 2024 年 10 月",
-        "64GB 统一内存",
-        "2TB 固态硬盘¹",
-        "10Gb 以太网端口",
-        "三个雷雳 5 端口"
-      ],
-      "specs": {
-        "ram": 64,
-        "ssd_gb": 2048,
-        "cpu": 14,
-        "gpu": 20,
-        "chip_series": "M4",
-        "chip_model": "M4 Pro",
-        "screen_in": null,
-        "has10GbE": true,
-        "hasXDR": false
       }
     },
     {
