@@ -1,5 +1,7 @@
 // Critical CSS for above-the-fold content
 // This is inlined in the HTML head for performance
+// Note: This CSS is intentionally minified to reduce initial page load time
+// Source: styles/critical.css (kept in sync during build)
 export const criticalCss = `/* Minimal critical CSS for above-the-fold */
 html,body{height:100%;margin:0;padding:0;background:#000;color:rgba(255,255,255,.92);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,system-ui,sans-serif}
 .mp-root{min-height:100vh;position:relative}
