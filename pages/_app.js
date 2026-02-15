@@ -1,11 +1,8 @@
 import Head from 'next/head';
 import './globals.css';
 import '../styles/transitions.css';
-import critical from '../styles/critical.css?raw';
 import { useState, useEffect } from 'react';
-
-// `critical` may be imported as an object (e.g. { default: '...' }) depending on bundler interop.
-const criticalCss = typeof critical === 'string' ? critical : (critical && critical.default) ? critical.default : String(critical);
+import { criticalCss } from '../constants/criticalCss';
 
 export default function MyApp({ Component, pageProps }) {
   const [error, setError] = useState(null);
