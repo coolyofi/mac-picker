@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-18T10:30:05.172Z",
+  "lastUpdated": "2026-02-18T11:30:04.304Z",
   "items": [
     {
       "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
@@ -3441,6 +3441,35 @@
       }
     },
     {
+      "id": "tag:refurb-tracker.com,2007:8a282ad6f7a4ca9d5246a46ee6994b01",
+      "displayTitle": "Mac mini - M4 Pro",
+      "priceNum": 10799,
+      "link": "https://refurb-tracker.com/url/902955",
+      "modelId": "G1KZBCH/A",
+      "color": null,
+      "image": "https://as-images.apple.com/is/refurb-mac-mini-pro-202501?wid=320&hei=320&fmt=png-alpha",
+      "details": [
+        "翻新 Mac mini Apple M4 Pro 芯片 (配备 14 核中央处理器和 20 核图形处理器) 和 10Gb 以太网端口",
+        "&ndash; G1KZBCH/A",
+        "最初发布于 2024 年 10 月",
+        "24GB 统一内存",
+        "512GB 固态硬盘¹",
+        "10Gb 以太网端口",
+        "三个雷雳 5 端口"
+      ],
+      "specs": {
+        "ram": 24,
+        "ssd_gb": 512,
+        "cpu": 14,
+        "gpu": 20,
+        "chip_series": "M4",
+        "chip_model": "M4 Pro",
+        "screen_in": null,
+        "has10GbE": true,
+        "hasXDR": false
+      }
+    },
+    {
       "id": "tag:refurb-tracker.com,2007:c30804e31f930de5fe059fae09a4c87d",
       "displayTitle": "MacBook Air - M4",
       "priceNum": 10999,
@@ -5302,35 +5331,6 @@
         "chip_model": "M4",
         "screen_in": 15,
         "has10GbE": false,
-        "hasXDR": false
-      }
-    },
-    {
-      "id": "tag:refurb-tracker.com,2007:bd9f082c5fdf26b1248d3ba1bad5b1a1",
-      "displayTitle": "Mac Studio - M2 Max",
-      "priceNum": 13799,
-      "link": "https://refurb-tracker.com/url/888564",
-      "modelId": "G17Z0CH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-studio-202307?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac Studio Apple M2 Max 芯片 (配备 12 核中央处理器和 30 核图形处理器)",
-        "&ndash; G17Z0CH/A",
-        "最初发布于 2023 年 6 月",
-        "32GB 统一内存",
-        "1TB 固态硬盘¹",
-        "正面：两个 USB-C 端口，一个 SDXC 卡插槽",
-        "背面：四个雷雳 4 端口，两个 USB-A 端口，一个 HDMI 端口，一个 10Gb 以太网端口，一个 3.5 毫米耳机插孔"
-      ],
-      "specs": {
-        "ram": 32,
-        "ssd_gb": 1024,
-        "cpu": 12,
-        "gpu": 30,
-        "chip_series": "M2",
-        "chip_model": "M2 Max",
-        "screen_in": null,
-        "has10GbE": true,
         "hasXDR": false
       }
     },
