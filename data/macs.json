@@ -1,35 +1,6 @@
 {
-  "lastUpdated": "2026-02-28T16:30:05.590Z",
+  "lastUpdated": "2026-02-28T17:30:06.382Z",
   "items": [
-    {
-      "id": "tag:refurb-tracker.com,2007:58430fa5ad545fb68a15c0b80a5551df",
-      "displayTitle": "Mac mini - M4",
-      "priceNum": 3799,
-      "link": "https://refurb-tracker.com/url/902495",
-      "modelId": "FU9D3CH/A",
-      "color": null,
-      "image": "https://as-images.apple.com/is/refurb-mac-mini-202501?wid=320&hei=320&fmt=png-alpha",
-      "details": [
-        "翻新 Mac mini Apple M4 芯片 (配备 10 核中央处理器和 10 核图形处理器) 和千兆以太网端口",
-        "&ndash; FU9D3CH/A",
-        "最初发布于 2024 年 10 月",
-        "16GB 统一内存",
-        "256GB 固态硬盘",
-        "千兆以太网端口",
-        "三个雷雳 4 端口"
-      ],
-      "specs": {
-        "ram": 16,
-        "ssd_gb": 256,
-        "cpu": 10,
-        "gpu": 10,
-        "chip_series": "M4",
-        "chip_model": "M4",
-        "screen_in": null,
-        "has10GbE": false,
-        "hasXDR": false
-      }
-    },
     {
       "id": "tag:refurb-tracker.com,2007:98e49aeb181cde78d7d968cb25091edf",
       "displayTitle": "Mac mini - M4",
